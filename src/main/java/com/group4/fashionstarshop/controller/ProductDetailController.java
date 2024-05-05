@@ -24,7 +24,7 @@ public class ProductDetailController {
 	@Autowired
 	private VariantService variantService;
 
-	@PostMapping("/{productId}")
+	@PostMapping("/{productId}/{variantId}")
 	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
 		@PathVariable("productId") Long productId,
 	    @RequestBody FindVariantRequest request) {

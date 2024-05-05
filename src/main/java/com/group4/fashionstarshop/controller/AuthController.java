@@ -49,7 +49,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("api/auth")
+@RequestMapping("api")
 public class AuthController {
 	@Autowired
 	private UserService userService;
