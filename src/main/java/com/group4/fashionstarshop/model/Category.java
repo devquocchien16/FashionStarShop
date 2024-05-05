@@ -29,21 +29,12 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="parent_category_id")
-    private Category parentCategory;   
-    
-    @Builder.Default
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Category> children = new ArrayList<>();
     
     @OneToMany(mappedBy = "category")
     private List<StoreCategory> storeCategories;
 
     @JsonManagedReference(value = "product_category")
     @OneToMany( mappedBy = "category")
-    private List<Product> products;
+    private List<Product> products;    
     
-    private int level;
 }
