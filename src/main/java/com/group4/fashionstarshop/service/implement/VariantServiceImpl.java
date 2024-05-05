@@ -56,6 +56,7 @@ public class VariantServiceImpl implements VariantService {
 	private ImageConverter iImageConverter;
 	@Autowired
 	private ReviewService reviewService;
+
 	@Override
 	public VariantDTO updateVariant(VariantRequest variantRequest, Long variantId) {
 
@@ -193,42 +194,45 @@ public class VariantServiceImpl implements VariantService {
 
 	@Override
 	public VariantDTO getVariantIdByProductIdAndOptionValueIds(Long productId, FindVariantRequest request) {
-	    Product product = productRepository.findById(productId).orElse(null);
-	    if (product == null) {
-	        throw new EntityNotFoundException("Product not found with id: " + productId);
-	    }
-	    List<Variant> variants = variantRepository.findByProduct(product);
-	    Long matchingVariantId = findMatchingVariantId(variants, request.getOptionValueIds());
-	    VariantDTO variantDTO = new VariantDTO();
-	    variantDTO.setId(matchingVariantId);
-	    Variant variant = variantRepository.findById(matchingVariantId).orElse(null);	   
-	    return variantConverter.entityToDTO(variant);
+		Product product = productRepository.findById(productId).orElse(null);
+		if (product == null) {
+			throw new EntityNotFoundException("Product not found with id: " + productId);
+		}
+		List<Variant> variants = variantRepository.findByProduct(product);
+		Long matchingVariantId = findMatchingVariantId(variants, request.getOptionValueIds());
+		VariantDTO variantDTO = new VariantDTO();
+		variantDTO.setId(matchingVariantId);
+		Variant variant = variantRepository.findById(matchingVariantId).orElse(null);
+		return variantConverter.entityToDTO(variant);
 	}
 
 	private Long findMatchingVariantId(List<Variant> variants, List<Long> optionValueIds) {
-	    // Duyệt qua từng biến thể
-	    for (Variant variant : variants) {
-	        // Kiểm tra xem biến thể này có chứa tất cả các optionValueIds được yêu cầu hay không
-	        if (containsAllOptionValues(variant, optionValueIds)) {
-	            // Nếu có, trả về variant_id đầu tiên phù hợp
-	            return variant.getId();
-	        }
-	    }
-	    // Nếu không có biến thể phù hợp, trả về null hoặc ném một ngoại lệ tùy thuộc vào yêu cầu của bạn
-	    return null;
+		// Duyệt qua từng biến thể
+		for (Variant variant : variants) {
+			// Kiểm tra xem biến thể này có chứa tất cả các optionValueIds được yêu cầu hay
+			// không
+			if (containsAllOptionValues(variant, optionValueIds)) {
+				// Nếu có, trả về variant_id đầu tiên phù hợp
+				return variant.getId();
+			}
+		}
+		// Nếu không có biến thể phù hợp, trả về null hoặc ném một ngoại lệ tùy thuộc
+		// vào yêu cầu của bạn
+		return null;
 	}
 
 	private boolean containsAllOptionValues(Variant variant, List<Long> optionValueIds) {
-	    // Lấy danh sách các variantOptionValues của biến thể
-	    List<VariantOptionValue> variantOptionValues = variant.getVariantOptionValues();
-	    // Tạo danh sách để lưu trữ các optionValueIds của biến thể
-	    List<Long> variantOptionValueIds = new ArrayList<>();
-	    for (VariantOptionValue variantOptionValue : variantOptionValues) {
-	        variantOptionValueIds.add(variantOptionValue.getOption_value().getId());
-	    }
+		// Lấy danh sách các variantOptionValues của biến thể
+		List<VariantOptionValue> variantOptionValues = variant.getVariantOptionValues();
+		// Tạo danh sách để lưu trữ các optionValueIds của biến thể
+		List<Long> variantOptionValueIds = new ArrayList<>();
+		for (VariantOptionValue variantOptionValue : variantOptionValues) {
+			variantOptionValueIds.add(variantOptionValue.getOption_value().getId());
+		}
 
-	    // Kiểm tra xem danh sách optionValueIds của biến thể có chứa tất cả các optionValueIds được yêu cầu hay không
-	    return variantOptionValueIds.containsAll(optionValueIds);
+		// Kiểm tra xem danh sách optionValueIds của biến thể có chứa tất cả các
+		// optionValueIds được yêu cầu hay không
+		return variantOptionValueIds.containsAll(optionValueIds);
 	}
 
 	@Override
@@ -270,7 +274,7 @@ public class VariantServiceImpl implements VariantService {
 		List<VariantDTO> variantDtoList = new ArrayList<>();
 		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
 		for (Variant variant : variants) {
-			List<OptionValue> optionValueList = variant.getOptionValues();
+			List<VariantOptionValue> optionValueList = variant.getVariantOptionValues();
 			List<Image> imageList = variant.getImages();
 			List<ReviewDTO> reviewList = reviewService.getReviewsByVariantId(variant.getId());
 			List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(imageList);
@@ -283,8 +287,9 @@ public class VariantServiceImpl implements VariantService {
 		}
 		return variantDtoList;
 	}
-		@Override
-		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
+
+	@Override
+	public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
 		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
 		Variant minVariant = variants.get(0);
 		for (Variant variant : variants) {
@@ -300,8 +305,9 @@ public class VariantServiceImpl implements VariantService {
 		variantDto.setOptionValueDTOList(optionValueDto);
 		variantDto.setImageDTOList(imageDtoList);
 		return variantDto;
-	
-		}
+
+	}
+
 	@Override
 	public Variant findById(Long id) {
 		Variant variant = variantRepository.findById(id).orElse(null);
@@ -453,6 +459,5 @@ public class VariantServiceImpl implements VariantService {
 		return new PageImpl<>(sortedVariantDTOs, pageable, sortedVariantPage.getTotalElements());
 
 	}
-
 
 }
