@@ -15,4 +15,6 @@ public interface AddressConverter {
 	List<Address> dtosToEntities(List<AddressDTO> element);
 
 	List<AddressDTO> entitiesToDTOs(List<Address> element);
+	 AddressResponse convertToDto(Address address);
+	    Address convertToEntity(AddressRequest addressRequest);
 }
