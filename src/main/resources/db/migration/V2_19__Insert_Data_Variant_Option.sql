@@ -1,0 +1,16 @@
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (1, 1);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (1, 3);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (2, 2);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (2, 4);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (3, 1);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (3, 4);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (4, 2);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (4, 3);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (5, 5);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (5, 7);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (6, 5);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (6, 8);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (7, 6);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (7, 7);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (8, 6);
+INSERT IGNORE INTO VARIANT_OPTIONVALUE (variant_id, optionvalue_id) VALUES (8, 8);
