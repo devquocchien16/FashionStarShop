@@ -168,14 +168,7 @@ public class ProductServiceImpl implements ProductService {
 	    @Override
 	    public List<ProductDTO> getAllProductDtosByStoreCategory(String categoryName) {
 	        StoreCategory storeCategory = storeCategoryRepository.findByName(categoryName);
-	        List<StoreCategory> subCategories = storeCategoryRepository.findAllByParentStoreCategory(storeCategory);
-	        List<Product> products = new ArrayList<>();
-	        for(StoreCategory category:subCategories){
-	            List<Product> categoryProducts = productRepository.findAllByStoreCategory(category);
-	            for(Product product:categoryProducts){
-	                products.add(product);
-	            }
-	        }
+	        List<Product> products = productRepository.findAllByStoreCategory(storeCategory);	       
 	        List<ProductDTO> productDTOS = productConverterImpl.entitiesToDTOs(products);
 	        return productDTOS;
 	    }

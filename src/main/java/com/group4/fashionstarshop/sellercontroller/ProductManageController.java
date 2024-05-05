@@ -28,25 +28,14 @@ import com.group4.fashionstarshop.service.VariantService;
 public class ProductManageController {
 	
 	@Autowired
-    private ProductService productService;    
+    private ProductService productService;  
 	
-	@Autowired
-    private VariantService variantService;    
-
     @PostMapping("{storeId}/create")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductRequest productRequest, @PathVariable(name = "storeId") Long storeId) {
     	ProductDTO createdProduct = productService.createProduct(productRequest, storeId);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-    }
-    @PostMapping("/{product_id}/variants/create")
-    public ResponseEntity<List<VariantDTO>> createRawVariant(@PathVariable(name="product_id") Long product_id) {
-    	 
-        List<VariantDTO> variantDTOs = variantService.createRawVariant(product_id);
-        return new ResponseEntity<>(variantDTOs, HttpStatus.CREATED);
-    }
+    }  
     
-    
-	
   	@PutMapping("/{productId}/update")
   	public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "productId") Long productId , @RequestBody ProductRequest request) {
   		ProductDTO updatedProduct = productService.updateProduct(productId, request);

@@ -171,39 +171,47 @@ public class VariantServiceImpl implements VariantService {
 
 		// Retrieve option values for the variant
 		List<OptionValueDTO> optionValueDTOs = getOptionValuesByVariantId(variantId);
+		List<Image> imageList = variant.getImages();
+		List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(imageList);
+		List<ReviewDTO> reviewList = reviewService.getReviewsByVariantId(variant.getId());
 
 		// Convert Variant to VariantDTO
 		VariantDTO variantDTO = variantConverter.entityToDTO(variant);
 
 		// Set option values in the DTO
 		variantDTO.setOptionValueDTOList(optionValueDTOs);
+		variantDTO.setImageDTOList(imageDTOList);
+		variantDTO.setReviewDTOList(reviewList);
+		//get and set productDTO
+		Product product = variant.getProduct();
+		variantDTO.setProductDTO(productConverter.entityToDTO(product));
+		
 
 		return variantDTO;
 	}
+	@Override
+	public VariantDTO deleteVariant(Long variant_id) {
+		Variant variant = variantRepository.findById(variant_id)
+				.orElseThrow(() -> new EntityNotFoundException("Variant not found with id: " + variant_id));
+		variant.setIsDeleted(true);
+		variantRepository.save(variant);
 
-//	@Override
-//	public VariantDTO deleteVariant(Long variant_id) {
-//		Variant variant = variantRepository.findById(variant_id)
-//				.orElseThrow(() -> new EntityNotFoundException("Variant not found with id: " + variant_id));
-//		variant.setIsDeleted(true);
-//		variantRepository.save(variant);
-//
-//		return variantConverter.entityToDTO(variant);
-//
-//	}
+		return variantConverter.entityToDTO(variant);
+
+	}
 
 	@Override
 	public VariantDTO getVariantIdByProductIdAndOptionValueIds(Long productId, FindVariantRequest request) {
-		Product product = productRepository.findById(productId).orElse(null);
-		if (product == null) {
-			throw new EntityNotFoundException("Product not found with id: " + productId);
-		}
-		List<Variant> variants = variantRepository.findByProduct(product);
-		Long matchingVariantId = findMatchingVariantId(variants, request.getOptionValueIds());
-		VariantDTO variantDTO = new VariantDTO();
-		variantDTO.setId(matchingVariantId);
-		Variant variant = variantRepository.findById(matchingVariantId).orElse(null);
-		return variantConverter.entityToDTO(variant);
+	    Product product = productRepository.findById(productId).orElse(null);
+	    if (product == null) {
+	        throw new EntityNotFoundException("Product not found with id: " + productId);
+	    }
+	    List<Variant> variants = variantRepository.findByProduct(product);
+	    Long matchingVariantId = findMatchingVariantId(variants, request.getOptionValueIds());
+	    VariantDTO variantDTO = new VariantDTO();
+	    variantDTO.setId(matchingVariantId);
+	    Variant variant = variantRepository.findById(matchingVariantId).orElse(null);
+	    return variantConverter.entityToDTO(variant);
 	}
 
 	private Long findMatchingVariantId(List<Variant> variants, List<Long> optionValueIds) {
@@ -269,27 +277,49 @@ public class VariantServiceImpl implements VariantService {
 		return variantConverter.entityToDTO(savedVariant);
 	}
 
+//	@Override
+//	public List<VariantDTO> getVariantByProductId(Long product_id) {
+//		List<VariantDTO> variantDtoList = new ArrayList<>();
+//		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
+//		for (Variant variant : variants) {
+//			List<OptionValue> optionValueList = variant.getOptionValues();
+//			List<Image> imageList = variant.getImages();
+//			List<ReviewDTO> reviewList = reviewService.getReviewsByVariantId(variant.getId());
+//			List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(imageList);
+//			List<OptionValueDTO> optionValueDto = optionValueConverter.entitiesToDTOs(optionValueList);
+//			VariantDTO variantDto = variantConverter.entityToDTO(variant);
+//			variantDto.setOptionValueDTOList(optionValueDto);
+//			variantDto.setImageDTOList(imageDTOList);
+//			variantDto.setReviewDTOList(reviewList);
+//			variantDtoList.add(variantDto);
+//		}
+//		return variantDtoList;
+//	}
+	
 	@Override
 	public List<VariantDTO> getVariantByProductId(Long product_id) {
-		List<VariantDTO> variantDtoList = new ArrayList<>();
-		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
-		for (Variant variant : variants) {
-			List<VariantOptionValue> optionValueList = variant.getVariantOptionValues();
-			List<Image> imageList = variant.getImages();
-			List<ReviewDTO> reviewList = reviewService.getReviewsByVariantId(variant.getId());
-			List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(imageList);
-			List<OptionValueDTO> optionValueDto = optionValueConverter.entitiesToDTOs(optionValueList);
-			VariantDTO variantDto = variantConverter.entityToDTO(variant);
-			variantDto.setOptionValueDTOList(optionValueDto);
-			variantDto.setImageDTOList(imageDTOList);
-			variantDto.setReviewDTOList(reviewList);
-			variantDtoList.add(variantDto);
-		}
-		return variantDtoList;
-	}
+		Product product = productRepository.findById(product_id)
+				.orElseThrow(() -> new EntityNotFoundException("Product not found"));
+		// Lấy danh sách các biến thể với trạng thái isDeleted khác false
+		List<Variant> variants = variantRepository.findByProductAndIsDeletedNullOrIsDeletedFalse(product);
 
-	@Override
-	public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
+		List<VariantDTO> variantDTOs = variantConverter.entitiesToDTOs(variants);
+
+		for (VariantDTO variantDTO : variantDTOs) {
+			// Lấy danh sách các giá trị tùy chọn của biến thể
+			List<OptionValueDTO> optionValues = getOptionValuesByVariantId(variantDTO.getId());
+			// Gán danh sách giá trị tùy chọn vào biến thể tương ứng
+			variantDTO.setOptionValueDTOList(optionValues);
+			variantDTO.setProductDTO(productConverter.entityToDTO(product));
+		}
+		return variantDTOs;
+	}
+	
+	
+	
+	
+		@Override
+		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
 		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
 		Variant minVariant = variants.get(0);
 		for (Variant variant : variants) {
@@ -297,17 +327,12 @@ public class VariantServiceImpl implements VariantService {
 				minVariant = variant;
 			}
 		}
-		List<OptionValue> optionValueList = minVariant.getOptionValues();
+		Variant variant = variantRepository.findById(minVariant.getId()).orElse(null);		
+		List<OptionValue> optionValue = optionValueRepository.findOptionValueById(product_id);
 		List<Image> images = minVariant.getImages();
-		List<OptionValueDTO> optionValueDto = optionValueConverter.entitiesToDTOs(optionValueList);
-		List<ImageDTO> imageDtoList = iImageConverter.entitiesToDTOs(images);
-		VariantDTO variantDto = variantConverterImpl.entityToDTO(minVariant);
-		variantDto.setOptionValueDTOList(optionValueDto);
-		variantDto.setImageDTOList(imageDtoList);
-		return variantDto;
-
-	}
-
+		
+		return variantConverter.entityToDTO(variant);
+		}
 	@Override
 	public Variant findById(Long id) {
 		Variant variant = variantRepository.findById(id).orElse(null);
@@ -323,7 +348,7 @@ public class VariantServiceImpl implements VariantService {
 //				minVariant = variant;
 //			}
 //		}
-//		List<OptionValue> optionValueList = minVariant.getOptionValues();
+//		List<OptionValue> optionValueList = minVariant.VariantOptionValues();
 //		List<Image> images = minVariant.getImages();
 //		List<OptionValueDTO> optionValueDto = optionValueConverter.entitiesToDTOs(optionValueList);
 //		List<ImageDTO> imageDtoList = iImageConverter.entitiesToDTOs(images);
@@ -362,17 +387,6 @@ public class VariantServiceImpl implements VariantService {
 		return variantDTO;
 	}
 
-	@Override
-	public void deleteVariant(Long variantId) {
-		Variant variant = variantRepository.findById(variantId)
-				.orElseThrow(() -> new EntityNotFoundException("variant not found"));
-		List<Image> images = variant.getImages();
-		for (Image ele : images) {
-			imageRepository.deleteById(ele.getId());
-		}
-		variantRepository.deleteById(variantId);
-	}
-
 	public Page<VariantDTO> getVariantsByContaining(String text, Pageable pageable) {
 		Page<Variant> variantPage = variantRepository.findByNameContaining(text, pageable);
 		return variantPage.map(variantConverterImpl::entityToDTO);
@@ -407,40 +421,23 @@ public class VariantServiceImpl implements VariantService {
 		return new PageImpl<>(variantList, pageable, variantPage.getTotalElements());
 	}
 
-	public VariantDTO createRawVariant(List<Long> valueIdList, Long productId) {
-		List<OptionValue> optionValueList = new ArrayList<>();
-		for (Long ele : valueIdList) {
-			OptionValue optionValue = optionValueRepository.findById(ele).orElse(new OptionValue());
-			optionValueList.add(optionValue);
-		}
-		Product product = productRepository.findById(productId)
-				.orElseThrow(() -> new IllegalArgumentException("product not found"));
-		Variant variant = new Variant();
-		variant.setProduct(product);
-		variant.setOptionValues(optionValueList);
-		variantRepository.save(variant);
-		List<OptionValue> optionValues = variant.getOptionValues();
-		List<OptionValueDTO> optionValueDtoList = optionValueConverter.entitiesToDTOs(optionValues);
-		VariantDTO variantDto = variantConverterImpl.entityToDTO(variant);
-		variantDto.setOptionValueDTOList(optionValueDtoList);
-		return variantDto;
-	}
+
 
 	@Override
-	public VariantDTO getVariantInfoById(Long id) {
-		Variant variant = variantRepository.findById(id).orElse(null);
-		if (variant == null) {
-			return null;
-		} else {
-			List<OptionValue> optionValueList = variant.getOptionValues();
-			List<Image> images = variant.getImages();
-			List<OptionValueDTO> optionValueDto = optionValueConverter.entitiesToDTOs(optionValueList);
-			List<ImageDTO> imageDtoList = iImageConverter.entitiesToDTOs(images);
-			VariantDTO variantDto = variantConverterImpl.entityToDTO(variant);
-			variantDto.setOptionValueDTOList(optionValueDto);
-			variantDto.setImageDTOList(imageDtoList);
-			return variantDto;
-		}
+	public VariantDTO getVariantInfoById(Long variantId) {
+		Variant variant = variantRepository.findById(variantId)
+				.orElseThrow(() -> new EntityNotFoundException("Variant not found with id: " + variantId));
+
+		// Retrieve option values for the variant
+		List<OptionValueDTO> optionValueDTOs = getOptionValuesByVariantId(variantId);
+
+		// Convert Variant to VariantDTO
+		VariantDTO variantDTO = variantConverter.entityToDTO(variant);
+
+		// Set option values in the DTO
+		variantDTO.setOptionValueDTOList(optionValueDTOs);
+
+		return variantDTO;
 
 	}
 
@@ -459,5 +456,20 @@ public class VariantServiceImpl implements VariantService {
 		return new PageImpl<>(sortedVariantDTOs, pageable, sortedVariantPage.getTotalElements());
 
 	}
+
+//	@Override
+//	public VariantDTO getVariantById(Long variantId) 
+//	{Variant variant = variantRepository.findById(variantId). orElseThrow(
+//			() -> new EntityNotFoundException("Variant not found with id: " + variantId));
+//	// Retrieve option values for the variant
+//	List<OptionValueDTO> optionValueDTOs = getOptionValuesByVariantId(variantId);
+//	// Convert Variant to VariantDTO
+//	VariantDTO variantDTO = variantConverter.entityToDTO(variant);
+//	// Set option values in the DTO
+//	variantDTO. setOptionValueDTOList(optionValueDTOs);
+//	//get and set productDTO
+//	Product product = variant.getProduct();variantDTO. setProductDTO(productConverter.entityToDTO(product));return variantDTO;
+//	}
+
 
 }

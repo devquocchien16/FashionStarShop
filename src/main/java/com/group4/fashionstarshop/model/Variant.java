@@ -26,7 +26,7 @@ public class Variant {
     private double price;
     private double salePrice;
     private String img;
-    private Boolean isDeleted= false; ;
+    private Boolean isDeleted; 
 
     @ManyToOne
     @JoinColumn(name = "product_id")
