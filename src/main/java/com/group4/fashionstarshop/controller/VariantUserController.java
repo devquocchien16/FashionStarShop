@@ -39,5 +39,11 @@ public class VariantUserController {
 	        VariantDTO variantDTO = variantService.getVariantById(variantId);
 	        return new ResponseEntity<>(variantDTO, HttpStatus.OK);
 	    }
+	    
+//	    @GetMapping("/{productId}")
+//	    public ResponseEntity<VariantDTO> getVariantById(@PathVariable("productId")Long productId){
+//	        VariantDTO variantDTO = variantService.getLowestPriceVariantByProductId(productId);
+//	        return new ResponseEntity<>(variantDTO, HttpStatus.OK);
+//	    }
 
 }

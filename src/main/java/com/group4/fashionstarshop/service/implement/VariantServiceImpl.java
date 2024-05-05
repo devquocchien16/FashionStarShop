@@ -310,10 +310,7 @@ public class VariantServiceImpl implements VariantService {
 		}
 		return variantDTOs;
 	}
-	
-	
-	
-	
+
 		@Override
 		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
 		List<Variant> variants = variantRepository.findByProduct_Id(product_id);

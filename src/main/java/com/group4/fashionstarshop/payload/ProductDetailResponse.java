@@ -12,7 +12,8 @@ public class ProductDetailResponse {
     private StoreDTO storeDto;
     private List<OptionTableDTO> optionTableDto;
     private List<VariantDTO> variantDTOList;
-    private List<AttributeDTO> productAttributeDTOList;
+    private List<ProductAttributeDTO> productAttributeDTOList;
     private VariantDTO variantDto;
     private List<ReviewDTO> reviewDTOList;
 }
+ 
