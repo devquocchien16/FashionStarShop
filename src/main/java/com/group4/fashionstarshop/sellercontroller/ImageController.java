@@ -27,13 +27,10 @@ public class ImageController {
     public final ImageServiceImpl imageService;
     public final ReviewService reviewService;
 
-
-
     @Autowired
     public ImageController(ImageServiceImpl imageService,ReviewService reviewService) {
         this.imageService = imageService;
         this.reviewService = reviewService;
-
     }
     @PostMapping("/create")
     public ResponseEntity<ImageCreateResponse> createImage(@RequestBody List<String> images, @PathVariable("variant_id") Long variant_id){
