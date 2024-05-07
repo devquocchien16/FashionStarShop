@@ -27,7 +27,7 @@ public class Store {
     private String dealsSquareImage;
     private String interactiveImage;
     private String edittingName;
-    
+    private boolean status;
     private String adminReply;
     
     @OneToOne(fetch = FetchType.LAZY)

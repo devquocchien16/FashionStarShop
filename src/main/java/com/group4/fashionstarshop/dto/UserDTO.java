@@ -1,5 +1,6 @@
 package com.group4.fashionstarshop.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.*;
@@ -15,5 +16,5 @@ public class UserDTO {
     private String email;
     private String phone;
     private boolean gender;
-    private Date birthday;
+    private LocalDate birthday;
 }

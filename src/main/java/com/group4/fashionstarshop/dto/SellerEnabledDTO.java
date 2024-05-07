@@ -1,8 +1,5 @@
 package com.group4.fashionstarshop.dto;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -14,10 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserEditDTO {
-	
-    private String clientName;
+public class SellerEnabledDTO {
+    private Long id;
+    private String sellerName;
+    private String email;
     private String phone;
-    private boolean gender;
-    private LocalDate birthday;
+    private boolean enabled;
 }

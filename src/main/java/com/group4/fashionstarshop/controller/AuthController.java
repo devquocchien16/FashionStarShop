@@ -152,8 +152,7 @@ public class AuthController {
         // Lưu token vào cookie
         Cookie cookie = new Cookie("resetPasswordToken", token);
         cookie.setHttpOnly(false);
-        cookie.setPath("/api/register/reset-password");
-        cookie.setSecure(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "http://localhost:3000/changepass");

@@ -18,6 +18,9 @@ import com.group4.fashionstarshop.converter.StoreConverter;
 import com.group4.fashionstarshop.dto.AdminDTO;
 import com.group4.fashionstarshop.dto.AdminRegister;
 import com.group4.fashionstarshop.dto.CategoryDTO;
+import com.group4.fashionstarshop.dto.SellerDTO;
+import com.group4.fashionstarshop.dto.SellerEnabledDTO;
+import com.group4.fashionstarshop.dto.StoreEnableDTO;
 import com.group4.fashionstarshop.dto.UserDTO;
 import com.group4.fashionstarshop.dto.UserEnabledDTO;
 import com.group4.fashionstarshop.enums.Role;
@@ -26,6 +29,7 @@ import com.group4.fashionstarshop.model.Category;
 import com.group4.fashionstarshop.model.Seller;
 import com.group4.fashionstarshop.model.User;
 import com.group4.fashionstarshop.repository.CategoryRepository;
+import com.group4.fashionstarshop.repository.SellerRepository;
 import com.group4.fashionstarshop.repository.UserRepository;
 import com.group4.fashionstarshop.model.Store;
 import com.group4.fashionstarshop.payload.StoreResponse;
@@ -49,10 +53,11 @@ public class AdminServiceImpl implements AdminService{
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;
-    
+    @Autowired
+    private SellerRepository sellerRepository;
     @Autowired
     private StoreRepository storeRepository;
-    
+  
     @Autowired
     private StoreConverter storeConverter;
     
@@ -107,15 +112,25 @@ public class AdminServiceImpl implements AdminService{
 	        for (User user : users) {
 	            user.setEnabled(false);
 	        }
-	        userRepository.saveAll(users); // Lưu tất cả các thay đổi trong một lần
+	        userRepository.saveAll(users);
 	 }
-	@Override
-	public Category createCategory(CategoryDTO categoryDTO) {
-	       Category category = new Category();
-	        category.setName(categoryDTO.getName());
-	        categoryRepository.save(category);
-	        return category;
-	}
+	 @Override
+	 public Category createCategory(CategoryDTO categoryDTO) {
+	     Category category = new Category();
+	     String name = categoryDTO.getName();
+	     if (name == null || name.trim().isEmpty()) {
+	         throw new IllegalArgumentException("Category name cannot be null or empty");
+	     }
+	     category.setName(name.trim());
+	     
+	     Category savedCategory = categoryRepository.save(category);
+	     if (savedCategory == null) {
+	         throw new RuntimeException("Failed to save category");
+	     }
+	     
+	     return savedCategory;
+	 }
+
 	@Override
 	public List<CategoryDTO> getCategories() {
 		List<Category> categories = categoryRepository.findAll();
@@ -148,5 +163,74 @@ public class AdminServiceImpl implements AdminService{
 		response.setStoreDTO(storeConverter.entityToDTO(store));
 		return response;
 	}
+	@Override
+	public List<SellerEnabledDTO> listSellers() {
+	 	List<Seller> userList = sellerRepository.findAll();
+	    List<SellerEnabledDTO> userDTOList = new ArrayList<>();
+
+	    for (Seller seller : userList) {
+	        SellerEnabledDTO userDTO = new SellerEnabledDTO();
+	        userDTO.setId(seller.getId());
+	        userDTO.setSellerName(seller.getSellerName());
+	        userDTO.setEmail(seller.getEmail());
+	        userDTO.setPhone(seller.getPhone());
+	        userDTO.setEnabled(seller.isEnabled());
+	        userDTOList.add(userDTO);
+	    }
+
+	    return userDTOList;
+	}
+	@Override
+	public void unblockUsers(List<Long> ids) {
+		List<User> users = userRepository.findAllByIdsIn(ids);
+        for (User user : users) {
+            user.setEnabled(true);
+        }
+        userRepository.saveAll(users);		
+	}
+	@Override
+	public void blockSellers(List<Long> ids) {
+		List<Seller> sellers = sellerRepository.findAllByIdsIn(ids);
+        for (Seller seller : sellers) {
+            seller.setEnabled(false);
+        }
+        sellerRepository.saveAll(sellers);		
+		
+	}
+	@Override
+	public void unblockSellers(List<Long> ids) {
+		List<Seller> sellers = sellerRepository.findAllByIdsIn(ids);
+        for (Seller seller : sellers) {
+            seller.setEnabled(true);
+        }
+        sellerRepository.saveAll(sellers);	
+		
+	}
+	@Override
+	public List<StoreEnableDTO> listStores() {
+	    List<Store> storeList = storeRepository.findAll();
+	    List<StoreEnableDTO> storeDTOList = new ArrayList<>();
+
+	    for (Store store : storeList) {
+	        StoreEnableDTO storeDTO = new StoreEnableDTO();
+	        storeDTO.setId(store.getId());
+	        storeDTO.setName(store.getName());
+	        storeDTO.setStatus(store.isStatus());
+
+	        // Tạo một đối tượng SellerDTO từ thông tin của Seller
+	        Seller seller = store.getSeller();
+	        SellerDTO sellerDTO = new SellerDTO();
+	        sellerDTO.setSellerName(seller.getSellerName());
+
+	        // Gán đối tượng SellerDTO cho storeDTO
+	        storeDTO.setSellerDTO(sellerDTO);
+
+	        storeDTOList.add(storeDTO);
+	    }
+
+	    return storeDTOList;
+	}
+
+
 
 }
