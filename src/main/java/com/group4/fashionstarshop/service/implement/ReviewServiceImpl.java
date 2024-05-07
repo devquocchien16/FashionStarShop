@@ -43,18 +43,6 @@ public class ReviewServiceImpl implements ReviewService {
 		return null;
 	}
 
-//	@Override
-//	public List<ReviewDTO> getReviewsByVariantId(Long variantId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-
-//	@Override
-//	public SummaryDTO getSummaryDtoByProductId(Long productId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
     @Override
     public List<ReviewDTO> getReviewsByVariantId(Long variantId) {

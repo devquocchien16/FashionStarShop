@@ -46,7 +46,7 @@ public interface VariantService {
 	
 	List<VariantDTO> createRawVariant(Long product_id);
 
-	VariantDTO getVariantIdByProductIdAndOptionValueIds(Long productId, FindVariantRequest request);
+	VariantDTO getVariantIdByProductIdAndOptionValueIds(Long productId,FindVariantRequest request);
 	
 	
 	VariantDTO deleteVariant(Long variant_id);

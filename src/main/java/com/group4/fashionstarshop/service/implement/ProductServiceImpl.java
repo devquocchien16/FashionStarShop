@@ -48,7 +48,8 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductConverterImpl productConverterImpl;
 
-
+@Autowired
+private StoreCategoryConverter storeCategoryConverter;
 //	@Override
 //	public List<ProductDTO> getAllProductDtosByStore(Long store_id) {
 //		Store store = storeRepository.findById(store_id).orElse(null);
@@ -124,11 +125,11 @@ public class ProductServiceImpl implements ProductService {
 	 @Override
 	    public ProductDTO getProductById(Long id) {
 	        Product product = productRepository.findById(id).orElse(new Product()) ;
-	        List<Bullet> bullets = product.getBulletList();
-	        List<BulletDTO> bulletDTOList = bulletConverter.entitiesToDTOs(bullets);
-	        ProductDTO productDto = productConverterImpl.entityToDTO(product);
-
-
+//	        List<Bullet> bullets = product.getBulletList();
+//	        List<BulletDTO> bulletDTOList = bulletConverter.entitiesToDTOs(bullets);
+	       	        
+	        ProductDTO productDto = productConverterImpl.entityToDTO(product);	    
+	        productDto.setStoreCategoryId(product.getStoreCategory().getId());
 	        return productDto;
 	    }
 

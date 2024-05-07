@@ -30,10 +30,13 @@ public class SecurityConfiguration {
 		http.csrf().disable().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.requestMatchers("/api/register/**", "/api/login/**", "/api/seller/**").permitAll()
-				.requestMatchers("/api/products/**", "/api/cart-lines/**", "/api/cart/**", "/api/search/**",
+				.requestMatchers("/api/products/**", "/api/cart-lines/**", "/api/cart/**", "/api/search/**","/api/store/seller/**",
 						"/api/payments/**", "/api/save-for-later/**", "/api/stores/**", "/api/variant/**",
 						"/api/image/**", "/api/product-detail/**", "/api/option-value/**", "/api/option/**", "/api/category/**",
 						"/api/store-category/**", "/api/bullet/**", "/api/attribute/**",
+						"/api/product-detail/**",
+						
+						
 						"/api/payments/**", "/api/requestReset/**","/api/resetPassword/**","/api/chats/**")
 				.permitAll()
 				.requestMatchers(HttpMethod.GET, "/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**","api/admin/**").permitAll()

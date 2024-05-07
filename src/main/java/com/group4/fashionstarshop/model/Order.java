@@ -1,5 +1,6 @@
 package com.group4.fashionstarshop.model;
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -68,4 +69,10 @@ public class Order {
 
     @Column(name = "order_total")
     private Double orderTotal;
+    
+    private Date createdAt;
+    private Date canceledAt;
+    private Date acceptedAt;
+    private Date deliveringAt;
+    private Date completedAt;
 }

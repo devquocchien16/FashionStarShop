@@ -68,32 +68,12 @@ public class StoreController {
         return new ResponseEntity<>(storeDto, HttpStatus.OK);
     }     
 
-
     @GetMapping("/{store_id}/products")
     public ResponseEntity<List<ProductDTO>> getProductsByStore(@PathVariable("store_id") Long storeId){
         List<ProductDTO> productDTOList = productService.getAllProductDtosByStore(storeId);
         return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
-
-    @PostMapping("/create/{sellerId}")
-    @Transactional
-    public ResponseEntity<StoreDTO> createStore(@PathVariable("sellerId") Long sellerId, @RequestBody StoreRequest request){
-        StoreDTO storeDto1 = storeService.createStore(sellerId,request);
-        return new ResponseEntity<>(storeDto1,HttpStatus.OK);
-    }
-    
-    @GetMapping("/seller/{seller_id}")
-    public ResponseEntity<StoreDTO> getStoresBySellerId(@PathVariable("seller_id") Long seller_id) {
-    	StoreDTO storeDto = storeService.findStoresBySellerId(seller_id);
-        return new ResponseEntity<>(storeDto, HttpStatus.OK);
-    }   
-    
-    @PutMapping("/update/{store_id}")
-    public ResponseEntity<StoreDTO> updateStore(@PathVariable("store_id") Long store_id, @RequestBody StoreRequest request) {
-    	StoreDTO storeDto = storeService.updateStore(store_id, request);
-        return new ResponseEntity<>(storeDto, HttpStatus.OK);
-    }   
 
 
 }

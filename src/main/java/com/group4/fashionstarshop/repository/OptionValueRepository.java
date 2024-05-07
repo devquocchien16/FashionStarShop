@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface OptionValueRepository extends JpaRepository<OptionValue,Long> {
+	List<OptionValue> findOptionValueById(Long id);
 	List<OptionValue> findByOptionTable(OptionTable optionTable);
 	
 }

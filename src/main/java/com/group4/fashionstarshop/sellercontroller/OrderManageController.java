@@ -26,13 +26,25 @@ public class OrderManageController {
     public List<OrderDTO> getOrderByStoreId(@PathVariable("storeId") Long storeId) {    	
     	return orderService.findOrderByStoreId(storeId);
     }
-    
-    @PostMapping("/update/{orderId}")
-    public OrderDTO getOrderByStoreId(@RequestBody UpdateOrderRequest request,     		
-    		@PathVariable("orderId") Long orderId) {    	
-    	return orderService.updateOrderByOrderId(orderId, request);
+    @GetMapping("/details/{order_id}")
+    public OrderDTO getOrderById(@PathVariable("order_id") Long order_id) {    	
+    	return orderService.findOrderByOrderId(order_id);
     }
-  
-
-
+    
+    @PostMapping("/accept/{order_id}")
+    public OrderDTO acceptOrder(@PathVariable("order_id") Long order_id) {    	
+    	return orderService.processAcceptOrder(order_id);
+    }
+    @PostMapping("/deliver/{order_id}")
+    public OrderDTO deliveringOrder(@PathVariable("order_id") Long order_id) {    	
+    	return orderService.processDeliverOrder(order_id);
+    }
+    @PostMapping("/cancel/{order_id}")
+    public OrderDTO cancelOrder(@PathVariable("order_id") Long order_id) {    	
+    	return orderService.processCancelOrder(order_id);
+    }
+    @PostMapping("/complete/{order_id}")
+    public OrderDTO completeOrder(@PathVariable("order_id") Long order_id) {    	
+    	return orderService.processCompleteOrder(order_id);
+    }
 }

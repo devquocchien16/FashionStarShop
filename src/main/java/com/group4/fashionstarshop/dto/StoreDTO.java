@@ -14,5 +14,6 @@ import java.util.List;
 public class StoreDTO {
     private Long id;
     private String name;   
+    private String description; 
     private List<StoreCategoryDTO> storeCategoryDTOs;
 }

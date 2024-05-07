@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -23,4 +24,9 @@ public class OrderDTO {
     private PaymentMethodDTO paymentMethodDTO;
     private ShippingMethodDTO shippingMethodDTO;
     private double orderTotal;
+    private Date createdAt;
+    private Date canceledAt;
+    private Date acceptedAt;
+    private Date deliveringAt;
+    private Date completedAt;
 }

@@ -29,7 +29,7 @@ public class Store {
     private String edittingName;
     
     private String adminReply;
-    
+    private String description;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
     @JsonBackReference(value = "store_seller")

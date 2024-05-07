@@ -128,7 +128,7 @@ public class SellerServiceImpl implements SellerService {
 
 		// Create Store entity
 		Store store = new Store();
-		store.setName(sellerRegisterDto.getSellerName()); // Set store name same as seller name
+		store.setName(sellerRegisterDto.getStoreName()); // Set store name same as seller name
 		store.setSeller(seller); // Set the seller for the store
 
 		// Save Store entity

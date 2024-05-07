@@ -21,5 +21,5 @@ public class ProductDTO {
     private Date createAt;
     private Date updatedAt;
     private StoreDTO store;
-    
+    private Long storeCategoryId; 
 }
