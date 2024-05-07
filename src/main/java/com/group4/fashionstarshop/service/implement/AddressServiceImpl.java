@@ -36,9 +36,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private SellerRepository sellerRepository;
-
-
-
 	@Override
 	public AddressDTO createUserAddress(Long user_id, AddressRequest request) {
 		  User user = userRepository.findById(user_id)
@@ -124,17 +121,9 @@ public class AddressServiceImpl implements AddressService {
 	        }
 	        return addressResponseList;
 	    }
-	 @Override
-	    public AddressResponse createAddress(AddressRequest addressRequest) {
-	        Address address = addressConverter.convertToEntity(addressRequest);
-	        User user = userRepository.findById(addressRequest.getUserId()).get();
-	        address.setUser(user);
-	        Address addressNew = addressRepository.save(address);
-	        return addressConverter.convertToDto(addressNew);
-	    }
 
 	    @Override
-	    public AddressResponse updateAddress(AddressRequest addressRequest) {
+	    public AddressResponse updateAddressOrder(AddressRequest addressRequest) {
 	        Address address = addressRepository.findById(addressRequest.getId()).get();
 	        address.setDistrict(addressRequest.getDistrict());
 	        address.setWard(addressRequest.getWard());
@@ -143,5 +132,13 @@ public class AddressServiceImpl implements AddressService {
 	        Address addressNew = addressRepository.save(address);
 	        return addressConverter.convertToDto(addressNew);
 	    }
-	    
+		 @Override
+		    public AddressResponse createAddressOrder(Long userId,AddressRequest addressRequest) {
+		        User user = userRepository.findById(userId)
+		                .orElseThrow();
+		        Address address = modelMapper.map(addressRequest, Address.class);
+		        address.setUser(user);
+		        Address addressNew = addressRepository.save(address);
+		        return modelMapper.map(addressNew, AddressResponse.class);
+		    }
 }

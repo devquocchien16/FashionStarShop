@@ -13,8 +13,8 @@ public interface AddressService {
 	List<AddressDTO> getSellerAddress(Long seller_id);
 	 List<AddressResponse> findAddress(Long userId);
 	void deleteAddress(Long address_id);
-	 AddressResponse createAddress(AddressRequest addressRequest);
-	    AddressResponse updateAddress(AddressRequest addressRequest);
+	 AddressResponse createAddressOrder(Long userId, AddressRequest addressRequest);
+	    AddressResponse updateAddressOrder(AddressRequest addressRequest);
 	
 	
 }

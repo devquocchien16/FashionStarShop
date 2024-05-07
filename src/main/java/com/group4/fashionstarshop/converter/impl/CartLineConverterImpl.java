@@ -30,15 +30,17 @@ public class CartLineConverterImpl implements CartLineConverter {
     @Autowired
     private VariantConverter variantConverter;
  
+    @Autowired
+    private VariantService variantService;
 
     @Override
     public CartLine convertDtoToEntity(CartLineDTO cartLineDto) {
         CartLine cartLine = new CartLine();
         BeanUtils.copyProperties(cartLineDto, cartLine);
         Cart cart = cartService.findById(cartLineDto.getCartDto().getId());
-      //  Variant variant = variantService.findById(cartLineDto.getVariantDto().getId());
+        Variant variant = variantService.findById(cartLineDto.getVariantDto().getId());
         cartLine.setCart(cart);
-      //  cartLine.setVariant(variant);
+        cartLine.setVariant(variant);
         return cartLine;
     }
 
@@ -49,7 +51,7 @@ public class CartLineConverterImpl implements CartLineConverter {
         CartDTO cartDto = cartConverter.convertEntityToDto(cartLine.getCart());
         VariantDTO variantDto = variantConverter.entityToDTO(cartLine.getVariant());
         cartLineDto.setCartDto(cartDto);
-       // cartLineDto.setVariantDto(variantDto);
+        cartLineDto.setVariantDto(variantDto);
         return cartLineDto;
     }
 
