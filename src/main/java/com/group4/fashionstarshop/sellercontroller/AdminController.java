@@ -39,7 +39,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admins")
 public class AdminController {
 	@Autowired
 	private AdminService adminService;

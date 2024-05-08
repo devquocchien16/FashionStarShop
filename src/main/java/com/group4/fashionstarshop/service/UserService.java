@@ -24,7 +24,7 @@ public interface UserService {
     boolean checkExpiryDate(VerificationToken verificationToken);
     void saveUserVerificationToken(User theUser, String token);
     void verifyToken(VerificationToken verificationToken, HttpServletResponse response) throws Exception;
-    void createPasswordResetTokenForUser(UserResetDTO userDTO, String token);
+    
     void resetPassword(VerificationTokenDTO tokenDTO, String newPassword);
     void createNewVerificationToken(User user);
     void changePassword(User user, String newPassword);

@@ -146,20 +146,7 @@ public class UserServiceImpl implements UserService {
         return new Date(cal.getTime().getTime());
     }
 
-	@Override
-	public void createPasswordResetTokenForUser(UserResetDTO userDTO, String token) {
-		User user = new User();
-        user.setEmail(userDTO.getEmail());
-        userRepository.save(user);
 
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(user);
-        verificationToken.setExpiryDate(calculateExpiryDate(60 * 24)); // 24 hours
-        tokenRepository.save(verificationToken);
-        sendEmail(user.getEmail(), "Password Reset", "Token: " + token);
-		
-	}
 	
     private void sendEmail(String to, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
