@@ -15,8 +15,10 @@ import com.group4.fashionstarshop.model.User;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.StoreEnableDTO;
 import com.group4.fashionstarshop.payload.StoreResponse;
+import com.group4.fashionstarshop.request.CategoryRequest;
 import com.group4.fashionstarshop.request.StoreNameProcessRequest;
 import com.group4.fashionstarshop.request.StoreRequest;
+import com.group4.fashionstarshop.request.UserRequest;
 
 public interface AdminService {
 	String login(AdminDTO adminDto);
@@ -24,12 +26,16 @@ public interface AdminService {
 	List<UserEnabledDTO> listUsers();
 	List<StoreEnableDTO> listStores();
 	List<SellerEnabledDTO> listSellers();
-	public void blockUsers(List<Long> ids);
+	void blockUsers(List<Long> ids);
 	void unblockUsers(List<Long> ids);
 	
 	public void blockSellers(List<Long> ids);
 	void unblockSellers(List<Long> ids);	
-	Category createCategory(CategoryDTO categoryDTO);
+	Category createCategory(CategoryRequest categoryRequest);
 	List<CategoryDTO> getCategories();
+	List<UserEnabledDTO> getUsersbyClientName(UserRequest userRequest);
+	List<UserEnabledDTO> searchUsersByName(String clientName);
 	StoreResponse processStoreRequest(StoreNameProcessRequest request, Long store_id);
+	List<UserEnabledDTO> searchUsersByNameOrEmail(String keyword);
+	List<SellerEnabledDTO> searchUsersBySellerNameOrEmail(String keyword);
 }
