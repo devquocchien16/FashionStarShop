@@ -36,8 +36,8 @@ public class SecurityConfiguration {
 						"/api/store-category/**", "/api/bullet/**", "/api/attribute/**",
 						"/api/payments/**", "/api/requestReset/**","/api/resetPassword/**","/api/chats/**","/api/orders/**", "/api/admin/**")
 				.permitAll()
-				.requestMatchers(HttpMethod.GET, "/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**","/api/orders/**","api/admin/**").permitAll()
-				.requestMatchers(HttpMethod.POST, "/api/chats/**","/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**","/api/orders/**","api/admin/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**","/api/product-detail/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**","/api/orders/**","api/admin/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/chats/**","/api/products", "/api/cart-lines/**", "/api/search/**","/api/product-detail/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**","/api/orders/**","api/admin/**").permitAll()
 				.requestMatchers("/api/users/**").hasRole(Role.USER.toString())
 				.requestMatchers("/api/sellers/**").hasAuthority(Role.SELLER.toString())
 //				.requestMatchers("/api/admin/**").hasRole(Role.ADMIN.toString())

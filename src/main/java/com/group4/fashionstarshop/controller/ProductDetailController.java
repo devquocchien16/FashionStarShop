@@ -76,4 +76,11 @@ public class ProductDetailController {
         return ResponseEntity.ok(productDetailResponse);
     }
 
+	@PostMapping("/{productId}")
+	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
+		@PathVariable("productId") Long productId,
+	    @RequestBody FindVariantRequest request) {
+	      VariantDTO variantDTO = variantService.getVariantIdByProductIdAndOptionValueIds(productId, request);
+	        return ResponseEntity.ok(variantDTO);
+	    }
 }
