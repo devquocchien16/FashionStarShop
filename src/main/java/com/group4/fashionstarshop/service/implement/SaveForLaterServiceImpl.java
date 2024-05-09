@@ -34,6 +34,7 @@ public class SaveForLaterServiceImpl implements SaveForLaterService {
     public List<SaveForLaterDTO> findSaveForLaterByCartId(Long cartId) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         List<SaveForLater> saveForLaters = saveForLaterRepository.findSaveForLaterByCart(cart);
+        System.out.println(saveForLaters);
         List<SaveForLaterDTO> saveForLaterDTOS = saveForLaterConverter.convertEntitiesToDtos(saveForLaters);
         return saveForLaterDTOS;
     }
@@ -45,6 +46,7 @@ public class SaveForLaterServiceImpl implements SaveForLaterService {
 
     @Override
     public SaveForLaterDTO addSaveForLater(SaveForLaterRequest saveForLaterRequest) {
+    	System.out.println(saveForLaterRequest);
         SaveForLater saveForLater = new SaveForLater();
         Cart cart = cartRepository.findById(saveForLaterRequest.getCartId()).orElse(null);
         Variant variant = variantRepository.findById(saveForLaterRequest.getVariantId()).orElse(null);

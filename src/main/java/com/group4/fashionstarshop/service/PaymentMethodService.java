@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface PaymentMethodService {
     List<PaymentMethodResponse> findPaymentMethod(Long userId);
-    PaymentMethodResponse createPaymentMethod(PaymentMethodRequest paymentMethodRequest);
+    PaymentMethodResponse createPaymentMethod(Long userId,PaymentMethodRequest paymentMethodRequest);
     PaymentMethodResponse updatePaymentMethod(PaymentMethodRequest paymentMethodRequest);
 }

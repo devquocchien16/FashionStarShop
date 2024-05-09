@@ -40,7 +40,7 @@ public class SecurityConfiguration {
 				.requestMatchers(HttpMethod.POST, "/api/chats/**","/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**").permitAll()
 				.requestMatchers("/api/users/**").hasRole(Role.USER.toString())
 				.requestMatchers("/api/sellers/**").hasAuthority(Role.SELLER.toString())
-				.requestMatchers("/api/admin/**").hasRole(Role.ADMIN.toString())
+//				.requestMatchers("/api/admin/**").hasRole(Role.ADMIN.toString())
 				
 				// Any other request must be authenticated
 				.anyRequest().authenticated().and()

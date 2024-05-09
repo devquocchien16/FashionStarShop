@@ -9,6 +9,8 @@ import com.group4.fashionstarshop.repository.PaymentMethodRepository;
 import com.group4.fashionstarshop.repository.UserRepository;
 import com.group4.fashionstarshop.service.PaymentMethodService;
 import lombok.RequiredArgsConstructor;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +32,8 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     @Autowired
     private final UserRepository userRepository;
 
-
+    @Autowired
+    private  ModelMapper modelMapper;
 
     @Override
     public List<PaymentMethodResponse> findPaymentMethod(Long userId) {
@@ -44,12 +47,14 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     @Override
-    public PaymentMethodResponse createPaymentMethod(PaymentMethodRequest paymentMethodRequest) {
-        PaymentMethod paymentMethod = paymentMethodConverter.convertToEntity(paymentMethodRequest);
-        User user = userRepository.findById(paymentMethodRequest.getUserId()).get();
-        paymentMethod.setUser(user);
+    public PaymentMethodResponse createPaymentMethod(Long userId,PaymentMethodRequest paymentMethodRequest) {
+        User user = userRepository.findById(userId) .orElseThrow();
+        
+    	PaymentMethod paymentMethod = modelMapper.map(paymentMethodRequest, PaymentMethod.class);
+
+    	paymentMethod.setUser(user);
         PaymentMethod paymentMethodNew = paymentMethodRepository.save(paymentMethod);
-        return paymentMethodConverter.convertToDto(paymentMethodNew);
+        return modelMapper.map(paymentMethodNew, PaymentMethodResponse.class);
     }
 
     @Override

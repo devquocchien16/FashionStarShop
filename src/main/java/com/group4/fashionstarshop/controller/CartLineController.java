@@ -20,45 +20,45 @@ import java.util.List;
 @RequestMapping("/api/cart-lines")
 @AllArgsConstructor
 public class CartLineController {
-//	@Autowired
-//    private CartLineService cartLineService;
-//	@Autowired
-//    private CartService cartService;
-//	@Autowired
-//    private UserService userService;
-//
-//
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<?> deleteCartLine(@PathVariable("id")Long cartLineId){
-//        cartLineService.removeCartLine(cartLineId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/add-to-cart")
-//    public ResponseEntity<CartLineDTO> addCartLine(@RequestBody CartLineRequest cartLineRequest){
-//        CartLineDTO cartLineDto = cartLineService.saveCartLine(cartLineRequest);
-//        return new ResponseEntity<>(cartLineDto ,HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getAllCartLines(@PathVariable("id") Long userId){
-//        User user = userService.findById(userId);
-//        Cart cart = cartService.findCartByUserId(user);
-//        List<CartLineDTO> cartLineDTOS = cartLineService.findCartLinesByCartId(cart.getId());
-//        return new ResponseEntity<>(cartLineDTOS,HttpStatus.OK);
-//    }
-//
-//    @PutMapping
-//    public ResponseEntity<?> updateCartLine(@RequestBody CartLineDTO cartLineDto) throws Exception {
-//        cartLineService.updateCartLine(cartLineDto, cartLineDto.getId());
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/delete-all/{id}")
-//    public ResponseEntity<?> deleteAllCartLine(@PathVariable("id") Long userId){
-//        User user = userService.findById(userId);
-//        Cart cart = cartService.findCartByUserId(user);
-//        cartLineService.removeAllCartLines(cart.getId());
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+	@Autowired
+    private CartLineService cartLineService;
+	@Autowired
+    private CartService cartService;
+	@Autowired
+    private UserService userService;
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteCartLine(@PathVariable("id")Long cartLineId){
+        cartLineService.removeCartLine(cartLineId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/add-to-cart")
+    public ResponseEntity<CartLineDTO> addCartLine(@RequestBody CartLineRequest cartLineRequest){
+        CartLineDTO cartLineDto = cartLineService.saveCartLine(cartLineRequest);
+        return new ResponseEntity<>(cartLineDto ,HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAllCartLines(@PathVariable("id") Long userId){
+        User user = userService.findById(userId);
+        Cart cart = cartService.findCartByUserId(user);
+        List<CartLineDTO> cartLineDTOS = cartLineService.findCartLinesByCartId(cart.getId());
+        return new ResponseEntity<>(cartLineDTOS,HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateCartLine(@RequestBody CartLineDTO cartLineDto) throws Exception {
+        cartLineService.updateCartLine(cartLineDto, cartLineDto.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete-all/{id}")
+    public ResponseEntity<?> deleteAllCartLine(@PathVariable("id") Long userId){
+        User user = userService.findById(userId);
+        Cart cart = cartService.findCartByUserId(user);
+        cartLineService.removeAllCartLines(cart.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -51,6 +51,7 @@ public class AddressConverterImpl implements AddressConverter {
 
     @Override
     public Address convertToEntity(AddressRequest addressRequest) {
+    	System.out.println(addressRequest);
         Address address = new Address();
         BeanUtils.copyProperties(addressRequest,address);
         return address;

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SaveForLaterConverterImpl implements SaveForLaterConverter {
@@ -28,15 +29,18 @@ public class SaveForLaterConverterImpl implements SaveForLaterConverter {
 
     @Autowired
     private VariantConverter variantConverter;
+    
+    @Autowired
+    private VariantService variantService;
 
     @Override
     public SaveForLater convertDtoToEntity(SaveForLaterDTO saveForLaterDto) {
         SaveForLater saveForLater = new SaveForLater();
         BeanUtils.copyProperties(saveForLaterDto, saveForLater);
         Cart cart = cartService.findById(saveForLaterDto.getCartDto().getId());
-     //   Variant variant = variantService.findById(saveForLaterDto.getVariantDto().getId());
+//        Variant variant = variantService.findById(saveForLaterDto.getVariantDto().getId());
         saveForLater.setCart(cart);
-      //  saveForLater.setVariant(variant);
+//        saveForLater.setVariant(variant);
         return saveForLater;
     }
 

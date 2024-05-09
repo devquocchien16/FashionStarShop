@@ -28,9 +28,7 @@ public class Address {
     private String city;
 
     private String street;
-    
     private boolean defaultAddress;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference(value = "user_address")

@@ -15,4 +15,6 @@ public class AddressResponse {
     private String ward;
     private String city;
     private String street;
+    private boolean defaultAddress;  
+
 }
