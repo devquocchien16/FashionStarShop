@@ -3,6 +3,7 @@ package com.group4.fashionstarshop.controller;
 import com.group4.fashionstarshop.dto.*;
 import com.group4.fashionstarshop.model.Product;
 import com.group4.fashionstarshop.model.ProductAttribute;
+import com.group4.fashionstarshop.model.Variant;
 import com.group4.fashionstarshop.request.FindVariantRequest;
 import com.group4.fashionstarshop.request.OptionRequest;
 import com.group4.fashionstarshop.request.ProductRequest;
@@ -44,17 +45,7 @@ public class ProductDetailController {
     }
 
     ProductDetailResponse productDetailResponse=new ProductDetailResponse();
-    VariantDetailResponse variantDetailResponse =new VariantDetailResponse();
-	
-
-//	@PostMapping("/{productId}/{variantId}")
-//	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
-//		@PathVariable("productId") Long productId,
-//	    @RequestBody FindVariantRequest request) {
-//	      VariantDTO variantDTO = variantService.getVariantIdByProductIdAndOptionValueIds(productId, request);
-//	        return ResponseEntity.ok(variantDTO);
-//	    }
-	
+    VariantDetailResponse variantDetailResponse =new VariantDetailResponse();	
     @GetMapping("/{product_id}/{variant_id}")
     public ResponseEntity<VariantDetailResponse> getVariant(@PathVariable("variant_id") Long variantId){
         List<ImageDTO> images = imageServiceImpl.getImageByVariantId(variantId);
@@ -83,4 +74,10 @@ public class ProductDetailController {
 	      VariantDTO variantDTO = variantService.getVariantIdByProductIdAndOptionValueIds(productId, request);
 	        return ResponseEntity.ok(variantDTO);
 	    }
+//	
+	@GetMapping("/variant/{variant_id}")
+    public ResponseEntity<VariantDTO> getVariantById(@PathVariable("variant_id") Long variant_id) {
+		VariantDTO variantDTO = variantService.getVariantById(variant_id);
+         return ResponseEntity.ok(variantDTO);
+    }
 }

@@ -15,5 +15,6 @@ public class ProductDetailResponse {
     private List<ProductAttributeDTO> productAttributeDTOList;
     private VariantDTO variantDto;
     private List<ReviewDTO> reviewDTOList;
+    
 }
  
