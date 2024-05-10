@@ -57,6 +57,7 @@ public class VariantServiceImpl implements VariantService {
 	private ImageConverter iImageConverter;
 	@Autowired
 	private ReviewService reviewService;
+
 	@Override
 	public VariantDTO updateVariant(VariantRequest variantRequest, Long variantId) {
 
@@ -235,35 +236,37 @@ public class VariantServiceImpl implements VariantService {
 	    Long matchingVariantId = findMatchingVariantId(variants, request.getOptionValueIds());
 	    VariantDTO variantDTO = new VariantDTO();
 	    variantDTO.setId(matchingVariantId);
-	    Variant variant = variantRepository.findById(matchingVariantId).orElse(null);    
-	    
+	    Variant variant = variantRepository.findById(matchingVariantId).orElse(null);
 	    return variantConverter.entityToDTO(variant);
 	}
 
 	private Long findMatchingVariantId(List<Variant> variants, List<Long> optionValueIds) {
-	    // Duyệt qua từng biến thể
-	    for (Variant variant : variants) {
-	        // Kiểm tra xem biến thể này có chứa tất cả các optionValueIds được yêu cầu hay không
-	        if (containsAllOptionValues(variant, optionValueIds)) {
-	            // Nếu có, trả về variant_id đầu tiên phù hợp
-	            return variant.getId();
-	        }
-	    }
-	    // Nếu không có biến thể phù hợp, trả về null hoặc ném một ngoại lệ tùy thuộc vào yêu cầu của bạn
-	    return null;
+		// Duyệt qua từng biến thể
+		for (Variant variant : variants) {
+			// Kiểm tra xem biến thể này có chứa tất cả các optionValueIds được yêu cầu hay
+			// không
+			if (containsAllOptionValues(variant, optionValueIds)) {
+				// Nếu có, trả về variant_id đầu tiên phù hợp
+				return variant.getId();
+			}
+		}
+		// Nếu không có biến thể phù hợp, trả về null hoặc ném một ngoại lệ tùy thuộc
+		// vào yêu cầu của bạn
+		return null;
 	}
 
 	private boolean containsAllOptionValues(Variant variant, List<Long> optionValueIds) {
-	    // Lấy danh sách các variantOptionValues của biến thể
-	    List<VariantOptionValue> variantOptionValues = variant.getVariantOptionValues();
-	    // Tạo danh sách để lưu trữ các optionValueIds của biến thể
-	    List<Long> variantOptionValueIds = new ArrayList<>();
-	    for (VariantOptionValue variantOptionValue : variantOptionValues) {
-	        variantOptionValueIds.add(variantOptionValue.getOption_value().getId());
-	    }
+		// Lấy danh sách các variantOptionValues của biến thể
+		List<VariantOptionValue> variantOptionValues = variant.getVariantOptionValues();
+		// Tạo danh sách để lưu trữ các optionValueIds của biến thể
+		List<Long> variantOptionValueIds = new ArrayList<>();
+		for (VariantOptionValue variantOptionValue : variantOptionValues) {
+			variantOptionValueIds.add(variantOptionValue.getOption_value().getId());
+		}
 
-	    // Kiểm tra xem danh sách optionValueIds của biến thể có chứa tất cả các optionValueIds được yêu cầu hay không
-	    return variantOptionValueIds.containsAll(optionValueIds);
+		// Kiểm tra xem danh sách optionValueIds của biến thể có chứa tất cả các
+		// optionValueIds được yêu cầu hay không
+		return variantOptionValueIds.containsAll(optionValueIds);
 	}
 
 	@Override
@@ -337,7 +340,10 @@ public class VariantServiceImpl implements VariantService {
 		}
 		return variantDTOs;
 	}
-
+	
+	
+	
+	
 		@Override
 		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
 		List<Variant> variants = variantRepository.findByProduct_Id(product_id);

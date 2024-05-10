@@ -25,43 +25,33 @@ public class SecurityConfiguration {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-//	@Bean
-//	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//		http.csrf().disable().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-//				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-//				.requestMatchers("/api/register/**", "/api/login/**", "/api/seller/**").permitAll()
-//				.requestMatchers("/api/products/**", "/api/cart-lines/**", "/api/cart/**", "/api/search/**","/api/store/seller/**",
-//						"/api/payments/**", "/api/save-for-later/**", "/api/stores/**", "/api/variant/**",
-//						"/api/image/**", "/api/product-detail/**", "/api/option-value/**", "/api/option/**", "/api/category/**",
-//						"/api/store-category/**", "/api/bullet/**", "/api/attribute/**",
-//						"/api/product-detail/**", "/api/admins/**", 
-//						"/api/products/**",
-//						
-//						"/api/payments/**", "/api/requestReset/**","/api/resetPassword/**","/api/chats/**")
-//				.permitAll()
-//				.requestMatchers(HttpMethod.GET, "/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**","api/admin/**").permitAll()
-//				.requestMatchers(HttpMethod.POST, "/api/chats/**","/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**","api/admin/**").permitAll()
-//				.requestMatchers("/api/users/**").hasRole(Role.USER.toString())
-//				.requestMatchers("/api/sellers/**").hasAuthority(Role.SELLER.toString())
-//				.requestMatchers("/api/admin/**").hasRole(Role.ADMIN.toString())
-//				
-//				// Any other request must be authenticated
-//				.anyRequest().authenticated().and()
-//				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//		return http.build();
-//	}
-	
-
-	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-				 .requestMatchers("/**").permitAll().and()
+				.requestMatchers("/api/register/**", "/api/login/**", "/api/seller/**").permitAll()
+				.requestMatchers("/api/products/**", "/api/cart-lines/**", "/api/cart/**", "/api/search/**",
+						"/api/payments/**", "/api/save-for-later/**", "/api/stores/**", "/api/variant/**",
+						"/api/image/**", "/api/product-detail/**", "/api/option-value/**", "/api/option/**", "/api/category/**",
+						"/api/store-category/**", "/api/bullet/**", "/api/attribute/**",
+						"/api/payments/**", "/api/password/**","/api/resetPassword/**","/api/chats/**","/api/admins/**")
+				.permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/chats/**","/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**").permitAll()
+				.requestMatchers("/api/users/**").hasRole(Role.USER.toString())
+				.requestMatchers("/api/sellers/**").hasAuthority(Role.SELLER.toString())
+				.requestMatchers("/api/admin/**").hasRole(Role.ADMIN.toString())
+				
+				// Any other request must be authenticated
+				.anyRequest().authenticated().and()
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
+	
+
+	
+	
+
 
 }

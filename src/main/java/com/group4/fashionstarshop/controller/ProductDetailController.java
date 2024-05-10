@@ -44,7 +44,7 @@ public class ProductDetailController {
     }
 
 
-	@PostMapping("/{productId}")
+	@PostMapping("/{productId}/{variantId}")
 	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
 		@PathVariable("productId") Long productId,
 	    @RequestBody FindVariantRequest request) {
