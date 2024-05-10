@@ -30,6 +30,10 @@ public class Category {
     private Long id;
     private String name;
     
+    @ManyToOne
+    @JoinColumn(name="parent_category_id")
+    private ParentCategory parentCategory;
+    
     @OneToMany(mappedBy = "category")
     private List<StoreCategory> storeCategories;
 

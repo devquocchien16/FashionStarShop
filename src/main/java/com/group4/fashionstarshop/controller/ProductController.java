@@ -25,7 +25,7 @@ import com.group4.fashionstarshop.service.VariantService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("api/products")
+@RequestMapping("/api/products")
 public class ProductController {
 	@Autowired
 	private ProductService productService;

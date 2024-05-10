@@ -1,5 +1,7 @@
 package com.group4.fashionstarshop.service.implement;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ public class StoreServiceImpl implements StoreService {
                 () -> new UsernameNotFoundException("seller not found"));
         Store store = new Store();
         store.setName(request.getName());
+        store.setDescription(request.getDescription());
         store.setDealsImage("https://m.media-amazon.com/images/S/al-na-9d5791cf-3faf/1f6cbd86-1e6a-42d5-bd7c-e137bfef3fc6._CR0%2C0%2C3000%2C600_SX1920_.jpg");
         store.setHomeImage("https://congluan-cdn.congluan.vn/files/dieulinh/2020/07/16/st2-0904.jpg");
         store.setDealsSquareImage("https://i.ytimg.com/vi/YczCAwQ3wgs/maxresdefault.jpg");
@@ -65,15 +68,27 @@ public class StoreServiceImpl implements StoreService {
 	    Store store = storeRepository.findById(storeId)
 	            .orElseThrow();
 	    // Thực hiện cập nhật thông tin từ request
-	    store.setEdittingName(request.getName());
-	    // Thêm các trường cần cập nhật khác tương tự ở đây	    
-	    // Lưu cập nhật vào cơ sở dữ liệu
+	    store.setEditingName(request.getName());
+	    store.setDescription(request.getDescription());
 	    store = storeRepository.save(store);
 
 	    // Chuyển đổi và trả về đối tượng StoreDTO đã được cập nhật
 	    return storeConverter.entityToDTO(store);
 	}
 
+
+	@Override
+	public List<StoreDTO> findInactiveStores() {
+	    List<Store> inactiveStores = storeRepository.findByStatus(false);
+	    return storeConverter.entitiesToDTOs(inactiveStores);
+	}
+
+
+	@Override
+	public List<StoreDTO> findStoreRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 

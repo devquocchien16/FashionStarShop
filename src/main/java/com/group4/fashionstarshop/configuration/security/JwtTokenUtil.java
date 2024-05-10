@@ -28,7 +28,7 @@ public class JwtTokenUtil {
 
     public static final long JWT_REFRESH_TOKEN_VALIDITY = 7*24*60*60;
 
-    @Value("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjBX5KgsnM0uEPoetqN5ffu8QoQHY2lOo3FzRvJ9XO9ks6zJ3/Z/tw4HsVEb0EBZUHks3Nbxb1ER0bY/PLtZPQ==")
+    @Value("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjBX5KgsnM0uEPoetqN5ffu8QoQHY2lOo3FzRvJ9XO9ks6zJ3OZsdtw4HsVEb0EBZUHks3Nbxb1ER0bYSLodsPLtZPQasdas")
     private String secret;
 
     public String getIdFromToken(String token) {
@@ -86,7 +86,7 @@ public class JwtTokenUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000))
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 

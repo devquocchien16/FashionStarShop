@@ -46,4 +46,10 @@ public class ImageServiceImpl implements ImageService {
         assert variant != null;
         return variant.getImages();
     }
+    @Override
+    public void deleteImageById(Long image_id) {
+        imageRepository.deleteById(image_id);;
+        
+    }
+    
 }

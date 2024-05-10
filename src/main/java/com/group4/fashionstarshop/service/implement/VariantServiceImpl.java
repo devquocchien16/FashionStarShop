@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +57,7 @@ public class VariantServiceImpl implements VariantService {
 	private ImageConverter iImageConverter;
 	@Autowired
 	private ReviewService reviewService;
+
 	@Override
 	public VariantDTO updateVariant(VariantRequest variantRequest, Long variantId) {
 
@@ -98,6 +100,7 @@ public class VariantServiceImpl implements VariantService {
 		for (List<OptionValue> combination : combinations) {
 			Variant variant = new Variant();
 			variant.setProduct(product);
+			variant.setSkuCode(generateRandomSkuCode());
 			variantRepository.save(variant);
 			for (OptionValue optionValue : combination) {
 				VariantOptionValue variantOptionValue = new VariantOptionValue();
@@ -123,6 +126,30 @@ public class VariantServiceImpl implements VariantService {
 		}
 	}
 
+	private String generateRandomSkuCode() {
+	    // Define characters for random digits
+	    String digits = "0123456789";
+	    // Define length of random digits
+	    int digitsLength = 6;
+
+	    // Create an instance of Random class
+	    Random random = new Random();
+
+	    // Generate random digits
+	    StringBuilder randomDigits = new StringBuilder();
+	    for (int i = 0; i < digitsLength; i++) {
+	        // Generate random index to pick a digit from the digits string
+	        int index = random.nextInt(digits.length());
+	        // Append randomly picked digit to the randomDigits string
+	        randomDigits.append(digits.charAt(index));
+	    }
+
+	    // Combine "SKU" with random digits
+	    String skuCode = "SKU" + randomDigits.toString();
+
+	    return skuCode;
+	}
+	
 	@Override
 	public List<VariantDTO> getVariantsByProductId(Long product_id) {
 		Product product = productRepository.findById(product_id)
@@ -214,29 +241,32 @@ public class VariantServiceImpl implements VariantService {
 	}
 
 	private Long findMatchingVariantId(List<Variant> variants, List<Long> optionValueIds) {
-	    // Duyệt qua từng biến thể
-	    for (Variant variant : variants) {
-	        // Kiểm tra xem biến thể này có chứa tất cả các optionValueIds được yêu cầu hay không
-	        if (containsAllOptionValues(variant, optionValueIds)) {
-	            // Nếu có, trả về variant_id đầu tiên phù hợp
-	            return variant.getId();
-	        }
-	    }
-	    // Nếu không có biến thể phù hợp, trả về null hoặc ném một ngoại lệ tùy thuộc vào yêu cầu của bạn
-	    return null;
+		// Duyệt qua từng biến thể
+		for (Variant variant : variants) {
+			// Kiểm tra xem biến thể này có chứa tất cả các optionValueIds được yêu cầu hay
+			// không
+			if (containsAllOptionValues(variant, optionValueIds)) {
+				// Nếu có, trả về variant_id đầu tiên phù hợp
+				return variant.getId();
+			}
+		}
+		// Nếu không có biến thể phù hợp, trả về null hoặc ném một ngoại lệ tùy thuộc
+		// vào yêu cầu của bạn
+		return null;
 	}
 
 	private boolean containsAllOptionValues(Variant variant, List<Long> optionValueIds) {
-	    // Lấy danh sách các variantOptionValues của biến thể
-	    List<VariantOptionValue> variantOptionValues = variant.getVariantOptionValues();
-	    // Tạo danh sách để lưu trữ các optionValueIds của biến thể
-	    List<Long> variantOptionValueIds = new ArrayList<>();
-	    for (VariantOptionValue variantOptionValue : variantOptionValues) {
-	        variantOptionValueIds.add(variantOptionValue.getOption_value().getId());
-	    }
+		// Lấy danh sách các variantOptionValues của biến thể
+		List<VariantOptionValue> variantOptionValues = variant.getVariantOptionValues();
+		// Tạo danh sách để lưu trữ các optionValueIds của biến thể
+		List<Long> variantOptionValueIds = new ArrayList<>();
+		for (VariantOptionValue variantOptionValue : variantOptionValues) {
+			variantOptionValueIds.add(variantOptionValue.getOption_value().getId());
+		}
 
-	    // Kiểm tra xem danh sách optionValueIds của biến thể có chứa tất cả các optionValueIds được yêu cầu hay không
-	    return variantOptionValueIds.containsAll(optionValueIds);
+		// Kiểm tra xem danh sách optionValueIds của biến thể có chứa tất cả các
+		// optionValueIds được yêu cầu hay không
+		return variantOptionValueIds.containsAll(optionValueIds);
 	}
 
 	@Override

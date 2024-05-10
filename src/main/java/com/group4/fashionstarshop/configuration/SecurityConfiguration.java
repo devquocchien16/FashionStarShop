@@ -51,14 +51,7 @@ public class SecurityConfiguration {
 	
 
 	
-//	@Bean
-//	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//		http.csrf().disable().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-//				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-//				 .requestMatchers("/**").permitAll().and()
-//				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//		return http.build();
-//	}
+	
+
 
 }

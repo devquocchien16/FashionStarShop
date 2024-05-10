@@ -15,12 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group4.fashionstarshop.dto.OptionTableDTO;
 import com.group4.fashionstarshop.dto.ProductDTO;
-import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.request.ProductRequest;
-import com.group4.fashionstarshop.service.OptionValueService;
 import com.group4.fashionstarshop.service.ProductService;
-import com.group4.fashionstarshop.service.VariantService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -36,11 +34,23 @@ public class ProductManageController {
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }  
     
+    @GetMapping("/{productId}/details/options")
+	public List<OptionTableDTO> getProductOptions(@PathVariable(name = "productId") Long productId) {
+		return productService.getOptionsByProductId(productId);
+	}
+    
+  	@PutMapping("/update/{product_id}")
+  	public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "product_id") Long product_id , @RequestBody ProductRequest request) {
+  		ProductDTO updatedProduct = productService.updateProduct(product_id, request);
   	@PutMapping("/{productId}/update")
   	public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "productId") Long productId , @RequestBody ProductRequest request) {
   		ProductDTO updatedProduct = productService.updateProduct(productId, request);
   		 return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-  	}
-  
+  	}  
+	@GetMapping("/details/{product_id}")
+  	public ResponseEntity<ProductDTO> getProductById(@PathVariable(name = "product_id") Long product_id) {
+  		ProductDTO productDTO = productService.getProductById(product_id);
+  		 return new ResponseEntity<>(productDTO, HttpStatus.OK);
+  	}  
 
 }
