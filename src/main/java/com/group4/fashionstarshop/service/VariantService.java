@@ -17,12 +17,11 @@ public interface VariantService {
 	VariantDTO createVariant(VariantRequest variantRequest, Long product_id);
 
 	List<VariantDTO> getVariantByProductId(Long product_id);
-
 	Variant findById(Long id);
 
 	Variant createVariant(VariantDTO variantDto, Long product_id);
 
-	VariantDTO getLowestPriceVariantByProductId(Long product_id);
+//	VariantDTO getLowestPriceVariantByProductId(Long product_id);
 
 	VariantDTO getVariantByProductPriceMin(Long product_id);
 

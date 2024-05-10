@@ -311,21 +311,21 @@ public class VariantServiceImpl implements VariantService {
 		return variantDTOs;
 	}
 
-		@Override
-		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
-		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
-		Variant minVariant = variants.get(0);
-		for (Variant variant : variants) {
-			if (variant.getSalePrice() < minVariant.getSalePrice()) {
-				minVariant = variant;
-			}
-		}
-		Variant variant = variantRepository.findById(minVariant.getId()).orElse(null);		
-		List<OptionValue> optionValue = optionValueRepository.findOptionValueById(product_id);
-		List<Image> images = minVariant.getImages();
-		
-		return variantConverter.entityToDTO(variant);
-		}
+//		@Override
+//		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
+//		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
+//		Variant minVariant = variants.get(0);
+//		for (Variant variant : variants) {
+//			if (variant.getSalePrice() < minVariant.getSalePrice()) {
+//				minVariant = variant;
+//			}
+//		}
+//		Variant variant = variantRepository.findById(minVariant.getId()).orElse(null);		
+//		List<OptionValue> optionValue = optionValueRepository.findOptionValueById(product_id);
+//		List<Image> images = minVariant.getImages();
+//		
+//		return variantConverter.entityToDTO(variant);
+//		}
 	@Override
 	public Variant findById(Long id) {
 		Variant variant = variantRepository.findById(id).orElse(null);
@@ -341,7 +341,7 @@ public class VariantServiceImpl implements VariantService {
 //				minVariant = variant;
 //			}
 //		}
-//		List<OptionValue> optionValueList = minVariant.VariantOptionValues();
+//		List<OptionValue> optionValueList = minVariant.getOptionValues();
 //		List<Image> images = minVariant.getImages();
 //		List<OptionValueDTO> optionValueDto = optionValueConverter.entitiesToDTOs(optionValueList);
 //		List<ImageDTO> imageDtoList = iImageConverter.entitiesToDTOs(images);
@@ -449,6 +449,8 @@ public class VariantServiceImpl implements VariantService {
 		return new PageImpl<>(sortedVariantDTOs, pageable, sortedVariantPage.getTotalElements());
 
 	}
+
+
 
 //	@Override
 //	public VariantDTO getVariantById(Long variantId) 

@@ -40,6 +40,8 @@ public class Variant {
     @OneToMany(mappedBy = "variant", cascade = CascadeType.REMOVE)
     private List<VariantOptionValue> variantOptionValues;
     
+
+    
     private String name;
 
     @OneToOne(mappedBy = "variant")

@@ -46,17 +46,6 @@ public class ProductDetailController {
 
     ProductDetailResponse productDetailResponse=new ProductDetailResponse();
     VariantDetailResponse variantDetailResponse =new VariantDetailResponse();	
-    @GetMapping("/{product_id}/{variant_id}")
-    public ResponseEntity<VariantDetailResponse> getVariant(@PathVariable("variant_id") Long variantId){
-        List<ImageDTO> images = imageServiceImpl.getImageByVariantId(variantId);
-        VariantDTO variantDto = variantServiceImpl.getVariantById(variantId);
-        List<OptionValueDTO> optionValueDTOList = optionValueServiceImpl.getOptionValuesByVariantId(variantId);
-        variantDetailResponse.setVariantDto(variantDto);
-        variantDetailResponse.setImageDTOS(images);
-        variantDetailResponse.setOptionValueDTOS(optionValueDTOList);
-        return ResponseEntity.ok(variantDetailResponse);
-    }
-    
 	@GetMapping("/{product_id}")
     public ResponseEntity<ProductDetailResponse> getProduct(@PathVariable("product_id") Long productId) {
         productDetailResponse.setProductDTO(productServiceImpl.getProductById(productId));
@@ -66,6 +55,16 @@ public class ProductDetailController {
         productDetailResponse.setProductAttributeDTOList(productAttributeServiceImpl.getProductAttributeByProductId(productId));
         return ResponseEntity.ok(productDetailResponse);
     }
+	 @GetMapping("/{product_id}/{variant_id}")
+	    public ResponseEntity<VariantDetailResponse> getVariant(@PathVariable("variant_id") Long variantId){
+	        List<ImageDTO> images = imageServiceImpl.getImageByVariantId(variantId);
+	        VariantDTO variantDto = variantServiceImpl.getVariantById(variantId);
+	        List<OptionValueDTO> optionValueDTOList = optionValueServiceImpl.getOptionValuesByVariantId(variantId);
+	        variantDetailResponse.setVariantDto(variantDto);
+	        variantDetailResponse.setImageDTOS(images);
+	        variantDetailResponse.setOptionValueDTOS(optionValueDTOList);
+	        return ResponseEntity.ok(variantDetailResponse);
+	    }
 
 	@PostMapping("/{productId}")
 	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
