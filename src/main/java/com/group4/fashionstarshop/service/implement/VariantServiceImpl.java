@@ -6,6 +6,7 @@ import com.group4.fashionstarshop.model.*;
 import com.group4.fashionstarshop.repository.*;
 import com.group4.fashionstarshop.request.FindVariantRequest;
 import com.group4.fashionstarshop.request.VariantRequest;
+import com.group4.fashionstarshop.service.AttributeService;
 import com.group4.fashionstarshop.service.ReviewService;
 import com.group4.fashionstarshop.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +58,12 @@ public class VariantServiceImpl implements VariantService {
 	private ImageConverter iImageConverter;
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private AttributeRepository attributeRepository;
+	
+	@Autowired
+	private AttributeConverter attributeConverter;
 
 	@Override
 	public VariantDTO updateVariant(VariantRequest variantRequest, Long variantId) {
@@ -99,6 +107,7 @@ public class VariantServiceImpl implements VariantService {
 		for (List<OptionValue> combination : combinations) {
 			Variant variant = new Variant();
 			variant.setProduct(product);
+			variant.setSkuCode(generateRandomSkuCode());
 			variantRepository.save(variant);
 			for (OptionValue optionValue : combination) {
 				VariantOptionValue variantOptionValue = new VariantOptionValue();
@@ -124,6 +133,30 @@ public class VariantServiceImpl implements VariantService {
 		}
 	}
 
+	private String generateRandomSkuCode() {
+	    // Define characters for random digits
+	    String digits = "0123456789";
+	    // Define length of random digits
+	    int digitsLength = 6;
+
+	    // Create an instance of Random class
+	    Random random = new Random();
+
+	    // Generate random digits
+	    StringBuilder randomDigits = new StringBuilder();
+	    for (int i = 0; i < digitsLength; i++) {
+	        // Generate random index to pick a digit from the digits string
+	        int index = random.nextInt(digits.length());
+	        // Append randomly picked digit to the randomDigits string
+	        randomDigits.append(digits.charAt(index));
+	    }
+
+	    // Combine "SKU" with random digits
+	    String skuCode = "SKU" + randomDigits.toString();
+
+	    return skuCode;
+	}
+	
 	@Override
 	public List<VariantDTO> getVariantsByProductId(Long product_id) {
 		Product product = productRepository.findById(product_id)
@@ -174,7 +207,8 @@ public class VariantServiceImpl implements VariantService {
 		List<Image> imageList = variant.getImages();
 		List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(imageList);
 		List<ReviewDTO> reviewList = reviewService.getReviewsByVariantId(variant.getId());
-
+		
+		
 		// Convert Variant to VariantDTO
 		VariantDTO variantDTO = variantConverter.entityToDTO(variant);
 
@@ -184,6 +218,14 @@ public class VariantServiceImpl implements VariantService {
 		variantDTO.setReviewDTOList(reviewList);
 		//get and set productDTO
 		Product product = variant.getProduct();
+		
+		
+		List<Attribute> attributeList = product.getAttributes();
+		List<AttributeDTO> attributeDTOList = attributeConverter.entitiesToDTOs(attributeList);
+		
+		variantDTO.setAttributeDTOList(attributeDTOList);
+		
+		
 		variantDTO.setProductDTO(productConverter.entityToDTO(product));
 		
 
@@ -315,21 +357,21 @@ public class VariantServiceImpl implements VariantService {
 		return variantDTOs;
 	}
 
-		@Override
-		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
-		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
-		Variant minVariant = variants.get(0);
-		for (Variant variant : variants) {
-			if (variant.getSalePrice() < minVariant.getSalePrice()) {
-				minVariant = variant;
-			}
-		}
-		Variant variant = variantRepository.findById(minVariant.getId()).orElse(null);		
-		List<OptionValue> optionValue = optionValueRepository.findOptionValueById(product_id);
-		List<Image> images = minVariant.getImages();
-		
-		return variantConverter.entityToDTO(variant);
-		}
+//		@Override
+//		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
+//		List<Variant> variants = variantRepository.findByProduct_Id(product_id);
+//		Variant minVariant = variants.get(0);
+//		for (Variant variant : variants) {
+//			if (variant.getSalePrice() < minVariant.getSalePrice()) {
+//				minVariant = variant;
+//			}
+//		}
+//		Variant variant = variantRepository.findById(minVariant.getId()).orElse(null);		
+//		List<OptionValue> optionValue = optionValueRepository.findOptionValueById(product_id);
+//		List<Image> images = minVariant.getImages();
+//		
+//		return variantConverter.entityToDTO(variant);
+//		}
 	@Override
 	public Variant findById(Long id) {
 		Variant variant = variantRepository.findById(id).orElse(null);
@@ -345,7 +387,7 @@ public class VariantServiceImpl implements VariantService {
 //				minVariant = variant;
 //			}
 //		}
-//		List<OptionValue> optionValueList = minVariant.VariantOptionValues();
+//		List<OptionValue> optionValueList = minVariant.getOptionValues();
 //		List<Image> images = minVariant.getImages();
 //		List<OptionValueDTO> optionValueDto = optionValueConverter.entitiesToDTOs(optionValueList);
 //		List<ImageDTO> imageDtoList = iImageConverter.entitiesToDTOs(images);
@@ -453,6 +495,8 @@ public class VariantServiceImpl implements VariantService {
 		return new PageImpl<>(sortedVariantDTOs, pageable, sortedVariantPage.getTotalElements());
 
 	}
+
+
 
 //	@Override
 //	public VariantDTO getVariantById(Long variantId) 

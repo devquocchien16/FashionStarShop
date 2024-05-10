@@ -30,7 +30,8 @@ public class ProductDetailController {
     private final ProductAttributeService productAttributeServiceImpl;
     private final VariantService variantServiceImpl;
     private final OptionValueService optionValueServiceImpl;
-    
+    @Autowired
+    private ProductService productService;  
     @Autowired
     public ProductDetailController(ImageService imageServiceImpl,
                                            ProductService productServiceImpl,
@@ -46,17 +47,6 @@ public class ProductDetailController {
 
     ProductDetailResponse productDetailResponse=new ProductDetailResponse();
     VariantDetailResponse variantDetailResponse =new VariantDetailResponse();	
-    @GetMapping("/{product_id}/{variant_id}")
-    public ResponseEntity<VariantDetailResponse> getVariant(@PathVariable("variant_id") Long variantId){
-        List<ImageDTO> images = imageServiceImpl.getImageByVariantId(variantId);
-        VariantDTO variantDto = variantServiceImpl.getVariantById(variantId);
-        List<OptionValueDTO> optionValueDTOList = optionValueServiceImpl.getOptionValuesByVariantId(variantId);
-        variantDetailResponse.setVariantDto(variantDto);
-        variantDetailResponse.setImageDTOS(images);
-        variantDetailResponse.setOptionValueDTOS(optionValueDTOList);
-        return ResponseEntity.ok(variantDetailResponse);
-    }
-    
 	@GetMapping("/{product_id}")
     public ResponseEntity<ProductDetailResponse> getProduct(@PathVariable("product_id") Long productId) {
         productDetailResponse.setProductDTO(productServiceImpl.getProductById(productId));
@@ -66,6 +56,16 @@ public class ProductDetailController {
         productDetailResponse.setProductAttributeDTOList(productAttributeServiceImpl.getProductAttributeByProductId(productId));
         return ResponseEntity.ok(productDetailResponse);
     }
+	 @GetMapping("/{product_id}/{variant_id}")
+	    public ResponseEntity<VariantDetailResponse> getVariant(@PathVariable("variant_id") Long variantId){
+	        List<ImageDTO> images = imageServiceImpl.getImageByVariantId(variantId);
+	        VariantDTO variantDto = variantServiceImpl.getVariantById(variantId);
+	        List<OptionValueDTO> optionValueDTOList = optionValueServiceImpl.getOptionValuesByVariantId(variantId);
+	        variantDetailResponse.setVariantDto(variantDto);
+	        variantDetailResponse.setImageDTOS(images);
+	        variantDetailResponse.setOptionValueDTOS(optionValueDTOList);
+	        return ResponseEntity.ok(variantDetailResponse);
+	    }
 
 	@PostMapping("/{productId}")
 	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
@@ -74,10 +74,24 @@ public class ProductDetailController {
 	      VariantDTO variantDTO = variantService.getVariantIdByProductIdAndOptionValueIds(productId, request);
 	        return ResponseEntity.ok(variantDTO);
 	    }
-//	
+
+//	@PostMapping("/{productId}/{variantId}")
+//	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
+//		@PathVariable("productId") Long productId,
+//	    @RequestBody FindVariantRequest request) {
+//	      VariantDTO variantDTO = variantService.getVariantIdByProductIdAndOptionValueIds(productId, request);
+//	        return ResponseEntity.ok(variantDTO);
+//	    }
+	
+	@GetMapping("/{productId}/details/options")
+	public List<OptionTableDTO> getProductOptions(@PathVariable(name = "productId") Long productId) {
+		return productService.getOptionsByProductId(productId);
+	}
+	
+	//dung de lay variant detail
 	@GetMapping("/variant/{variant_id}")
     public ResponseEntity<VariantDTO> getVariantById(@PathVariable("variant_id") Long variant_id) {
 		VariantDTO variantDTO = variantService.getVariantById(variant_id);
          return ResponseEntity.ok(variantDTO);
-    }
+	}
 }

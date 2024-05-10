@@ -70,9 +70,8 @@ public class StoreServiceImpl implements StoreService {
 	    Store store = storeRepository.findById(storeId)
 	            .orElseThrow();
 	    // Thực hiện cập nhật thông tin từ request
-	    store.setEdittingName(request.getName());
-	    // Thêm các trường cần cập nhật khác tương tự ở đây	    
-	    // Lưu cập nhật vào cơ sở dữ liệu
+	    store.setEditingName(request.getName());
+	    store.setDescription(request.getDescription());
 	    store = storeRepository.save(store);
 
 	    // Chuyển đổi và trả về đối tượng StoreDTO đã được cập nhật
@@ -90,6 +89,19 @@ public class StoreServiceImpl implements StoreService {
 	            return store;
  }
 
+
+	@Override
+	public List<StoreDTO> findInactiveStores() {
+	    List<Store> inactiveStores = storeRepository.findByStatus(false);
+	    return storeConverter.entitiesToDTOs(inactiveStores);
+	}
+
+
+	@Override
+	public List<StoreDTO> findStoreRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 

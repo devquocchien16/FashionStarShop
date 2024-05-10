@@ -18,4 +18,12 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query("SELECT s FROM Store s WHERE s.id = :store_id")
     Optional<Store> findByStoreId(Long store_id);
+	@Query("SELECT s FROM Store s WHERE s.editingName IS NOT NULL")
+	List<Store> findByEditingNameIsNotNull();
+	
+	@Query("SELECT s FROM Store s WHERE s.status = false")
+	List<Store> findByStatusFalse();
+	
+	@Query("SELECT s FROM Store s WHERE s.status = true")
+	List<Store> findByStatusTrue();
  }

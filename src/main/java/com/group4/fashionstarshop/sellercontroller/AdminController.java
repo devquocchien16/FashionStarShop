@@ -47,6 +47,9 @@ import com.group4.fashionstarshop.request.StoreNameProcessRequest;
 import com.group4.fashionstarshop.request.StoreRequest;
 import com.group4.fashionstarshop.service.AdminService;
 import com.group4.fashionstarshop.service.AttributeService;
+import com.group4.fashionstarshop.service.ProductService;
+import com.group4.fashionstarshop.service.StoreService;
+
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -111,11 +114,16 @@ public class AdminController {
 	        Category createdCategory = adminService.createCategory(categoryRequest);
 	        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
 	    }
-	    
-    @PostMapping("/{store_id}/process")
-    public ResponseEntity<StoreResponse> processStoreRequest(@RequestBody StoreNameProcessRequest request, @PathVariable("store_id") Long store_id) {
-    	StoreResponse storeResponse = adminService.processStoreRequest( request,store_id);
-        return new ResponseEntity<>(storeResponse, HttpStatus.CREATED);
+
+    @GetMapping("/admins/users/search")
+    public List<UserEnabledDTO> searchUsersByName(@RequestParam String keyword) {
+        List<UserEnabledDTO> users = adminService.searchUsersByNameOrEmail(keyword);
+        return users;
+    }
+    @GetMapping("/admins/sellers/search")
+    public List<SellerEnabledDTO> searchSellersByName(@RequestParam String keyword) {
+        List<SellerEnabledDTO> users = adminService.searchUsersBySellerNameOrEmail(keyword);
+        return users;
     }
     @GetMapping("/users/search")
     public List<UserEnabledDTO> searchUsersByName(@RequestParam String keyword) {

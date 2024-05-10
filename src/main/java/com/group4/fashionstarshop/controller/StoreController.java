@@ -69,7 +69,6 @@ public class StoreController {
         return new ResponseEntity<>(storeDto, HttpStatus.OK);
     }     
 
-
     @GetMapping("/{store_id}/products")
     public ResponseEntity<List<ProductDTO>> getProductsByStore(@PathVariable("store_id") Long storeId){
         List<ProductDTO> productDTOList = productService.getAllProductDtosByStore(storeId);

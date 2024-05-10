@@ -34,11 +34,13 @@ public class VariantUserController {
 	        this.variantService = variantService;
 	    }	
 
-	    @GetMapping("/{productId}")
-	    public ResponseEntity<VariantDTO> getVariantById(@PathVariable("productId")Long variantId){
+	    @GetMapping("/{variantId}")
+	    public ResponseEntity<VariantDTO> getVariantById(@PathVariable("variantId")Long variantId){
 	        VariantDTO variantDTO = variantService.getVariantById(variantId);
 	        return new ResponseEntity<>(variantDTO, HttpStatus.OK);
 	    }
+	    
+	 
 	    
 //	    @GetMapping("/{productId}")
 //	    public ResponseEntity<VariantDTO> getVariantById(@PathVariable("productId")Long productId){

@@ -23,9 +23,10 @@ public class VariantDTO {
     private String img;
     private Boolean isDeleted;
     private ProductDTO productDTO;   
+    
     private List<OptionValueDTO> optionValueDTOList;
     private List<ImageDTO> imageDTOList;
     private List<ReviewDTO> reviewDTOList; 
-     
+    private List<AttributeDTO> attributeDTOList; 
     
 }

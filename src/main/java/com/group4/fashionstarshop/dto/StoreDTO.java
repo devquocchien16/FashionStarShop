@@ -13,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class StoreDTO {
     private Long id;
-    private String name;
-    private boolean status;
+    private String name;   
+    private String description; 
+    private String editingName;
     private List<StoreCategoryDTO> storeCategoryDTOs;
 }

@@ -6,4 +6,5 @@ import lombok.Data;
 public class StoreRequest {
     private String name;
     private String evidence;
+    private String description;
 }

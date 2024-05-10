@@ -106,4 +106,14 @@ public class SellerProfileController {
         return ResponseEntity.ok("Mật khẩu đã được thay đổi thành công");
 
 	}
+	 @GetMapping("/{seller_id}")
+    public ResponseEntity<SellerDTO> getUser(@PathVariable("seller_id") Long sellerId){    
+        SellerDTO sellerDTO = sellerService.findSeller(sellerId);
+        return ResponseEntity.ok(sellerDTO);
+    }
+    @PostMapping("/update/{seller_id}")
+    public ResponseEntity<SellerDTO> updateSeller(@PathVariable("seller_id") Long sellerId, @RequestBody UpdateSellerRequest request){
+    	SellerDTO sellerDTO = sellerService.updateSeller(sellerId, request);
+        return ResponseEntity.ok(sellerDTO);
+    }
 }
