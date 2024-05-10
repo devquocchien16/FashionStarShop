@@ -22,14 +22,12 @@ public class Store {
     private Long id;
     private String name;
     private String logo;
-    private String homeImage;
-    private String dealsImage;
-    private String dealsSquareImage;
-    private String interactiveImage;
+    private String evidence;
     private String edittingName;
     private boolean status;
     private String adminReply;
-    
+    private boolean type;
+    private String rejectedReason;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
     @JsonBackReference(value = "store_seller")
@@ -46,4 +44,9 @@ public class Store {
     @OneToMany(mappedBy = "store")
     @JsonManagedReference(value = "store_order")
     private List<Order> orderList;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    @JsonBackReference(value = "store_address")
+    private Address address;
 }

@@ -19,9 +19,11 @@ import com.group4.fashionstarshop.dto.ImageConfirmDTO;
 import com.group4.fashionstarshop.dto.ProductConfirmDTO;
 import com.group4.fashionstarshop.dto.SellerEnabledDTO;
 import com.group4.fashionstarshop.dto.UserEnabledDTO;
+import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.dto.VariantImageDTO;
 import com.group4.fashionstarshop.model.Admin;
 import com.group4.fashionstarshop.model.Category;
+import com.group4.fashionstarshop.model.Store;
 import com.group4.fashionstarshop.model.User;
 import com.group4.fashionstarshop.request.UserIdsWrapper;
 import com.group4.fashionstarshop.request.UserRequest;
@@ -32,6 +34,7 @@ import com.group4.fashionstarshop.dto.AttributeDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.StoreEnableDTO;
 import com.group4.fashionstarshop.dto.StoreEnabledDTO;
+import com.group4.fashionstarshop.dto.StoreRegisterDTO;
 import com.group4.fashionstarshop.dto.UserDTO;
 import com.group4.fashionstarshop.payload.StoreResponse;
 import com.group4.fashionstarshop.repository.AdminRepository;
@@ -39,6 +42,7 @@ import com.group4.fashionstarshop.repository.UserRepository;
 import com.group4.fashionstarshop.request.AttributeRequest;
 import com.group4.fashionstarshop.request.CategoryRequest;
 import com.group4.fashionstarshop.request.ProductConfirmRequest;
+import com.group4.fashionstarshop.request.StoreDeclinedRequest;
 import com.group4.fashionstarshop.request.StoreNameProcessRequest;
 import com.group4.fashionstarshop.request.StoreRequest;
 import com.group4.fashionstarshop.service.AdminService;
@@ -48,7 +52,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3001")
-@RequestMapping("api")
+@RequestMapping("api/admins")
 public class AdminController {
 	@Autowired
 	private AdminService adminService;
@@ -58,19 +62,19 @@ public class AdminController {
 	private UserRepository userRepository;
 	@Autowired
 	private AdminConverter adminConverter;
-	   @GetMapping("/admins/{admin_id}")
+	   @GetMapping("/{admin_id}")
 	    public ResponseEntity<AdminDTO> getUser(@PathVariable("admin_id") Long adminId){
 	        Admin admin = adminRepository.findById(adminId)
 	                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	        AdminDTO adminDTO = adminConverter.convertEntityToDTO(admin);
 	        return ResponseEntity.ok(adminDTO);
 	    }
-	  @GetMapping("/admins/users")
+	  @GetMapping("/users")
 	    public ResponseEntity<List<UserEnabledDTO>> getUsers() {
 	        List<UserEnabledDTO> userEnabled = adminService.listUsers();
 	        return new ResponseEntity<>(userEnabled, HttpStatus.OK);
 	    }
-	  @GetMapping("/admins/sellers")
+	  @GetMapping("/sellers")
 	    public ResponseEntity<List<SellerEnabledDTO>> getSellers() {
 	        List<SellerEnabledDTO> userEnabled = adminService.listSellers();
 	        return new ResponseEntity<>(userEnabled, HttpStatus.OK);
@@ -80,54 +84,54 @@ public class AdminController {
 //	        List<StoreEnableDTO> userEnabled = adminService.listStores();
 //	        return new ResponseEntity<>(userEnabled, HttpStatus.OK);
 //	    }
-	  	@PutMapping("/admins/block/users")
+	  	@PutMapping("/block/users")
 	    public void blockUsers(@RequestParam List<Long> ids) {
 	        adminService.blockUsers(ids);
 	    }
-		@PutMapping("/admins/unblock/users")
+		@PutMapping("/unblock/users")
 	    public void unblockUsers(@RequestParam List<Long> ids) {
 	        adminService.unblockUsers(ids);
 	    }
-		@PutMapping("/admins/block/sellers")
+		@PutMapping("/block/sellers")
 	    public void blockSellers(@RequestParam List<Long> ids) {
 	        adminService.blockSellers(ids);
 	    }
-		@PutMapping("/admins/unblock/sellers")
+		@PutMapping("/unblock/sellers")
 	    public void unblockSellers(@RequestParam List<Long> ids) {
 	        adminService.unblockSellers(ids);
 	    }
-	    @GetMapping("/admins/categories")
+	    @GetMapping("/categories")
 	    public ResponseEntity<List<CategoryDTO>> getCategories(){
 	    	List<CategoryDTO> categoryDTOs = adminService.getCategories();
 	    	return new ResponseEntity<>(categoryDTOs, HttpStatus.OK);
 	    }
 	    
-	    @PostMapping("/admins/categories")
+	    @PostMapping("/categories")
 	    public ResponseEntity<Category> createCategory(@RequestBody CategoryRequest categoryRequest) {
 	        Category createdCategory = adminService.createCategory(categoryRequest);
 	        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
 	    }
 	    
-    @PostMapping("/admins/{store_id}/process")
+    @PostMapping("/{store_id}/process")
     public ResponseEntity<StoreResponse> processStoreRequest(@RequestBody StoreNameProcessRequest request, @PathVariable("store_id") Long store_id) {
     	StoreResponse storeResponse = adminService.processStoreRequest( request,store_id);
         return new ResponseEntity<>(storeResponse, HttpStatus.CREATED);
     }
-    @GetMapping("/admins/users/search")
+    @GetMapping("/users/search")
     public List<UserEnabledDTO> searchUsersByName(@RequestParam String keyword) {
         List<UserEnabledDTO> users = adminService.searchUsersByNameOrEmail(keyword);
         return users;
     }
-    @GetMapping("/admins/sellers/search")
+    @GetMapping("/sellers/search")
     public List<SellerEnabledDTO> searchSellersByName(@RequestParam String keyword) {
         List<SellerEnabledDTO> users = adminService.searchUsersBySellerNameOrEmail(keyword);
         return users;
     }
-    @GetMapping("/admins/stores")
-    public List<StoreDTO> findStoreStatusFalse(){
+    @GetMapping("/stores")
+    public List<StoreRegisterDTO> findStoreStatusFalse(){
     	return adminService.findInactiveStores();
     }
-    @PostMapping("/admins/stores/{store_id}/confirm")
+    @PostMapping("/stores/{store_id}/confirm")
     public ResponseEntity<StoreEnabledDTO> confirmStoreRequest(@RequestBody StoreEnabledDTO storeRequest, @PathVariable("store_id") Long storeId) {
         try {
             StoreEnabledDTO confirmedStore = adminService.confirmStoreRequest(storeRequest, storeId);
@@ -136,11 +140,12 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @GetMapping("/admins/products")
+ 
+    @GetMapping("/products")
     public List<ProductConfirmDTO> findProductsStatusFalse(){
     	return adminService.findProductInActive();
     }
-    @PostMapping("/admins/products/{product_id}/confirm")
+    @PostMapping("/products/{product_id}/confirm")
     public ResponseEntity<ProductConfirmRequest> confirmProductRequest(@RequestBody ProductConfirmRequest request, @PathVariable("product_id") Long productId) {
         try {
             ProductConfirmRequest confirmedProduct = adminService.confirmProductRequest(request, productId);
@@ -150,20 +155,29 @@ public class AdminController {
         }
     }
     
-    @GetMapping("/admins/variants/{variant_id}/images")
+    @GetMapping("/variants/{variant_id}/images")
     public List<ImageConfirmDTO> listImagesOfVariant(@PathVariable("variant_id") Long variantId){
         return adminService.listImagesOfVariant(variantId);
     }
-    @PostMapping("/admins/variants/{variant_id}/confirmAllImages")
+    @PostMapping("/variants/{variant_id}/confirmAllImages")
     public void confirmAllImagesOfVariant(@PathVariable("variant_id") Long variantId) {
         adminService.confirmAllImagesOfVariant(variantId);
     }
-    @GetMapping("/admins/variants")
+    @GetMapping("/variants")
     public List<VariantImageDTO> getAllVariantsConfirm() {
         return adminService.getAllVarriantsConfirm();
     }
-    @GetMapping("/admins/users/count/enabled")
+    @GetMapping("/users/count/enabled")
     public Long countEnabledUsers() {
         return userRepository.countByEnabled(true);
+    }
+    @GetMapping("/product/{product_id}/variants")
+    public ResponseEntity<List<VariantImageDTO>> getVariantsByProductId(@PathVariable("product_id") Long productId) {
+        List<VariantImageDTO> variants = adminService.getVariantsByProductId(productId);
+        if (variants.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(variants, HttpStatus.OK);
+        }
     }
 }

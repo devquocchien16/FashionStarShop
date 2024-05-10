@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.group4.fashionstarshop.converter.StoreCategoryConverter;
 import com.group4.fashionstarshop.converter.StoreConverter;
 import com.group4.fashionstarshop.dto.StoreDTO;
+import com.group4.fashionstarshop.dto.StoreRegisterDTO;
 import com.group4.fashionstarshop.model.Store;
 
 @Component
@@ -42,6 +43,23 @@ public class StoreConverterImpl implements StoreConverter {
 	@Override
 	public List<StoreDTO> entitiesToDTOs(List<Store> element) {
 		return element.stream().map(this::entityToDTO).collect(Collectors.toList());
+	}
+
+	@Override
+	public StoreRegisterDTO convertToDto(Store store) {
+		StoreRegisterDTO storeRegisterDTO = new StoreRegisterDTO();
+        storeRegisterDTO.setId(store.getId());
+        storeRegisterDTO.setName(store.getName());
+        storeRegisterDTO.setLogo(store.getLogo());
+        storeRegisterDTO.setEvidence(store.getEvidence());
+        storeRegisterDTO.setEdittingName(store.getEdittingName());
+        storeRegisterDTO.setStatus(store.isStatus());
+        storeRegisterDTO.setAdminReply(store.getAdminReply());
+        storeRegisterDTO.setType(store.isType());
+        storeRegisterDTO.setRejectedReason(store.getRejectedReason());
+        // Các bước khác cần thiết để chuyển đổi đối tượng Seller thành SellerDTO nếu cần
+
+        return storeRegisterDTO;
 	}
  
 }

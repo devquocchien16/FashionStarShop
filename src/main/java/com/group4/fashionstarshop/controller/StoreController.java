@@ -42,6 +42,7 @@ import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
 import com.group4.fashionstarshop.request.AddStoreRequest;
+import com.group4.fashionstarshop.request.StoreDeclinedRequest;
 import com.group4.fashionstarshop.service.ProductService;
 import com.group4.fashionstarshop.service.StoreCategoryService;
 import com.group4.fashionstarshop.service.StoreService;
@@ -95,5 +96,10 @@ public class StoreController {
         return new ResponseEntity<>(storeDto, HttpStatus.OK);
     }   
 
-
+    //của admin để decline store
+    @PostMapping("/admins/{store_id}/decline")
+    public ResponseEntity<Void> declinedStoreRequest(@RequestBody StoreDeclinedRequest storeRequest, @PathVariable("store_id") Long storeId) {
+        storeService.declinedStoreRequest(storeRequest, storeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -30,6 +30,7 @@ import com.group4.fashionstarshop.dto.SellerEnabledDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.StoreEnableDTO;
 import com.group4.fashionstarshop.dto.StoreEnabledDTO;
+import com.group4.fashionstarshop.dto.StoreRegisterDTO;
 import com.group4.fashionstarshop.dto.UserDTO;
 import com.group4.fashionstarshop.dto.UserEnabledDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
@@ -54,6 +55,7 @@ import com.group4.fashionstarshop.repository.AdminRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
 import com.group4.fashionstarshop.request.CategoryRequest;
 import com.group4.fashionstarshop.request.ProductConfirmRequest;
+import com.group4.fashionstarshop.request.StoreDeclinedRequest;
 import com.group4.fashionstarshop.request.StoreNameProcessRequest;
 import com.group4.fashionstarshop.request.StoreRequest;
 import com.group4.fashionstarshop.request.UserRequest;
@@ -274,7 +276,7 @@ public class AdminServiceImpl implements AdminService {
 					return userEnabledDTO;
 				}).collect(Collectors.toList());
 	}
-
+	
 	@Override
 	public List<UserEnabledDTO> searchUsersByName(String clientName) {
 		List<User> users = userRepository.findByClientNameContainingIgnoreCase(clientName);
@@ -310,9 +312,39 @@ public class AdminServiceImpl implements AdminService {
         userDTO.setPhone(seller.getPhone());
         return userDTO;
     }
-	public List<StoreDTO> findInactiveStores() {
+	
+	public List<StoreRegisterDTO> findInactiveStores() {
 	    List<Store> inactiveStores = storeRepository.findByStatus(false);
-	    return storeConverter.entitiesToDTOs(inactiveStores);
+	    
+	    List<StoreRegisterDTO> inactiveStoreDTOs = new ArrayList<>();
+
+	    for (Store store : inactiveStores) {
+	        StoreRegisterDTO storeDTO = new StoreRegisterDTO();
+	        // Gán các thuộc tính từ store vào storeDTO
+	        storeDTO.setId(store.getId());
+	        storeDTO.setName(store.getName());
+	        storeDTO.setLogo(store.getLogo());
+	        storeDTO.setEvidence(store.getEvidence());
+	        storeDTO.setEdittingName(store.getEdittingName());
+	        storeDTO.setStatus(store.isStatus());
+	        storeDTO.setAdminReply(store.getAdminReply());
+	        storeDTO.setType(store.isType());
+	        storeDTO.setRejectedReason(store.getRejectedReason());
+	        // Khởi tạo và gán SellerDTO nếu có
+	        if (store.getSeller() != null) {
+	            SellerDTO sellerDTO = new SellerDTO();
+	            // Gán các thuộc tính từ Seller vào sellerDTO
+	            sellerDTO.setId(store.getSeller().getId());
+	            sellerDTO.setSellerName(store.getSeller().getSellerName());
+	            // Gán sellerDTO cho storeDTO
+	            storeDTO.setSellerDTO(sellerDTO);
+	        }
+	        // Thêm storeDTO vào danh sách kết quả
+	        inactiveStoreDTOs.add(storeDTO);
+	    }
+
+	    return inactiveStoreDTOs;
+	    
 	}
 	@Override
 	public StoreEnabledDTO confirmStoreRequest(StoreEnabledDTO storeRequest, Long store_id) {
@@ -328,6 +360,8 @@ public class AdminServiceImpl implements AdminService {
 	    result.setStatus(store.isStatus());
 	    return result;	
 	 }
+
+	
 	public List<ProductConfirmDTO> findProductInActive(){
 	    List<Product> products = productRepository.findByStatus(false);
 	    List<ProductConfirmDTO> productConfirmDTOs = new ArrayList<>();
@@ -447,4 +481,44 @@ public class AdminServiceImpl implements AdminService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public List<VariantImageDTO> getVariantsByProductId(Long productId) {
+        List<Variant> variants = variantRepository.findVariantsByProductId(productId);
+        List<VariantImageDTO> variantDTOs = variants.stream().map(this::mapToVariantImageDTO).collect(Collectors.toList());
+        return variantDTOs;
+    }
+
+    private VariantImageDTO mapToVariantImageDTO(Variant variant) {
+        VariantImageDTO variantImageDTO = new VariantImageDTO();
+        variantImageDTO.setId(variant.getId());
+        variantImageDTO.setSkuCode(variant.getSkuCode());
+        variantImageDTO.setStockQuantity(variant.getStockQuantity());
+        variantImageDTO.setWeight(variant.getWeight());
+        variantImageDTO.setName(variant.getName());
+        variantImageDTO.setPrice(variant.getPrice());
+        variantImageDTO.setSalePrice(variant.getSalePrice());
+        variantImageDTO.setImg(variant.getImg());
+
+        // Mapping ProductDTO
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(variant.getProduct().getId());
+        productDTO.setTitle(variant.getProduct().getTitle());
+        // Thêm các trường khác nếu cần thiết
+        variantImageDTO.setProductDTO(productDTO);
+
+        // Mapping ImageDTOList
+        List<ImageConfirmDTO> imageDTOList = variant.getImages().stream()
+                .map(image -> {
+                    ImageConfirmDTO imageDTO = new ImageConfirmDTO();
+                    imageDTO.setId(image.getId());
+                    imageDTO.setImgPath(image.getImgPath());
+                    imageDTO.setStatus(image.isStatus());
+                    return imageDTO;
+                })
+                .collect(Collectors.toList());
+        variantImageDTO.setImageDTOList(imageDTOList);
+
+        // Mapping OptionValueDTOList và ReviewDTOList tương tự
+
+        return variantImageDTO;
+    }
 }
