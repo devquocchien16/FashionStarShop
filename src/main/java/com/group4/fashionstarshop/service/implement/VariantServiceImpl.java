@@ -6,6 +6,7 @@ import com.group4.fashionstarshop.model.*;
 import com.group4.fashionstarshop.repository.*;
 import com.group4.fashionstarshop.request.FindVariantRequest;
 import com.group4.fashionstarshop.request.VariantRequest;
+import com.group4.fashionstarshop.service.AttributeService;
 import com.group4.fashionstarshop.service.ReviewService;
 import com.group4.fashionstarshop.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,12 @@ public class VariantServiceImpl implements VariantService {
 	private ImageConverter iImageConverter;
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private AttributeRepository attributeRepository;
+	
+	@Autowired
+	private AttributeConverter attributeConverter;
 
 	@Override
 	public VariantDTO updateVariant(VariantRequest variantRequest, Long variantId) {
@@ -200,7 +207,8 @@ public class VariantServiceImpl implements VariantService {
 		List<Image> imageList = variant.getImages();
 		List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(imageList);
 		List<ReviewDTO> reviewList = reviewService.getReviewsByVariantId(variant.getId());
-
+		
+		
 		// Convert Variant to VariantDTO
 		VariantDTO variantDTO = variantConverter.entityToDTO(variant);
 
@@ -210,6 +218,14 @@ public class VariantServiceImpl implements VariantService {
 		variantDTO.setReviewDTOList(reviewList);
 		//get and set productDTO
 		Product product = variant.getProduct();
+		
+		
+		List<Attribute> attributeList = product.getAttributes();
+		List<AttributeDTO> attributeDTOList = attributeConverter.entitiesToDTOs(attributeList);
+		
+		variantDTO.setAttributeDTOList(attributeDTOList);
+		
+		
 		variantDTO.setProductDTO(productConverter.entityToDTO(product));
 		
 

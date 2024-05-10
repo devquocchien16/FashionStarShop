@@ -102,12 +102,7 @@ public class AdminController {
 	        Category createdCategory = adminService.createCategory(categoryRequest);
 	        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
 	    }
-	    
-    @PostMapping("/admins/{store_id}/process")
-    public ResponseEntity<StoreResponse> processStoreRequest(@RequestBody StoreNameProcessRequest request, @PathVariable("store_id") Long store_id) {
-    	StoreResponse storeResponse = adminService.processStoreRequest( request,store_id);
-        return new ResponseEntity<>(storeResponse, HttpStatus.CREATED);
-    }
+
     @GetMapping("/admins/users/search")
     public List<UserEnabledDTO> searchUsersByName(@RequestParam String keyword) {
         List<UserEnabledDTO> users = adminService.searchUsersByNameOrEmail(keyword);
