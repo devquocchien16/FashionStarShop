@@ -15,5 +15,6 @@ public class StoreDTO {
     private Long id;
     private String name;   
     private String description; 
+    private String editingName;
     private List<StoreCategoryDTO> storeCategoryDTOs;
 }

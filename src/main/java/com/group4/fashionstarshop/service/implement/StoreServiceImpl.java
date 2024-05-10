@@ -1,5 +1,7 @@
 package com.group4.fashionstarshop.service.implement;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -66,7 +68,7 @@ public class StoreServiceImpl implements StoreService {
 	    Store store = storeRepository.findById(storeId)
 	            .orElseThrow();
 	    // Thực hiện cập nhật thông tin từ request
-	    store.setEdittingName(request.getName());
+	    store.setEditingName(request.getName());
 	    store.setDescription(request.getDescription());
 	    store = storeRepository.save(store);
 
@@ -74,6 +76,19 @@ public class StoreServiceImpl implements StoreService {
 	    return storeConverter.entityToDTO(store);
 	}
 
+
+	@Override
+	public List<StoreDTO> findInactiveStores() {
+	    List<Store> inactiveStores = storeRepository.findByStatus(false);
+	    return storeConverter.entitiesToDTOs(inactiveStores);
+	}
+
+
+	@Override
+	public List<StoreDTO> findStoreRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 

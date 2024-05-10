@@ -34,6 +34,8 @@ public interface ProductService {
 		List<OptionTableDTO> getProductOptions(Long productId);
 		ProductDTO updateProduct(Long productId, ProductRequest request);
 		Product updateProduct(ProductRequest productDto);
+		//for admin
+		public List<ProductDTO> findProductRequest();
 
 
 //     Page<ProductDTO> getAllProduct(String category, String store, Integer minPrice, Integer maxPrice, Integer pageNumber, Integer pageSize);

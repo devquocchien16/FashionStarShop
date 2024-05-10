@@ -1,6 +1,8 @@
 package com.group4.fashionstarshop.sellercontroller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group4.fashionstarshop.dto.OptionTableDTO;
 import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.request.ProductRequest;
 import com.group4.fashionstarshop.service.ProductService;
@@ -30,6 +33,11 @@ public class ProductManageController {
     	ProductDTO createdProduct = productService.createProduct(productRequest, storeId);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }  
+    
+    @GetMapping("/{productId}/details/options")
+	public List<OptionTableDTO> getProductOptions(@PathVariable(name = "productId") Long productId) {
+		return productService.getOptionsByProductId(productId);
+	}
     
   	@PutMapping("/update/{product_id}")
   	public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "product_id") Long product_id , @RequestBody ProductRequest request) {

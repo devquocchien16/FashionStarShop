@@ -26,8 +26,8 @@ public class Variant {
     private double price;
     private double salePrice;
     private String img;
-    private Boolean isDeleted; 
-
+    private Boolean isDeleted;    
+    
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonBackReference(value = "product_variant")
@@ -56,5 +56,7 @@ public class Variant {
     @OneToMany(mappedBy = "variant")
     @JsonManagedReference(value = "variant_orderItem")
     private List<OrderItem> orderItemList;
+    
+    private String variantPicture;
 }
 

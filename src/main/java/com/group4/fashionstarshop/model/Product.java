@@ -23,11 +23,13 @@ public class Product {
     private String title;
     private String description;
     private String mainPicture;
+    
+    @OneToMany(mappedBy = "product")
+    private List<Image> imageList;
     private String status;
     private Date createAt;
-    private Date updatedAt;   
+    private Date updatedAt;  
     
-
     @ManyToOne
     @JoinColumn (name = "category_id")
     @JsonBackReference(value = "product_category")
@@ -59,7 +61,8 @@ public class Product {
     @JsonManagedReference(value = "product_bulletList")
     private List<Bullet> bulletList;
 
-  
+       
+   
 
 
 }

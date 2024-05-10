@@ -235,7 +235,8 @@ public class VariantServiceImpl implements VariantService {
 	    Long matchingVariantId = findMatchingVariantId(variants, request.getOptionValueIds());
 	    VariantDTO variantDTO = new VariantDTO();
 	    variantDTO.setId(matchingVariantId);
-	    Variant variant = variantRepository.findById(matchingVariantId).orElse(null);
+	    Variant variant = variantRepository.findById(matchingVariantId).orElse(null);    
+	    
 	    return variantConverter.entityToDTO(variant);
 	}
 
@@ -336,10 +337,7 @@ public class VariantServiceImpl implements VariantService {
 		}
 		return variantDTOs;
 	}
-	
-	
-	
-	
+
 		@Override
 		public VariantDTO getLowestPriceVariantByProductId(Long product_id) {
 		List<Variant> variants = variantRepository.findByProduct_Id(product_id);

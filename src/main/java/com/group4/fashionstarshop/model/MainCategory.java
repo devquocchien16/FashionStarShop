@@ -23,22 +23,14 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@Table(name = "CATEGORY")
-public class Category {
+@Table(name = "main_category")
+public class MainCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     
-    @ManyToOne
-    @JoinColumn(name="parent_category_id")
-    private ParentCategory parentCategory;
-    
-    @OneToMany(mappedBy = "category")
-    private List<StoreCategory> storeCategories;
-
-    @JsonManagedReference(value = "product_category")
-    @OneToMany( mappedBy = "category")
-    private List<Product> products;    
+    @OneToMany(mappedBy = "mainCategory")
+    private List<ParentCategory> parentCategories;   
     
 }

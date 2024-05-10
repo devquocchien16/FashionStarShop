@@ -23,5 +23,6 @@ public interface AdminService {
 	public void blockUsers(List<Long> ids);
 	Category createCategory(CategoryDTO categoryDTO);
 	List<CategoryDTO> getCategories();
-	StoreResponse processStoreRequest(StoreNameProcessRequest request, Long store_id);
+	void processStoreRequest(StoreNameProcessRequest request, Long store_id);
+	AdminDTO finById(Long admin_id);
 }

@@ -131,22 +131,24 @@ public class AdminServiceImpl implements AdminService{
 	}
 	//process change store name
 	@Override
-	public StoreResponse processStoreRequest(StoreNameProcessRequest request, Long store_id) {
+	public void processStoreRequest(StoreNameProcessRequest request, Long store_id) {
 		Store store = storeRepository.findById(store_id).orElse(null);
-		if("OK".equals(request.getStatus())) {
-			store.setName(store.getEdittingName());
-			store.setEdittingName(null);
+		if("APPROVE".equals(request.getStatus())) {
+			store.setName(store.getEditingName());
+			store.setStatus(true);
 		}
 		else {
 			store.setAdminReply(request.getReason());
-		}
-		
-		storeRepository.save(store);
-		System.out.println(store.getName());
-		StoreResponse response = new StoreResponse();
-		response.setReason(request.getReason());
-		response.setStoreDTO(storeConverter.entityToDTO(store));
-		return response;
+			store.setEditingName(null);
+		}		
+	}
+	@Override
+	public AdminDTO finById(Long admin_id) {
+		Admin admin = adminRepository.findById(admin_id).orElseThrow(null);
+		AdminDTO adminDTO = new AdminDTO();
+		adminDTO.setEmail(admin.getEmail());
+		adminDTO.setPassword(admin.getPassword());
+		return adminDTO;
 	}
 
 }

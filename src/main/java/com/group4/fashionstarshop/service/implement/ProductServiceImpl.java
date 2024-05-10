@@ -4,7 +4,9 @@ import com.group4.fashionstarshop.converter.*;
 import com.group4.fashionstarshop.converter.impl.ProductConverterImpl;
 import com.group4.fashionstarshop.dto.*;
 import com.group4.fashionstarshop.model.*;
+import com.group4.fashionstarshop.payload.ProductResponse;
 import com.group4.fashionstarshop.repository.CategoryRepository;
+import com.group4.fashionstarshop.repository.ImageRepository;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreCategoryRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,6 +50,11 @@ public class ProductServiceImpl implements ProductService {
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private ProductConverterImpl productConverterImpl;
+	
+	@Autowired
+	private ImageRepository imageRepository;
+	@Autowired
+	private ImageConverter imageConverter;
 
 @Autowired
 private StoreCategoryConverter storeCategoryConverter;
@@ -78,16 +86,41 @@ private StoreCategoryConverter storeCategoryConverter;
 
 	@Override
 	public ProductDTO createProduct(ProductRequest productRequest, Long storeId) {
-		Store store = storeRepository.findById(storeId).orElse(new Store());
-		StoreCategory storeCategory = storeCategoryRepository.findById(productRequest.getStoreCategoryId())
-				.orElse(new StoreCategory());
-		Product product = new Product();
-		product = productConverter.dtoToEntity(productRequest);
-		product.setStore(store);
-		product.setMainPicture(productRequest.getMainPicture());
-		product.setStoreCategory(storeCategory);
-		Product newProduct = productRepository.save(product);
-		return productConverter.entityToDTO(newProduct);
+	    // Retrieve the Store entity
+	    Store store = storeRepository.findById(storeId).orElseThrow(() -> new EntityNotFoundException("Store not found"));
+
+	    // Retrieve the StoreCategory entity
+	    StoreCategory storeCategory = storeCategoryRepository.findById(productRequest.getStoreCategoryId())
+	            .orElseThrow(() -> new EntityNotFoundException("Store category not found"));
+
+	    // Create a new Product entity
+	    Product product = new Product();
+	    product.setTitle(productRequest.getTitle());
+	    product.setDescription(productRequest.getDescription());
+	    product.setMainPicture(productRequest.getMainPicture());
+	    product.setStatus(productRequest.getStatus());
+	    product.setCreateAt(new Date());
+	    product.setUpdatedAt(new Date());
+	    product.setStore(store);
+	    product.setStoreCategory(storeCategory);
+	    productRepository.save(product);
+	    
+	    // Create Image entities for each image URL and associate them with the product
+	    List<Image> imageList = new ArrayList<>();
+	    for (String imageURL : productRequest.getImageList()) {
+	        Image image = new Image();
+	        image.setImgPath(imageURL);
+	        image.setProduct(product);
+	        imageList.add(image);
+	        imageRepository.save(image);	        
+	    }
+	    product.setImageList(imageList);
+
+	    // Save the product entity
+	    Product newProduct = productRepository.save(product);
+
+	    // Convert the saved Product entity to a ProductDTO
+	    return productConverter.entityToDTO(newProduct);
 	}
 
 	@Override
@@ -125,12 +158,13 @@ private StoreCategoryConverter storeCategoryConverter;
 	 @Override
 	    public ProductDTO getProductById(Long id) {
 	        Product product = productRepository.findById(id).orElse(new Product()) ;
-//	        List<Bullet> bullets = product.getBulletList();
-//	        List<BulletDTO> bulletDTOList = bulletConverter.entitiesToDTOs(bullets);
+	        List<Image> images = product.getImageList();
+	        List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(images);
 	       	        
-	        ProductDTO productDto = productConverterImpl.entityToDTO(product);	    
-	        productDto.setStoreCategoryId(product.getStoreCategory().getId());
-	        return productDto;
+	        ProductDTO productDTO = productConverterImpl.entityToDTO(product);	    
+	        productDTO.setStoreCategoryId(product.getStoreCategory().getId());
+	        productDTO.setImageList(imageDTOList);	        
+	        return productDTO;
 	    }
 
 	    @Override
@@ -241,6 +275,13 @@ private StoreCategoryConverter storeCategoryConverter;
 	    public void deleteProduct(Long productId) {
 	        productRepository.deleteById(productId);
 	    }
+
+
+		@Override
+		public List<ProductDTO> findProductRequest() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 
 	}

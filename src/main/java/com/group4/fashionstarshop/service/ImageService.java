@@ -10,4 +10,6 @@ public interface ImageService {
     public List<ImageDTO> getImageByVariantId(Long variant_id);
 
     public List<Image> createImage(List<ImageDTO> imageDtos, Long variant_id);
+
+	void deleteImageById(Long image_id);
 }
