@@ -19,7 +19,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String imgPath;
-
+    private boolean status;
     @ManyToOne
     @JoinColumn(name = "variant_id")
     @JsonBackReference(value = "variant_image")

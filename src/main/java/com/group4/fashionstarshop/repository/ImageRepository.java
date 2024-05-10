@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface ImageRepository extends JpaRepository<Image,Long> {
     List<Image> findImagesByVariant_Id(Long id) ;
+
+	List<Image> findByStatus(boolean b);
 }

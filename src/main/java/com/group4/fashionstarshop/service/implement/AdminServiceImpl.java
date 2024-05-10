@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,28 +21,45 @@ import com.group4.fashionstarshop.converter.StoreConverter;
 import com.group4.fashionstarshop.dto.AdminDTO;
 import com.group4.fashionstarshop.dto.AdminRegister;
 import com.group4.fashionstarshop.dto.CategoryDTO;
+import com.group4.fashionstarshop.dto.ImageConfirmDTO;
+import com.group4.fashionstarshop.dto.ImageDTO;
+import com.group4.fashionstarshop.dto.ProductConfirmDTO;
+import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.SellerDTO;
 import com.group4.fashionstarshop.dto.SellerEnabledDTO;
+import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.StoreEnableDTO;
+import com.group4.fashionstarshop.dto.StoreEnabledDTO;
 import com.group4.fashionstarshop.dto.UserDTO;
 import com.group4.fashionstarshop.dto.UserEnabledDTO;
+import com.group4.fashionstarshop.dto.VariantDTO;
+import com.group4.fashionstarshop.dto.VariantImageDTO;
 import com.group4.fashionstarshop.enums.Role;
 import com.group4.fashionstarshop.model.Admin;
 import com.group4.fashionstarshop.model.Category;
+import com.group4.fashionstarshop.model.Image;
+import com.group4.fashionstarshop.model.Product;
 import com.group4.fashionstarshop.model.Seller;
 import com.group4.fashionstarshop.model.User;
+import com.group4.fashionstarshop.model.Variant;
 import com.group4.fashionstarshop.repository.CategoryRepository;
+import com.group4.fashionstarshop.repository.ImageRepository;
+import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.SellerRepository;
 import com.group4.fashionstarshop.repository.UserRepository;
+import com.group4.fashionstarshop.repository.VariantRepository;
 import com.group4.fashionstarshop.model.Store;
 import com.group4.fashionstarshop.payload.StoreResponse;
 import com.group4.fashionstarshop.repository.AdminRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
 import com.group4.fashionstarshop.request.CategoryRequest;
+import com.group4.fashionstarshop.request.ProductConfirmRequest;
 import com.group4.fashionstarshop.request.StoreNameProcessRequest;
 import com.group4.fashionstarshop.request.StoreRequest;
 import com.group4.fashionstarshop.request.UserRequest;
 import com.group4.fashionstarshop.service.AdminService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -62,10 +80,14 @@ public class AdminServiceImpl implements AdminService {
 	private SellerRepository sellerRepository;
 	@Autowired
 	private StoreRepository storeRepository;
-
+	@Autowired
+	private ProductRepository productRepository;
 	@Autowired
 	private StoreConverter storeConverter;
-
+	@Autowired
+	private ImageRepository imageRepository;
+	@Autowired
+	private VariantRepository variantRepository;
 	@Override
 	public String login(AdminDTO adminDto) {
 		Admin admin = adminRepository.findByEmail(adminDto.getEmail());
@@ -288,4 +310,141 @@ public class AdminServiceImpl implements AdminService {
         userDTO.setPhone(seller.getPhone());
         return userDTO;
     }
+	public List<StoreDTO> findInactiveStores() {
+	    List<Store> inactiveStores = storeRepository.findByStatus(false);
+	    return storeConverter.entitiesToDTOs(inactiveStores);
+	}
+	@Override
+	public StoreEnabledDTO confirmStoreRequest(StoreEnabledDTO storeRequest, Long store_id) {
+	    Store store = storeRepository.findByStoreId(store_id).orElse(null);
+	    System.out.println("Find id: " + store.getName() + "Name: "+ store.getName());
+	    store.setStatus(true);
+	    storeRepository.save(store);
+
+	    System.out.println("Store Confirm: " + store.isStatus() + store.getName());
+	    
+	    StoreEnabledDTO result = new StoreEnabledDTO();
+	    result.setName(store.getName());
+	    result.setStatus(store.isStatus());
+	    return result;	
+	 }
+	public List<ProductConfirmDTO> findProductInActive(){
+	    List<Product> products = productRepository.findByStatus(false);
+	    List<ProductConfirmDTO> productConfirmDTOs = new ArrayList<>();
+
+	    for (Product product : products) {
+	        ProductConfirmDTO productConfirmDTO = new ProductConfirmDTO();
+	        productConfirmDTO.setId(product.getId());
+	        productConfirmDTO.setTitle(product.getTitle());
+	        productConfirmDTO.setDescription(product.getDescription());
+	        productConfirmDTO.setMainPicture(product.getMainPicture());
+	        productConfirmDTO.setCreateAt(product.getCreateAt());
+	        productConfirmDTO.setStatus(product.isStatus());
+
+	        StoreDTO storeDTO = new StoreDTO();
+	        storeDTO.setName(product.getStore().getName());
+
+	        productConfirmDTO.setStoreDTO(storeDTO);
+
+	        productConfirmDTOs.add(productConfirmDTO);
+	    }
+
+	    return productConfirmDTOs;
+		
+	}
+	public ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id) {
+		Product product = productRepository.findById(product_id).orElse(null);
+		product.setStatus(true);
+		product.setAdminReply(productRequest.getAdminReply());
+		
+		productRepository.save(product);
+		
+		ProductConfirmRequest request = new ProductConfirmRequest();
+		request.setTitle(product.getTitle());
+		request.setMainPicture(product.getMainPicture());
+		request.setDescription(product.getDescription());
+		request.setCreateAt(product.getCreateAt());
+		request.setStatus(product.isStatus());
+		request.setAdminReply(product.getAdminReply());
+		return request;
+	}
+	public List<VariantImageDTO> getAllVarriantsConfirm(){
+	    // Lấy tất cả các biến thể từ cơ sở dữ liệu
+        List<Variant> variants = variantRepository.findAll();
+        
+        // Chuyển đổi các biến thể thành đối tượng VariantDTO
+        List<VariantImageDTO> variantDTOs = new ArrayList<>();
+        for (Variant variant : variants) {
+        	VariantImageDTO variantDTO = new VariantImageDTO();
+            variantDTO.setId(variant.getId());
+            variantDTO.setName(variant.getName());
+            variantDTO.setPrice(variant.getPrice());
+            variantDTO.setSkuCode(variant.getSkuCode());
+            
+
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setId(variant.getProduct().getId());
+            productDTO.setTitle(variant.getProduct().getTitle());
+            // Các thuộc tính khác của ProductDTO
+            variantDTO.setProductDTO(productDTO);
+            
+            // Thêm thông tin về List<ImageDTO>
+            List<ImageConfirmDTO> imageDTOList = new ArrayList<>();
+            for (Image image : variant.getImages()) {
+            	ImageConfirmDTO imageDTO = new ImageConfirmDTO();
+                imageDTO.setId(image.getId());
+                imageDTO.setImgPath(image.getImgPath());
+                imageDTO.setStatus(image.isStatus());
+                imageDTOList.add(imageDTO);
+            }
+            variantDTO.setImageDTOList(imageDTOList);
+            
+            variantDTOs.add(variantDTO);
+        }
+        
+        return variantDTOs;
+    
+	}
+	public List<ImageConfirmDTO> listImagesOfVariant(Long variant_id){
+		List<Image> inActiveImages = imageRepository.findImagesByVariant_Id(variant_id);
+	    List<ImageConfirmDTO> imageConfirmDTOs = new ArrayList<>();
+	    
+	    for (Image image : inActiveImages) {
+	        ImageConfirmDTO imageConfirmDTO = new ImageConfirmDTO();
+	        // Copy properties from Image to ImageConfirmDTO
+	        imageConfirmDTO.setId(image.getId());
+	        imageConfirmDTO.setImgPath(image.getImgPath());
+	        imageConfirmDTO.setStatus(image.isStatus());
+	        // Copy other properties as needed
+	        
+	        imageConfirmDTOs.add(imageConfirmDTO);
+	    }
+	    
+	    return imageConfirmDTOs;
+		
+	}
+	public void confirmImages(List<ImageConfirmDTO> imageConfirmDTOs) {
+        for (ImageConfirmDTO imageConfirmDTO : imageConfirmDTOs) {
+            if (imageConfirmDTO.isStatus()) { // Kiểm tra trạng thái true
+                Image image = imageRepository.findById(imageConfirmDTO.getId()).orElse(null);
+                if (image != null) {
+                    image.setStatus(true); // Xác nhận hình ảnh
+                    imageRepository.save(image);
+                }
+            }
+        }
+    }
+	 public void confirmAllImagesOfVariant(Long variantId) {
+	        List<Image> images = imageRepository.findImagesByVariant_Id(variantId);
+	        for (Image image : images) {
+	            image.setStatus(true);
+	        }
+	        imageRepository.saveAll(images);
+	    }
+
+	@Override
+	public List<StoreDTO> searchStoreName(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

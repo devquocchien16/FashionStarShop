@@ -21,6 +21,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     List<Product> findAllByStore(Store store);
     List<Product> findAllByStoreCategory(StoreCategory storeCategory);
+	List<Product> findByStatus(boolean b);
 
 }
 

@@ -13,19 +13,18 @@ import org.springframework.context.annotation.Bean;
 import com.group4.fashionstarshop.dto.OrderDTO;
 import com.group4.fashionstarshop.model.Order;
 
-
 @SpringBootApplication
-public class FashionStarShopApplication{
+public class FashionStarShopApplication {
 
-	
 	public static void main(String[] args) {
 		SpringApplication.run(FashionStarShopApplication.class, args);
 	}
-	 @Bean
-	    public ModelMapper modelMapper() {
-	        ModelMapper modelMapper = new ModelMapper();
-	   
-	        return modelMapper;
 
-}
+	@Bean
+	public ModelMapper modelMapper() {
+		ModelMapper modelMapper = new ModelMapper();
+
+		return modelMapper;
+
+	}
 }

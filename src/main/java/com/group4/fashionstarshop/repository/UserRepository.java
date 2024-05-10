@@ -15,6 +15,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 	@Query("SELECT u FROM User u WHERE u.id IN :ids")
     List<User> findAllByIdsIn(List<Long> ids);
 	Optional<User> findById(Long id);
+	Long countByEnabled(boolean enabled);
     Optional<User> findOneByEmail(String email);
     @Query("SELECT u FROM User u WHERE u.clientName = :clientName")
     Optional <User> findUsersByClientName(String clientName);

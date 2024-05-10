@@ -23,11 +23,10 @@ public class Product {
     private String title;
     private String description;
     private String mainPicture;
-    private String status;
+    private boolean status;
     private Date createAt;
     private Date updatedAt;   
-    
-
+    private String adminReply;
     @ManyToOne
     @JoinColumn (name = "category_id")
     @JsonBackReference(value = "product_category")
