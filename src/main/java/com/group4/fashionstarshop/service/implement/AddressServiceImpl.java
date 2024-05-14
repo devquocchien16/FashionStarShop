@@ -55,36 +55,25 @@ public class AddressServiceImpl implements AddressService {
 	        return modelMapper.map(savedAddress, AddressDTO.class);
 	    }	
 
-	@Override
-	public AddressDTO createSellerAddress(Long seller_id, AddressRequest request) {
-		 Seller seller = sellerRepository.findById(seller_id)
-	                .orElseThrow();
-	        // Create Address entity from AddressRequest
-	        Address address = modelMapper.map(request, Address.class);
-	        // Associate the address with the user
-	        address.setSeller(seller);
-	        // Save the address
-	        Address savedAddress = addressRepository.save(address);       
-
-	        // Convert the saved address entity to AddressDTO
-	        return modelMapper.map(savedAddress, AddressDTO.class);
-	}	
+//	@Override
+//	public AddressDTO createSellerAddress(Long seller_id, AddressRequest request) {
+//		 Seller seller = sellerRepository.findById(seller_id)
+//	                .orElseThrow();
+//	        // Create Address entity from AddressRequest
+//	        Address address = modelMapper.map(request, Address.class);
+//	        // Associate the address with the user
+//	        address.setSeller(seller);
+//	        // Save the address
+//	        Address savedAddress = addressRepository.save(address);       
+//
+//	        // Convert the saved address entity to AddressDTO
+//	        return modelMapper.map(savedAddress, AddressDTO.class);
+//	}	
 
 	@Override
 	public AddressDTO updateAddress(Long address_id, AddressRequest addressRequest) {
-	    Address address = addressRepository.findById(address_id).orElseThrow();
-	    
-	    // Kiểm tra nếu địa chỉ hiện tại không phải là defaultAddress
-	    if (!address.isDefaultAddress()) {
-	        // Cập nhật tất cả các địa chỉ khác của người bán (seller) thành không phải là defaultAddress
-	        List<Address> sellerAddresses = addressRepository.findBySeller(address.getSeller());
-	        for (Address sellerAddress : sellerAddresses) {
-	            if (sellerAddress.getId() != address_id) {
-	                sellerAddress.setDefaultAddress(false);
-	                addressRepository.save(sellerAddress);
-	            }
-	        }
-	        
+	    Address address = addressRepository.findById(address_id).orElseThrow();    
+		        
 	        // Đặt địa chỉ mới làm defaultAddress
 	        address.setDistrict(addressRequest.getDistrict());
 	        address.setWard(addressRequest.getWard());
@@ -93,21 +82,11 @@ public class AddressServiceImpl implements AddressService {
 	        address.setDefaultAddress(true);
 	        
 	        Address addressNew = addressRepository.save(address);
-	        return addressConverter.entityToDTO(addressNew);
-	    }
-	    
-	    // Nếu địa chỉ đã là defaultAddress, không cần thực hiện bất kỳ thay đổi nào
-	    return addressConverter.entityToDTO(address);
+	        return addressConverter.entityToDTO(addressNew);     
 	}
 
 
-	@Override
-	public List<AddressDTO> getSellerAddress(Long seller_id) {
-		 Seller seller = sellerRepository.findById(seller_id)
-	                .orElseThrow();
-		  List<Address> addressList = addressRepository.findBySeller(seller);
-		  return addressConverter.entitiesToDTOs(addressList);
-	}
+
 
 	@Override
 	public void deleteAddress(Long address_id) {

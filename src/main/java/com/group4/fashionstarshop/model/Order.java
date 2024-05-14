@@ -60,7 +60,6 @@ public class Order {
     @JoinColumn(name = "shipping_method_id")
     private ShippingMethod shippingMethod;
 
-    
     @OneToMany(mappedBy = "shop_order")    
     @JsonManagedReference(value = "order_orderItem")
     private List<OrderItem> orderItemList;

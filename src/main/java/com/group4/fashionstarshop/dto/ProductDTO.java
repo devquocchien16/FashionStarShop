@@ -18,11 +18,10 @@ public class ProductDTO {
     private Long id;
     private String title;
     private String description;
-    private String mainPicture;
-    private List<ImageDTO> imageList;
+    private String mainPicture;   
     private String status;
     private Date createAt;
     private Date updatedAt;
-    private StoreDTO store;
-    private Long storeCategoryId; 
+    private StoreDTO store;    
+   
 }

@@ -25,15 +25,8 @@ public class Image {
     @JsonBackReference(value = "variant_image")
     private Variant variant;
     
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    @JsonBackReference(value = "product_image")
-    private Product product;
-
-    @ManyToOne
-    @JoinColumn(name="store_category_id")
-    @JsonBackReference(value = "storeCategory_image")
-    private StoreCategory storeCategory;
+ 
+    private boolean status;
 
 
 

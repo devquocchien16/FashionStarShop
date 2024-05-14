@@ -24,21 +24,17 @@ public class Product {
     private String description;
     private String mainPicture;
     
-    @OneToMany(mappedBy = "product")
-    private List<Image> imageList;
-    private String status;
+    
+    private boolean status;
+    private boolean needcheck;
     private Date createAt;
     private Date updatedAt;  
     
     @ManyToOne
     @JoinColumn (name = "category_id")
     @JsonBackReference(value = "product_category")
-    private Category category;
-    
-    @ManyToOne
-    @JoinColumn(name ="store_category_id")
-    @JsonBackReference(value = "product_storeCategory")
-    private StoreCategory storeCategory;
+    private Category category;   
+  
 
     @ManyToOne
     @JoinColumn(name="store_id")

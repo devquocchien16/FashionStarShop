@@ -37,8 +37,7 @@ public class Seller {
     private Double balance;
     @Column(name = "phone")
     private String phone;
-    @Column(name = "birthday")
-    private Date birthDay;
+
     private boolean enabled;
     @Column(name = "role")
     private String role;

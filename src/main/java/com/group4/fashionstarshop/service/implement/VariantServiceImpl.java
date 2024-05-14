@@ -69,6 +69,23 @@ public class VariantServiceImpl implements VariantService {
 		variant.setSalePrice(variantRequest.getSalePrice());
 		variant.setIsDeleted(variantRequest.getIsDeleted());
 
+		  // Create Image entities for each image URL and associate them with the product
+	    List<Image> imageList = new ArrayList<>();
+	    for (String imageURL : variantRequest.getImageDTOList()) {
+	        Image image = new Image();
+	        image.setImgPath(imageURL);
+	        image.setVariant(variant);
+	        imageList.add(image);
+	        imageRepository.save(image);	        
+	    }
+	    variant.setImages(imageList);
+		
+	    //for admin confirm
+		Product product = variant.getProduct();
+		product.setNeedcheck(true);
+		productRepository.save(product);		
+		variant.setStatus(false);
+	    
 		Variant savedVariant = variantRepository.save(variant);
 
 		return variantConverter.entityToDTO(savedVariant);
@@ -165,6 +182,9 @@ public class VariantServiceImpl implements VariantService {
 			// Gán danh sách giá trị tùy chọn vào biến thể tương ứng
 			variantDTO.setOptionValueDTOList(optionValues);
 			variantDTO.setProductDTO(productConverter.entityToDTO(product));
+			List<Image> imageList = imageRepository.findImagesByVariant_Id(variantDTO.getId());
+			List<ImageDTO> imageDTOs = imageConverter.entitiesToDTOs(imageList);
+			variantDTO.setImageDTOList(imageDTOs);
 		}
 		return variantDTOs;
 	}
@@ -327,8 +347,7 @@ public class VariantServiceImpl implements VariantService {
 		Product product = productRepository.findById(product_id)
 				.orElseThrow(() -> new EntityNotFoundException("Product not found"));
 		// Lấy danh sách các biến thể với trạng thái isDeleted khác false
-		List<Variant> variants = variantRepository.findByProductAndIsDeletedNullOrIsDeletedFalse(product);
-
+		List<Variant> variants = variantRepository.findByProductAndIsDeletedNullOrIsDeletedFalse(product);		
 		List<VariantDTO> variantDTOs = variantConverter.entitiesToDTOs(variants);
 
 		for (VariantDTO variantDTO : variantDTOs) {
@@ -337,6 +356,9 @@ public class VariantServiceImpl implements VariantService {
 			// Gán danh sách giá trị tùy chọn vào biến thể tương ứng
 			variantDTO.setOptionValueDTOList(optionValues);
 			variantDTO.setProductDTO(productConverter.entityToDTO(product));
+			List<Image> imageList = imageRepository.findImagesByVariant_Id(variantDTO.getId());
+			List<ImageDTO> imageDTOs = imageConverter.entitiesToDTOs(imageList);
+			variantDTO.setImageDTOList(imageDTOs);
 		}
 		return variantDTOs;
 	}

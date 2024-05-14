@@ -39,9 +39,6 @@ public class ProductManageController {
 		return productService.getOptionsByProductId(productId);
 	}
     
-  	@PutMapping("/update/{product_id}")
-  	public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "product_id") Long product_id , @RequestBody ProductRequest request) {
-  		ProductDTO updatedProduct = productService.updateProduct(product_id, request);
   	@PutMapping("/{productId}/update")
   	public ResponseEntity<ProductDTO> updateProduct(@PathVariable(name = "productId") Long productId , @RequestBody ProductRequest request) {
   		ProductDTO updatedProduct = productService.updateProduct(productId, request);
@@ -50,6 +47,12 @@ public class ProductManageController {
 	@GetMapping("/details/{product_id}")
   	public ResponseEntity<ProductDTO> getProductById(@PathVariable(name = "product_id") Long product_id) {
   		ProductDTO productDTO = productService.getProductById(product_id);
+  		 return new ResponseEntity<>(productDTO, HttpStatus.OK);
+  	}  
+	
+	@GetMapping("/needcheck/{product_id}")
+  	public ResponseEntity<ProductDTO> sendRequestNeedCheck(@PathVariable(name = "product_id") Long product_id) {
+  		ProductDTO productDTO = productService.sendRequestNeedCheck(product_id);
   		 return new ResponseEntity<>(productDTO, HttpStatus.OK);
   	}  
 

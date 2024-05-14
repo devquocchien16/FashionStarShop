@@ -19,7 +19,7 @@ public class Attribute {
     private Long id;
     private String name;
     private String value;
-
+    private boolean status;
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonBackReference(value = "product_attribute")

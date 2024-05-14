@@ -80,6 +80,13 @@ public class OptionValueServiceImpl implements OptionValueService {
 	    optionValue.setValue(request.getValue());
 	    // Save the updated option
 	    optionValueRepository.save(optionValue);
+	    
+	    //for admin confirm
+	    Product product = optionValue.getOptionTable().getProduct();
+	    product.setNeedcheck(true);
+	    productRepository.save(product);
+	    optionValue.setStatus(false);
+	    
 	    // Convert and return the updated option DTO
 	    return optionValueConverter.entityToDTO(optionValue);
 	}

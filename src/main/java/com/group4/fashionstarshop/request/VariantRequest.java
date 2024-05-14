@@ -25,4 +25,5 @@ public class VariantRequest {
     private Boolean isDeleted;
     private Long productId;
     private List<Long> optionValueIds;
+    private List<String> imageDTOList;	
 }

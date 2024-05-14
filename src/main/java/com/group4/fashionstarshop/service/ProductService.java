@@ -20,8 +20,7 @@ public interface ProductService {
 	    ProductDTO getProductById(Long id);
 	    List<ProductDTO> getAllProductDtos();
 	    List<VariantDTO> getVariantsByProductId(Long productId);
-	    List<ProductDTO> getProductsByContaining(String text);
-	    Product createProduct(Long storeId, Long categoryId, Long storeCategoryId, ProductDTO productDto);
+	    List<ProductDTO> getProductsByContaining(String text);	    
 
 	    List<ProductDTO> getProductsOfStoreByContaining(Long id, String text);
 	    Product updateProduct(ProductDTO productDto);
@@ -36,6 +35,9 @@ public interface ProductService {
 		Product updateProduct(ProductRequest productDto);
 		//for admin
 		public List<ProductDTO> findProductRequest();
+		Product createProduct(Long storeId, Long categoryId, ProductDTO productDto);
+		//seller send request for admin after create product
+		ProductDTO sendRequestNeedCheck(Long productId);
 
 
 //     Page<ProductDTO> getAllProduct(String category, String store, Integer minPrice, Integer maxPrice, Integer pageNumber, Integer pageSize);

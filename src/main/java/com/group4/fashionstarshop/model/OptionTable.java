@@ -31,5 +31,5 @@ public class OptionTable {
     @JsonBackReference(value = "product_optionTable")
     private Product product;
     
-    private Boolean isDeleted;
+    private boolean status;
 }

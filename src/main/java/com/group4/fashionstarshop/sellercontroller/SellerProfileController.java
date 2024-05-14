@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.group4.fashionstarshop.controller.AuthController;
 import com.group4.fashionstarshop.dto.PasswordRequestUtil;
+import com.group4.fashionstarshop.dto.SellerDTO;
 import com.group4.fashionstarshop.dto.SellerResetDTO;
 import com.group4.fashionstarshop.model.ResetSellerToken;
 import com.group4.fashionstarshop.model.Seller;
@@ -27,6 +29,7 @@ import com.group4.fashionstarshop.model.User;
 import com.group4.fashionstarshop.repository.ResetSellerTokenRepository;
 import com.group4.fashionstarshop.repository.SellerRepository;
 import com.group4.fashionstarshop.repository.UserRepository;
+import com.group4.fashionstarshop.request.UpdateSellerRequest;
 import com.group4.fashionstarshop.service.EmailService;
 import com.group4.fashionstarshop.service.SellerService;
 

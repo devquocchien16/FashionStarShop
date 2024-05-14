@@ -28,6 +28,7 @@ public class Variant {
     private String img;
     private Boolean isDeleted;    
     
+    private boolean status;
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonBackReference(value = "product_variant")

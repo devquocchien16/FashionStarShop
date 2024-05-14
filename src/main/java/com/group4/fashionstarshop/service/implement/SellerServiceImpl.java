@@ -101,15 +101,7 @@ public class SellerServiceImpl implements SellerService {
 		if (!password.equals(confirmPassword)) {
 			throw new IllegalArgumentException("Password and confirm password do not match");
 		}
-		Date birthDay;
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			birthDay = sdf.parse(sellerRegisterDto.getBirthDay());
-		} catch (ParseException e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException("Invalid birthdate format");
-		}
-
+	
 		// Create Seller entity
 		Seller seller = new Seller();
 		seller.setSellerName(sellerRegisterDto.getSellerName());
@@ -119,21 +111,10 @@ public class SellerServiceImpl implements SellerService {
 		seller.setConfirmPassword(passwordEncoder.encode(password));
 		seller.setCreatedAt(LocalDateTime.now());
 		seller.setUpdatedAt(LocalDateTime.now());
-		seller.setBalance((double) 100000);
-		seller.setBirthDay(birthDay);
+		seller.setBalance((double) 100000);		
 		seller.setRole("ROLE_".concat(Role.SELLER.toString()));
-
-		// Save Seller entity
+	
 		seller = sellerRepository.save(seller);
-
-		// Create Store entity
-		Store store = new Store();
-		store.setName(sellerRegisterDto.getStoreName()); // Set store name same as seller name
-		store.setSeller(seller); // Set the seller for the store
-
-		// Save Store entity
-		storeRepository.save(store);
-
 		return seller;
 	}
 
@@ -253,10 +234,7 @@ public class SellerServiceImpl implements SellerService {
 			if (request.getPhone() != null) {
 				seller.setPhone(request.getPhone());
 			}
-			if (request.getBirthDay() != null) {
-				// Assuming request.getBirthDay() returns a Date object
-				seller.setBirthDay(request.getBirthDay());
-			}
+		
 			seller = sellerRepository.save(seller);
 		}
 		return sellerConverter.entityToDTO(seller);
@@ -265,12 +243,9 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	public SellerDTO findSeller(Long sellerId) {
 		Seller seller = sellerRepository.findById(sellerId)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-		// Retrieve addresses for the seller using AddressRepository
-		List<Address> addresses = addressRepository.findBySeller(seller);		
-		seller.setAddresses(addresses);		
-		SellerDTO sellerDTO = sellerConverter.convertEntityToDTO(seller);
-		sellerDTO.setAddressDTOs(addressConverter.entitiesToDTOs(addresses));
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));		
+		
+		SellerDTO sellerDTO = sellerConverter.convertEntityToDTO(seller);		
 		return sellerDTO;
 	}
 

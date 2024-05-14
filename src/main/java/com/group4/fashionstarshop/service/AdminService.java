@@ -35,7 +35,7 @@ public interface AdminService {
 	List<CategoryDTO> getCategories();
 	List<UserEnabledDTO> getUsersbyClientName(UserRequest userRequest);
 	List<UserEnabledDTO> searchUsersByName(String clientName);
-	StoreResponse processStoreRequest(StoreNameProcessRequest request, Long store_id);
+	
 	List<UserEnabledDTO> searchUsersByNameOrEmail(String keyword);
 	List<SellerEnabledDTO> searchUsersBySellerNameOrEmail(String keyword);
 }
