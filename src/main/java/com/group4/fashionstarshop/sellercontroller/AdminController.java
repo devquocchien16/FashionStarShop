@@ -1,7 +1,9 @@
 package com.group4.fashionstarshop.sellercontroller;
 
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,14 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.group4.fashionstarshop.dto.CategoryDTO;
+import com.group4.fashionstarshop.dto.CommissionDTO;
 import com.group4.fashionstarshop.dto.ImageConfirmDTO;
+import com.group4.fashionstarshop.dto.OrderDTO;
 import com.group4.fashionstarshop.dto.ProductConfirmDTO;
 import com.group4.fashionstarshop.dto.SellerEnabledDTO;
+import com.group4.fashionstarshop.dto.StoreActiveDTO;
 import com.group4.fashionstarshop.dto.UserEnabledDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.dto.VariantImageDTO;
 import com.group4.fashionstarshop.model.Admin;
 import com.group4.fashionstarshop.model.Category;
+import com.group4.fashionstarshop.model.Order;
+import com.group4.fashionstarshop.model.RejectedReason;
 import com.group4.fashionstarshop.model.Store;
 import com.group4.fashionstarshop.model.User;
 import com.group4.fashionstarshop.request.UserIdsWrapper;
@@ -38,6 +45,7 @@ import com.group4.fashionstarshop.dto.StoreRegisterDTO;
 import com.group4.fashionstarshop.dto.UserDTO;
 import com.group4.fashionstarshop.payload.StoreResponse;
 import com.group4.fashionstarshop.repository.AdminRepository;
+import com.group4.fashionstarshop.repository.ReasonRepository;
 import com.group4.fashionstarshop.repository.UserRepository;
 import com.group4.fashionstarshop.request.AttributeRequest;
 import com.group4.fashionstarshop.request.CategoryRequest;
@@ -47,6 +55,7 @@ import com.group4.fashionstarshop.request.StoreNameProcessRequest;
 import com.group4.fashionstarshop.request.StoreRequest;
 import com.group4.fashionstarshop.service.AdminService;
 import com.group4.fashionstarshop.service.AttributeService;
+import com.group4.fashionstarshop.service.OrderService;
 import com.group4.fashionstarshop.service.ProductService;
 import com.group4.fashionstarshop.service.StoreService;
 
@@ -60,9 +69,13 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	@Autowired
+	private OrderService orderService;
+	@Autowired
 	private AdminRepository adminRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private ReasonRepository reasonRepository;
 	@Autowired
 	private AdminConverter adminConverter;
 	   @GetMapping("/{admin_id}")
@@ -120,16 +133,6 @@ public class AdminController {
         List<UserEnabledDTO> users = adminService.searchUsersByNameOrEmail(keyword);
         return users;
     }
-    @GetMapping("/admins/sellers/search")
-    public List<SellerEnabledDTO> searchSellersByName(@RequestParam String keyword) {
-        List<SellerEnabledDTO> users = adminService.searchUsersBySellerNameOrEmail(keyword);
-        return users;
-    }
-    @GetMapping("/users/search")
-    public List<UserEnabledDTO> searchUsersByName(@RequestParam String keyword) {
-        List<UserEnabledDTO> users = adminService.searchUsersByNameOrEmail(keyword);
-        return users;
-    }
     @GetMapping("/sellers/search")
     public List<SellerEnabledDTO> searchSellersByName(@RequestParam String keyword) {
         List<SellerEnabledDTO> users = adminService.searchUsersBySellerNameOrEmail(keyword);
@@ -138,6 +141,10 @@ public class AdminController {
     @GetMapping("/stores")
     public List<StoreRegisterDTO> findStoreStatusFalse(){
     	return adminService.findInactiveStores();
+    }
+    @GetMapping("/stores/active")
+    public List<StoreRegisterDTO> findStoreStatusTrue(){
+    	return adminService.findActiveStores();
     }
     @PostMapping("/stores/{store_id}/confirm")
     public ResponseEntity<StoreEnabledDTO> confirmStoreRequest(@RequestBody StoreEnabledDTO storeRequest, @PathVariable("store_id") Long storeId) {
@@ -148,7 +155,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
- 
+    
     @GetMapping("/products")
     public List<ProductConfirmDTO> findProductsStatusFalse(){
     	return adminService.findProductInActive();
@@ -187,5 +194,49 @@ public class AdminController {
         } else {
             return new ResponseEntity<>(variants, HttpStatus.OK);
         }
+    }
+    @GetMapping("/reasons")
+    public List<RejectedReason> listReasons(){
+    	return reasonRepository.findAll();
+    }
+    @GetMapping("/stores/{store_id}")
+    public ResponseEntity<StoreRegisterDTO> getStoreRegisterById(@PathVariable Long store_id) {
+        StoreRegisterDTO storeRegisterDTO = adminService.getStoreRegisterById(store_id);
+        
+        if (storeRegisterDTO != null) {
+            return new ResponseEntity<>(storeRegisterDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/stores/order/{store_id}")
+    public List<OrderDTO> getOrdersByStoreId(@PathVariable("store_id") Long storeId) {
+        return adminService.getOrdersByStoreId(storeId);
+    }
+    @GetMapping("/calculate-commission")
+    public Double calculateCommission(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate, 
+                                             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate, 
+                                             @RequestParam("storeId") Long storeId) {
+        Double commission = orderService.calculateCommission(startDate, endDate, storeId);
+        System.out.println(commission);
+        return commission;
+    }
+    @GetMapping("/calculate-revenue")
+    public Double calculateStoreRevenue(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
+            @RequestParam("storeId") Long storeId) {
+        return orderService.calculateStoreRevenue(startDate, endDate, storeId);
+    }
+    @GetMapping("/stores/orders")
+    public List<OrderDTO> getOrdersByDateRangeAndStoreId(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
+            @RequestParam("storeId") Long storeId) {
+        return orderService.findOrdersByCreatedAtBetweenAndStoreId(startDate, endDate, storeId);
+    }
+    @GetMapping("/stores/editing-name-active")
+    public List<StoreActiveDTO> getListEditingNameActiveStore() {
+        return adminService.getListEditingNameActiveStore();
     }
 }

@@ -86,7 +86,7 @@ private StoreCategoryConverter storeCategoryConverter;
 
 	@Override
 	public ProductDTO createProduct(ProductRequest productRequest, Long storeId) {
-	    // Retrieve the Store entity
+		 // Retrieve the Store entity
 	    Store store = storeRepository.findById(storeId).orElseThrow(() -> new EntityNotFoundException("Store not found"));
 
 	    // Retrieve the StoreCategory entity
@@ -98,7 +98,7 @@ private StoreCategoryConverter storeCategoryConverter;
 	    product.setTitle(productRequest.getTitle());
 	    product.setDescription(productRequest.getDescription());
 	    product.setMainPicture(productRequest.getMainPicture());
-	    product.setStatus(productRequest.getStatus());
+	    product.setStatus(productRequest.isStatus());
 	    product.setCreateAt(new Date());
 	    product.setUpdatedAt(new Date());
 	    product.setStore(store);

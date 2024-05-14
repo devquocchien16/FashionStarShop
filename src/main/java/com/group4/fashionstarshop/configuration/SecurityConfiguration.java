@@ -34,7 +34,7 @@ public class SecurityConfiguration {
 						"/api/payments/**", "/api/save-for-later/**", "/api/stores/**", "/api/variant/**",
 						"/api/image/**", "/api/product-detail/**", "/api/option-value/**", "/api/option/**", "/api/category/**",
 						"/api/store-category/**", "/api/bullet/**", "/api/attribute/**",
-						"/api/payments/**", "/api/password/**","/api/resetPassword/**","/api/chats/**","/api/admins/**")
+						"/api/payments/**", "/api/password/**","/api/resetPassword/**","/api/chats/**","/api/admins/**","/api/orders/**")
 				.permitAll()
 				.requestMatchers(HttpMethod.GET, "/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/api/chats/**","/api/products", "/api/cart-lines/**", "/api/search/**", "/api/reviews/**", "/api/sellers/**", "/api/stores/**", "/api/payments/**").permitAll()

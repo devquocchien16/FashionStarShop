@@ -13,7 +13,7 @@ public class ProductRequest {
 	private String description;
 	private String mainPicture;
 	private List<String> imageList;
-	private String status;
+	private boolean status;
 	private Long categoryId;
 	private Long storeCategoryId;
 	private Long storeId;

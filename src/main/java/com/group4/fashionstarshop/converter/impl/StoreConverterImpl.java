@@ -52,7 +52,7 @@ public class StoreConverterImpl implements StoreConverter {
         storeRegisterDTO.setName(store.getName());
         storeRegisterDTO.setLogo(store.getLogo());
         storeRegisterDTO.setEvidence(store.getEvidence());
-        storeRegisterDTO.setEdittingName(store.getEdittingName());
+        storeRegisterDTO.setEdittingName(store.getEditingName());
         storeRegisterDTO.setStatus(store.isStatus());
         storeRegisterDTO.setAdminReply(store.getAdminReply());
         storeRegisterDTO.setType(store.isType());

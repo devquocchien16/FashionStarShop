@@ -23,6 +23,7 @@ public class StoreRegisterDTO {
 	 private String edittingName;
 	 private boolean status;
 	 private String adminReply;
+	 private String description;
 	 private boolean type;
 	 private String rejectedReason;
 	 private SellerDTO sellerDTO;

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,10 +24,13 @@ import com.group4.fashionstarshop.dto.AdminRegister;
 import com.group4.fashionstarshop.dto.CategoryDTO;
 import com.group4.fashionstarshop.dto.ImageConfirmDTO;
 import com.group4.fashionstarshop.dto.ImageDTO;
+import com.group4.fashionstarshop.dto.OrderDTO;
+import com.group4.fashionstarshop.dto.OrderItemDTO;
 import com.group4.fashionstarshop.dto.ProductConfirmDTO;
 import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.SellerDTO;
 import com.group4.fashionstarshop.dto.SellerEnabledDTO;
+import com.group4.fashionstarshop.dto.StoreActiveDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.StoreEnableDTO;
 import com.group4.fashionstarshop.dto.StoreEnabledDTO;
@@ -39,12 +43,14 @@ import com.group4.fashionstarshop.enums.Role;
 import com.group4.fashionstarshop.model.Admin;
 import com.group4.fashionstarshop.model.Category;
 import com.group4.fashionstarshop.model.Image;
+import com.group4.fashionstarshop.model.Order;
 import com.group4.fashionstarshop.model.Product;
 import com.group4.fashionstarshop.model.Seller;
 import com.group4.fashionstarshop.model.User;
 import com.group4.fashionstarshop.model.Variant;
 import com.group4.fashionstarshop.repository.CategoryRepository;
 import com.group4.fashionstarshop.repository.ImageRepository;
+import com.group4.fashionstarshop.repository.OrderRepository;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.SellerRepository;
 import com.group4.fashionstarshop.repository.UserRepository;
@@ -90,6 +96,8 @@ public class AdminServiceImpl implements AdminService {
 	private ImageRepository imageRepository;
 	@Autowired
 	private VariantRepository variantRepository;
+	@Autowired
+	private OrderRepository orderRepository;
 	@Override
 	public String login(AdminDTO adminDto) {
 		Admin admin = adminRepository.findByEmail(adminDto.getEmail());
@@ -166,8 +174,8 @@ public class AdminServiceImpl implements AdminService {
 	public StoreResponse processStoreRequest(StoreNameProcessRequest request, Long store_id) {
 		Store store = storeRepository.findById(store_id).orElse(null);
 		if ("OK".equals(request.getStatus())) {
-			store.setName(store.getEdittingName());
-			store.setEdittingName(null);
+			store.setName(store.getEditingName());
+			store.setEditingName(null);
 		} else {
 			store.setAdminReply(request.getReason());
 		}
@@ -237,13 +245,9 @@ public class AdminServiceImpl implements AdminService {
 			storeDTO.setId(store.getId());
 			storeDTO.setName(store.getName());
 			storeDTO.setStatus(store.isStatus());
-
-			// Tạo một đối tượng SellerDTO từ thông tin của Seller
 			Seller seller = store.getSeller();
 			SellerDTO sellerDTO = new SellerDTO();
 			sellerDTO.setSellerName(seller.getSellerName());
-
-			// Gán đối tượng SellerDTO cho storeDTO
 			storeDTO.setSellerDTO(sellerDTO);
 
 			storeDTOList.add(storeDTO);
@@ -325,9 +329,10 @@ public class AdminServiceImpl implements AdminService {
 	        storeDTO.setName(store.getName());
 	        storeDTO.setLogo(store.getLogo());
 	        storeDTO.setEvidence(store.getEvidence());
-	        storeDTO.setEdittingName(store.getEdittingName());
+	        storeDTO.setEdittingName(store.getEditingName());
 	        storeDTO.setStatus(store.isStatus());
 	        storeDTO.setAdminReply(store.getAdminReply());
+	        storeDTO.setDescription(store.getDescription());
 	        storeDTO.setType(store.isType());
 	        storeDTO.setRejectedReason(store.getRejectedReason());
 	        // Khởi tạo và gán SellerDTO nếu có
@@ -345,6 +350,66 @@ public class AdminServiceImpl implements AdminService {
 
 	    return inactiveStoreDTOs;
 	    
+	}
+	public List<StoreRegisterDTO> findActiveStores() {
+	    List<Store> inactiveStores = storeRepository.findByStatus(true);
+	    
+	    List<StoreRegisterDTO> inactiveStoreDTOs = new ArrayList<>();
+
+	    for (Store store : inactiveStores) {
+	        StoreRegisterDTO storeDTO = new StoreRegisterDTO();
+	        // Gán các thuộc tính từ store vào storeDTO
+	        storeDTO.setId(store.getId());
+	        storeDTO.setName(store.getName());
+	        storeDTO.setLogo(store.getLogo());
+	        storeDTO.setEvidence(store.getEvidence());
+	        storeDTO.setEdittingName(store.getEditingName());
+	        storeDTO.setStatus(store.isStatus());
+	        storeDTO.setAdminReply(store.getAdminReply());
+	        storeDTO.setDescription(store.getDescription());
+	        storeDTO.setType(store.isType());
+	        storeDTO.setRejectedReason(store.getRejectedReason());
+	        // Khởi tạo và gán SellerDTO nếu có
+	        if (store.getSeller() != null) {
+	            SellerDTO sellerDTO = new SellerDTO();
+	            // Gán các thuộc tính từ Seller vào sellerDTO
+	            sellerDTO.setId(store.getSeller().getId());
+	            sellerDTO.setSellerName(store.getSeller().getSellerName());
+	            // Gán sellerDTO cho storeDTO
+	            storeDTO.setSellerDTO(sellerDTO);
+	        }
+	        // Thêm storeDTO vào danh sách kết quả
+	        inactiveStoreDTOs.add(storeDTO);
+	    }
+
+	    return inactiveStoreDTOs;
+	    
+	}
+	public StoreRegisterDTO getStoreRegisterById(Long store_id) {
+		Store store = storeRepository.findById(store_id).orElse(null);
+	    
+	    if (store != null) {
+	        StoreRegisterDTO storeRegisterDTO = new StoreRegisterDTO();
+	        storeRegisterDTO.setId(store.getId());
+	        storeRegisterDTO.setName(store.getName());
+	        storeRegisterDTO.setDescription(store.getDescription());
+	        storeRegisterDTO.setLogo(store.getLogo());
+	        storeRegisterDTO.setEvidence(store.getEvidence());
+	        storeRegisterDTO.setType(storeRegisterDTO.isType());
+	        if (store.getSeller() != null) {
+	            SellerDTO sellerDTO = new SellerDTO();
+	            // Gán các thuộc tính từ Seller vào sellerDTO
+	            sellerDTO.setId(store.getSeller().getId());
+	            sellerDTO.setSellerName(store.getSeller().getSellerName());
+	            // Gán sellerDTO cho storeDTO
+	            storeRegisterDTO.setSellerDTO(sellerDTO);
+	        }
+	        
+	        return storeRegisterDTO;
+	    } else {
+	        return null; // hoặc có thể throw một exception phù hợp tùy theo logic ứng dụng của bạn
+	    }
+		
 	}
 	@Override
 	public StoreEnabledDTO confirmStoreRequest(StoreEnabledDTO storeRequest, Long store_id) {
@@ -386,6 +451,7 @@ public class AdminServiceImpl implements AdminService {
 	    return productConfirmDTOs;
 		
 	}
+	
 	public ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id) {
 		Product product = productRepository.findById(product_id).orElse(null);
 		product.setStatus(true);
@@ -405,8 +471,6 @@ public class AdminServiceImpl implements AdminService {
 	public List<VariantImageDTO> getAllVarriantsConfirm(){
 	    // Lấy tất cả các biến thể từ cơ sở dữ liệu
         List<Variant> variants = variantRepository.findAll();
-        
-        // Chuyển đổi các biến thể thành đối tượng VariantDTO
         List<VariantImageDTO> variantDTOs = new ArrayList<>();
         for (Variant variant : variants) {
         	VariantImageDTO variantDTO = new VariantImageDTO();
@@ -419,7 +483,6 @@ public class AdminServiceImpl implements AdminService {
             ProductDTO productDTO = new ProductDTO();
             productDTO.setId(variant.getProduct().getId());
             productDTO.setTitle(variant.getProduct().getTitle());
-            // Các thuộc tính khác của ProductDTO
             variantDTO.setProductDTO(productDTO);
             
             // Thêm thông tin về List<ImageDTO>
@@ -445,12 +508,9 @@ public class AdminServiceImpl implements AdminService {
 	    
 	    for (Image image : inActiveImages) {
 	        ImageConfirmDTO imageConfirmDTO = new ImageConfirmDTO();
-	        // Copy properties from Image to ImageConfirmDTO
 	        imageConfirmDTO.setId(image.getId());
 	        imageConfirmDTO.setImgPath(image.getImgPath());
-	        imageConfirmDTO.setStatus(image.isStatus());
-	        // Copy other properties as needed
-	        
+	        imageConfirmDTO.setStatus(image.isStatus());        
 	        imageConfirmDTOs.add(imageConfirmDTO);
 	    }
 	    
@@ -516,9 +576,69 @@ public class AdminServiceImpl implements AdminService {
                 })
                 .collect(Collectors.toList());
         variantImageDTO.setImageDTOList(imageDTOList);
-
-        // Mapping OptionValueDTOList và ReviewDTOList tương tự
-
         return variantImageDTO;
     }
+    public List<OrderDTO> getOrdersByStoreId(Long store_id){
+
+    	List<Order> orders = orderRepository.findByStoreId(store_id);
+    	List<OrderDTO> orderDTOs = orders.stream()
+    	    .map(order -> {
+    	        OrderDTO orderDTO = new OrderDTO();
+    	        orderDTO.setId(order.getId());
+    	        orderDTO.setStoreDTO(new StoreDTO(order.getStore().getId(), order.getStore().getName(), null, null, null));
+    	        
+    	        // Chuyển đổi danh sách các đơn hàng sang danh sách OrderItemDTO
+    	        List<OrderItemDTO> orderItemDTOs = order.getOrderItemList().stream()
+    	                .map(orderItem -> {
+    	                    OrderItemDTO orderItemDTO = new OrderItemDTO();
+    	                    orderItemDTO.setId(orderItem.getId());
+    	                    orderItemDTO.setPrice(orderItem.getPrice());
+    	                    
+    	                    // Tạo và đặt giá trị cho variantDTO
+    	                    Variant variant = orderItem.getVariant();
+    	                    VariantDTO variantDTO = new VariantDTO();
+    	                    variantDTO.setId(variant.getId());
+    	                    variantDTO.setName(variant.getName());
+    	                    // Thêm các thông tin khác của variant vào đây
+    	                    
+    	                    orderItemDTO.setVariantDTO(variantDTO);
+    	                    return orderItemDTO;
+    	                })
+    	                .collect(Collectors.toList());
+    	        orderDTO.setOrderItemListDTO(orderItemDTOs);           
+    	        orderDTO.setOrder_date(order.getOrderDate());
+    	        orderDTO.setOrder_status(order.getStatus());
+    	        orderDTO.setCreatedAt(order.getCreatedAt());
+    	        orderDTO.setOrderTotal(order.getOrderTotal());
+    	                
+    	        return orderDTO;
+    	    })
+    	    .collect(Collectors.toList());
+
+    	return orderDTOs;
+    }
+    public List<StoreActiveDTO> getListEditingNameActiveStore() {
+        List<Store> stores = storeRepository.findByStatus(true);
+        List<StoreActiveDTO> storeDtos = new ArrayList<>();
+        
+        for (Store store : stores) {
+            if (store.getEditingName() != null && !store.getEditingName().isEmpty()) {
+                StoreActiveDTO storeDto = new StoreActiveDTO();
+                storeDto.setId(store.getId());
+                storeDto.setName(store.getName());
+                storeDto.setEditingName(store.getEditingName());
+                storeDto.setStatus(store.isStatus());
+
+                SellerDTO sellerDTO = new SellerDTO();
+                sellerDTO.setId(store.getSeller().getId());
+                sellerDTO.setSellerName(store.getSeller().getSellerName());
+                storeDto.setSellerDTO(sellerDTO);
+                
+                storeDtos.add(storeDto);
+            }
+        }
+        
+        return storeDtos;
+    }
+  
 }

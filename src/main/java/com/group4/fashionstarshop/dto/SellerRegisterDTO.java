@@ -19,6 +19,5 @@ public class SellerRegisterDTO {
     private String phone;
     private String birthDay;
     private String confirmPassword;
-    private String storeName;
     
 }

@@ -18,6 +18,7 @@ import com.group4.fashionstarshop.dto.PaymentMethodDTO;
 import com.group4.fashionstarshop.dto.ShippingMethodDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.UserDTO;
+import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.exception.OrderException;
 import com.group4.fashionstarshop.model.Address;
 import com.group4.fashionstarshop.model.Order;
@@ -70,19 +71,20 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private ShippingMethodRepository shippingMethodRepository;
-
+	@Autowired
+	private ModelMapper modelMapper;
 	@Autowired
 	private EmailService emailService;
-	
+
 	@Autowired
 	private OrderItemRepository orderItemRepos;
 
 	@Override
 	@Transactional
 	public Order createOrder(OrderRequest orderRequest) {
-		
+
 		Order order = new Order();
-		
+
 		User user = userRepository.findById(orderRequest.getUserId())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 		// Set user, store, order date, address, payment method, shipping method, etc.
@@ -96,31 +98,31 @@ public class OrderServiceImpl implements OrderService {
 		order.setShippingMethod(shippingMethodRepository.findById(orderRequest.getShippingMethodId())
 				.orElseThrow(() -> new RuntimeException("Shipping Method not found")));
 		order.setOrderDate(orderRequest.getOrderDate());
-	
-		
+
 		// Calculate order total based on order items
 		double orderTotal = orderRequest.getOrderItemRequestList().stream()
 				.mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
-		
-		//Find shipping price
-		ShippingMethod shippingMethod = shippingMethodRepository.findById(orderRequest.getShippingMethodId()).orElseThrow(() -> new RuntimeException("Shipping Method not found"));
-		
+
+		// Find shipping price
+		ShippingMethod shippingMethod = shippingMethodRepository.findById(orderRequest.getShippingMethodId())
+				.orElseThrow(() -> new RuntimeException("Shipping Method not found"));
+
 		order.setOrderTotal(orderTotal + shippingMethod.getPrice());
-		order.setStatus("PENDING");	
+		order.setStatus("PENDING");
 		//
 		Order afterSaveOrder = orderRepository.save(order);
 		// Send mail
 //		emailService.sendPaymentEmail(user);
 
-		for (OrderItemRequest orderItemReq: orderRequest.getOrderItemRequestList()) {
+		for (OrderItemRequest orderItemReq : orderRequest.getOrderItemRequestList()) {
 			OrderItem orderItem = new OrderItem();
 			Variant findIdVariant = variantRepository.findVariantById(orderItemReq.getVariant_id());
 			orderItem.setVariant(findIdVariant);
 			orderItem.setPrice(orderItemReq.getPrice());
 			orderItem.setQuantity(orderItemReq.getQuantity());
-			orderItem.setShop_order(afterSaveOrder);	
-			
-			 orderItemRepos.save(orderItem);
+			orderItem.setShop_order(afterSaveOrder);
+
+			orderItemRepos.save(orderItem);
 		}
 		// Save the newest order
 		return afterSaveOrder;
@@ -136,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
 	public OrderDTO findOrderByOrderId(Long orderId) {
 		Order orderByOrderId = orderRepository.findById(orderId)
 				.orElseThrow(() -> new RuntimeException("Order not found"));
-		
+
 		return orderConverter.entityToDTO(orderByOrderId);
 	}
 
@@ -162,15 +164,16 @@ public class OrderServiceImpl implements OrderService {
 	public void deleteOrder(Long orderId) {
 		findOrderByOrderId(orderId);
 		orderRepository.deleteById(orderId);
-	}	
-	
+	}
+
 	@Override
 	public Order pendingOrder(Long orderId) {
 		OrderDTO orderDTO = findOrderByOrderId(orderId);
-		orderDTO.setOrder_status("PENDING");		
-		Order order =  orderConverter.dtoToEntity(orderDTO);
-				return orderRepository.save(order);
+		orderDTO.setOrder_status("PENDING");
+		Order order = orderConverter.dtoToEntity(orderDTO);
+		return orderRepository.save(order);
 	}
+
 	@Override
 	public Order acceptedOrder(Long orderId) throws OrderException {
 		OrderDTO orderDTO = findOrderByOrderId(orderId);
@@ -183,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
 	public Order completedOrder(Long orderId) throws OrderException {
 		OrderDTO orderDTO = findOrderByOrderId(orderId);
 		orderDTO.setOrder_status("COMPLETED");
-		Order order = orderConverter.dtoToEntity(orderDTO);		
+		Order order = orderConverter.dtoToEntity(orderDTO);
 		return orderRepository.save(order);
 	}
 
@@ -191,29 +194,29 @@ public class OrderServiceImpl implements OrderService {
 	public Order canceledOrder(Long orderId) throws OrderException {
 		OrderDTO orderDTO = findOrderByOrderId(orderId);
 		orderDTO.setOrder_status("CANCEL");
-		Order order = orderConverter.dtoToEntity(orderDTO);		
+		Order order = orderConverter.dtoToEntity(orderDTO);
 		return orderRepository.save(order);
 	}
 
 	@Override
 	public OrderDTO processAcceptOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));		
-		orderByOrderId.setStatus("ACCEPTED");		
-			List<OrderItem> orderItemList = orderByOrderId.getOrderItemList();
-			for (OrderItem orderItem : orderItemList) {
-				int orderQuantity = orderItem.getQuantity();
-				int quantityInStock = orderItem.getVariant().getStockQuantity();
-				// Assuming itemId và quantityToDecrease đã được định nghĩa trước đó
-				if (orderQuantity <= quantityInStock) {
-					quantityInStock = quantityInStock - orderQuantity;
-					Variant variant = variantRepository.findById(orderItem.getVariant().getId())
-							.orElseThrow(() -> new RuntimeException("Variant not found"));
-					variant.setStockQuantity(quantityInStock);
-				} else {
-					throw new RuntimeException("Not enough quantity to decrease for item: " + orderItem.getId());
-				}
-			}	
+				.orElseThrow(() -> new RuntimeException("Order not found"));
+		orderByOrderId.setStatus("ACCEPTED");
+		List<OrderItem> orderItemList = orderByOrderId.getOrderItemList();
+		for (OrderItem orderItem : orderItemList) {
+			int orderQuantity = orderItem.getQuantity();
+			int quantityInStock = orderItem.getVariant().getStockQuantity();
+			// Assuming itemId và quantityToDecrease đã được định nghĩa trước đó
+			if (orderQuantity <= quantityInStock) {
+				quantityInStock = quantityInStock - orderQuantity;
+				Variant variant = variantRepository.findById(orderItem.getVariant().getId())
+						.orElseThrow(() -> new RuntimeException("Variant not found"));
+				variant.setStockQuantity(quantityInStock);
+			} else {
+				throw new RuntimeException("Not enough quantity to decrease for item: " + orderItem.getId());
+			}
+		}
 
 		orderByOrderId.setAcceptedAt(new Date());
 		orderRepository.save(orderByOrderId);
@@ -223,8 +226,8 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderDTO processDeliverOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));		
-		orderByOrderId.setStatus("DELIVERING");	
+				.orElseThrow(() -> new RuntimeException("Order not found"));
+		orderByOrderId.setStatus("DELIVERING");
 		orderByOrderId.setDeliveringAt(new Date());
 		orderRepository.save(orderByOrderId);
 		return orderConverter.entityToDTO(orderByOrderId);
@@ -233,21 +236,68 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderDTO processCancelOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));		
-		orderByOrderId.setStatus("CANCEL");	
+				.orElseThrow(() -> new RuntimeException("Order not found"));
+		orderByOrderId.setStatus("CANCEL");
 		orderByOrderId.setCanceledAt(new Date());
 		orderRepository.save(orderByOrderId);
 		return orderConverter.entityToDTO(orderByOrderId);
 	}
-	
+
 	@Override
 	public OrderDTO processCompleteOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));		
-		orderByOrderId.setStatus("COMPLETED");	
+				.orElseThrow(() -> new RuntimeException("Order not found"));
+		orderByOrderId.setStatus("COMPLETED");
 		orderByOrderId.setCompletedAt(new Date());
 		orderRepository.save(orderByOrderId);
 		return orderConverter.entityToDTO(orderByOrderId);
 	}
+
+	public Double calculateCommission(Date startDate, Date endDate, Long storeId) {
+		return orderRepository.calculateCommission(startDate, endDate, storeId);
+	}
+
+	public Double calculateStoreRevenue(Date startDate, Date endDate, Long storeId) {
+		return orderRepository.calculateStoreRevenue(startDate, endDate, storeId);
+	}
+	public List<OrderDTO> findOrdersByCreatedAtBetweenAndStoreId(Date startDate, Date endDate, Long storeId) {
+        List<Order> orders = orderRepository.findOrdersByCreatedAtBetweenAndStoreId(startDate, endDate, storeId);
+        List<OrderDTO> orderDTOs = orders.stream()
+        	    .map(order -> {
+        	        OrderDTO orderDTO = new OrderDTO();
+        	        orderDTO.setId(order.getId());
+        	        orderDTO.setStoreDTO(new StoreDTO(order.getStore().getId(), order.getStore().getName(), null, null, null));
+        	        
+        	        // Chuyển đổi danh sách các đơn hàng sang danh sách OrderItemDTO
+        	        List<OrderItemDTO> orderItemDTOs = order.getOrderItemList().stream()
+        	                .map(orderItem -> {
+        	                    OrderItemDTO orderItemDTO = new OrderItemDTO();
+        	                    orderItemDTO.setId(orderItem.getId());
+        	                    orderItemDTO.setPrice(orderItem.getPrice());
+        	                    
+        	                    // Tạo và đặt giá trị cho variantDTO
+        	                    Variant variant = orderItem.getVariant();
+        	                    VariantDTO variantDTO = new VariantDTO();
+        	                    variantDTO.setId(variant.getId());
+        	                    variantDTO.setName(variant.getName());
+        	                    // Thêm các thông tin khác của variant vào đây
+        	                    
+        	                    orderItemDTO.setVariantDTO(variantDTO);
+        	                    return orderItemDTO;
+        	                })
+        	                .collect(Collectors.toList());
+        	        orderDTO.setOrderItemListDTO(orderItemDTOs);           
+        	        orderDTO.setOrder_date(order.getOrderDate());
+        	        orderDTO.setOrder_status(order.getStatus());
+        	        orderDTO.setCreatedAt(order.getCreatedAt());
+        	        orderDTO.setOrderTotal(order.getOrderTotal());
+        	                
+        	        return orderDTO;
+        	    })
+        	    .collect(Collectors.toList());
+
+        	return orderDTOs;
+    }
+	
 
 }

@@ -1,5 +1,6 @@
 package com.group4.fashionstarshop.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -46,4 +47,7 @@ public interface OrderService {
 	OrderDTO processCancelOrder(Long order_id);
 
 	OrderDTO processCompleteOrder(Long order_id);
+	Double calculateCommission(Date startDate, Date endDate, Long storeId);
+	Double calculateStoreRevenue(Date startDate, Date endDate, Long storeId);
+	List<OrderDTO> findOrdersByCreatedAtBetweenAndStoreId(Date startDate, Date endDate, Long storeId);
 }
