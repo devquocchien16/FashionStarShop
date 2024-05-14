@@ -17,4 +17,5 @@ public class UserDTO {
     private String phone;
     private boolean gender;
     private LocalDate birthday;
+    private boolean enabled;
 }

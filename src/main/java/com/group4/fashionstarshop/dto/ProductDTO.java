@@ -20,7 +20,7 @@ public class ProductDTO {
     private String description;
     private String mainPicture;
     private List<ImageDTO> imageList;
-    private String status;
+    private Boolean status;
     private Date createAt;
     private Date updatedAt;
     private StoreDTO store;

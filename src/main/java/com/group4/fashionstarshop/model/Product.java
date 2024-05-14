@@ -26,7 +26,7 @@ public class Product {
     
     @OneToMany(mappedBy = "product")
     private List<Image> imageList;
-    private String status;
+    private Boolean status;
     private Date createAt;
     private Date updatedAt;  
     

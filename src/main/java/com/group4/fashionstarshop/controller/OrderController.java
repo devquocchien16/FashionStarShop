@@ -7,10 +7,13 @@ import com.group4.fashionstarshop.model.Address;
 import com.group4.fashionstarshop.model.Order;
 import com.group4.fashionstarshop.model.Seller;
 import com.group4.fashionstarshop.model.User;
+import com.group4.fashionstarshop.payload.PaymentResponse;
 import com.group4.fashionstarshop.repository.OrderRepository;
 import com.group4.fashionstarshop.repository.SellerRepository;
 import com.group4.fashionstarshop.request.OrderRequest;
+import com.group4.fashionstarshop.request.OrderRequestPayment;
 import com.group4.fashionstarshop.service.OrderService;
+import com.group4.fashionstarshop.service.PaymentService;
 import com.group4.fashionstarshop.service.UserService;
 
 import java.util.List;
@@ -41,6 +44,9 @@ public class OrderController {
     @Autowired
     private UserService userService;
     
+    @Autowired
+    private PaymentService paymentService;
+    
     @PostMapping("/create1")
     public ResponseEntity<String> createOrder1(@RequestBody OrderRequest orderRequest){
     	 Order order = orderService.createOrder(orderRequest);
@@ -48,6 +54,14 @@ public class OrderController {
     	return  new ResponseEntity<>("col", HttpStatus.CREATED);
     }
   
+    @PostMapping("/createpayment")
+    public ResponseEntity<PaymentResponse> createOrderPayment(@RequestBody OrderRequestPayment orderRequestPm){
+    	 Order order = paymentService.createOrderPayment(orderRequestPm);
+    	 
+    	 PaymentResponse res = paymentService.createPaymentLink(order);
+    	 System.out.println("order" + order);
+    	return  new ResponseEntity<>(res, HttpStatus.OK);
+    }
     	
    	@GetMapping("/{userId}")
    	public ResponseEntity<List<OrderDTO>> userOrderHistory(@PathVariable("userId") Long userId){
