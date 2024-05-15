@@ -21,7 +21,6 @@ import com.group4.fashionstarshop.request.ProductRequest;
 import com.group4.fashionstarshop.service.ProductService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/seller/product")
 public class ProductManageController {
 	

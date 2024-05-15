@@ -22,6 +22,7 @@ public class ProductDTO {
     private String status;
     private Date createAt;
     private Date updatedAt;
-    private StoreDTO store;    
+    private StoreDTO store;   
+    private CategoryDTO categoryDTO;
    
 }

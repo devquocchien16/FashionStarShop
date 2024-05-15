@@ -5,6 +5,7 @@ import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.model.Product;
+import com.group4.fashionstarshop.request.AddProductRequest;
 import com.group4.fashionstarshop.request.ProductRequest;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public interface ProductService {
 		Product createProduct(Long storeId, Long categoryId, ProductDTO productDto);
 		//seller send request for admin after create product
 		ProductDTO sendRequestNeedCheck(Long productId);
+		
 
 
 //     Page<ProductDTO> getAllProduct(String category, String store, Integer minPrice, Integer maxPrice, Integer pageNumber, Integer pageSize);

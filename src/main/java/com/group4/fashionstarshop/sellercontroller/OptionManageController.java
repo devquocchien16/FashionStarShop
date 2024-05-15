@@ -16,7 +16,6 @@ import com.group4.fashionstarshop.request.OptionRequest;
 import com.group4.fashionstarshop.service.OptionService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/seller/option")
 public class OptionManageController {
 	@Autowired

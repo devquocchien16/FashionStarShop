@@ -16,7 +16,6 @@ import com.group4.fashionstarshop.request.UpdateOrderRequest;
 import com.group4.fashionstarshop.service.OrderService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/seller/order")
 public class OrderManageController {
     @Autowired

@@ -20,7 +20,6 @@ import com.group4.fashionstarshop.service.ImageService;
 import com.group4.fashionstarshop.service.ProductService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/seller/image")
 public class ImageManageController {
 	

@@ -23,6 +23,7 @@ import com.group4.fashionstarshop.dto.OptionValueDTO;
 import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
+import com.group4.fashionstarshop.model.Attribute;
 import com.group4.fashionstarshop.model.Category;
 import com.group4.fashionstarshop.model.Image;
 import com.group4.fashionstarshop.model.OptionTable;
@@ -30,10 +31,12 @@ import com.group4.fashionstarshop.model.OptionValue;
 import com.group4.fashionstarshop.model.Product;
 import com.group4.fashionstarshop.model.Store;
 import com.group4.fashionstarshop.model.Variant;
+import com.group4.fashionstarshop.repository.AttributeRepository;
 import com.group4.fashionstarshop.repository.CategoryRepository;
 import com.group4.fashionstarshop.repository.ImageRepository;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
+import com.group4.fashionstarshop.request.AttributeRequest;
 import com.group4.fashionstarshop.request.ProductRequest;
 import com.group4.fashionstarshop.service.ProductService;
 
@@ -70,6 +73,8 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private CategoryConverter categoryConverter;
 
+	@Autowired 
+	private AttributeRepository attributeRepository;
 //	@Override
 //	public List<ProductDTO> getAllProductDtosByStore(Long store_id) {
 //		Store store = storeRepository.findById(store_id).orElse(null);
@@ -100,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
 	    Category category = categoryRepository.findById(productRequest.getCategoryId())
 	            .orElseThrow(() -> new EntityNotFoundException("Store category not found"));
 
+	    
 	    // Create a new Product entity
 	    Product product = new Product();
 	    product.setTitle(productRequest.getTitle());
@@ -110,13 +116,26 @@ public class ProductServiceImpl implements ProductService {
 	    product.setUpdatedAt(new Date());
 	    product.setStore(store);
 	    product.setCategory(category);
-	    productRepository.save(product);	  
+	    //productRepository.save(product);	  
 
 	    // Save the product entity
 	    Product newProduct = productRepository.save(product);
-
+	    
+	    List<AttributeRequest> attributes = productRequest.getAttributes();
+	    
+	    
+	    for (AttributeRequest attributeRequest : attributes) {
+	    	Attribute attribute = new Attribute();
+	    	attribute.setName(attributeRequest.getName());
+	    	attribute.setValue(attributeRequest.getValue());
+	    	attribute.setProduct(newProduct);
+	    	attributeRepository.save(attribute);
+		}
+	    
+	    ProductDTO productDTO = productConverter.entityToDTO(newProduct);
+	    productDTO.setCategoryDTO(categoryConverter.entityToDTO(category));
 	    // Convert the saved Product entity to a ProductDTO
-	    return productConverter.entityToDTO(newProduct);
+	    return productDTO;
 	}
 
 	@Override
