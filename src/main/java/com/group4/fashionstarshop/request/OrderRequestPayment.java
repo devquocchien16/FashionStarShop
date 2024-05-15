@@ -18,6 +18,8 @@ public class OrderRequestPayment {
 	    private String orderDate;
 	    private Long addressId;
 	    private Long shippingMethodId;   
+	    private Long paymentMethodId;
+
 	    private Double orderTotal;
 	    private List<OrderItemRequest> orderItemRequestList;
 }

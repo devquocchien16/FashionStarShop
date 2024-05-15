@@ -1,5 +1,7 @@
 package com.group4.fashionstarshop.service.implement;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,8 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private OrderItemRepository orderItemRepos;
+	@Autowired
+	private PaymentMethodRepository paymentMethodRepository;
 
     @Override
     public PaymentResponse createPaymentLink(Order order){
@@ -71,10 +75,15 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             Stripe.apiKey = stripeSecretKey;
             
+
+            // Sử dụng BigDecimal để tính toán số tiền chính xác
+            BigDecimal total = new BigDecimal(String.valueOf(order.getOrderTotal()));
+            long unitAmount = total.multiply(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).longValueExact();
+            
             SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:3000/success" + order.getId())
+                .setSuccessUrl("http://localhost:3000/success")
                 .setCancelUrl("http://localhost:3000/fail")
                 .addLineItem(
                     SessionCreateParams.LineItem.builder()
@@ -82,7 +91,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .setPriceData(
                             SessionCreateParams.LineItem.PriceData.builder()
                                 .setCurrency("usd")
-                                .setUnitAmount(Math.round(order.getOrderTotal() * 100))
+                                .setUnitAmount(unitAmount)
                                 .setProductData(
                                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                         .setName("fashion star")
@@ -118,6 +127,8 @@ public class PaymentServiceImpl implements PaymentService {
 				.orElseThrow(() -> new RuntimeException("Store not found")));
 		order.setAddress(addressRepository.findById(orderRequest.getAddressId())
 				.orElseThrow(() -> new RuntimeException("Address not found")));
+		order.setPaymentMethod(paymentMethodRepository.findById((long) 11)
+				.orElseThrow(() -> new RuntimeException("Payment Method not found")));
 		order.setShippingMethod(shippingMethodRepository.findById(orderRequest.getShippingMethodId())
 				.orElseThrow(() -> new RuntimeException("Shipping Method not found")));
 		order.setOrderDate(orderRequest.getOrderDate());

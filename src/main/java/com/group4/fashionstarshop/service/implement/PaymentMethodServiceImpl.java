@@ -67,4 +67,16 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
         PaymentMethod paymentMethodNew = paymentMethodRepository.save(paymentMethod);
         return paymentMethodConverter.convertToDto(paymentMethodNew);
     }
+
+	@Override
+	public PaymentMethod findByName(String name) {
+
+		return paymentMethodRepository.findByName(name);
+	}
+
+	@Override
+	public List<PaymentMethod> findAll() {
+		// TODO Auto-generated method stub
+		return paymentMethodRepository.findAll();
+	}
 }

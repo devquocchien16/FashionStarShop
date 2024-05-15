@@ -10,4 +10,6 @@ public interface PaymentMethodService {
     List<PaymentMethodResponse> findPaymentMethod(Long userId);
     PaymentMethodResponse createPaymentMethod(Long userId,PaymentMethodRequest paymentMethodRequest);
     PaymentMethodResponse updatePaymentMethod(PaymentMethodRequest paymentMethodRequest);
+    PaymentMethod findByName (String name);
+    List<PaymentMethod> findAll();
 }
