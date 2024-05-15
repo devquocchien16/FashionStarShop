@@ -21,12 +21,14 @@ import com.group4.fashionstarshop.dto.CommissionDTO;
 import com.group4.fashionstarshop.dto.ImageConfirmDTO;
 import com.group4.fashionstarshop.dto.OrderDTO;
 import com.group4.fashionstarshop.dto.ProductConfirmDTO;
+import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.SellerEnabledDTO;
 import com.group4.fashionstarshop.dto.StoreActiveDTO;
 import com.group4.fashionstarshop.dto.UserEnabledDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.dto.VariantImageDTO;
 import com.group4.fashionstarshop.model.Admin;
+import com.group4.fashionstarshop.model.Attribute;
 import com.group4.fashionstarshop.model.Category;
 import com.group4.fashionstarshop.model.Order;
 import com.group4.fashionstarshop.model.RejectedReason;
@@ -78,6 +80,7 @@ public class AdminController {
 	private ReasonRepository reasonRepository;
 	@Autowired
 	private AdminConverter adminConverter;
+	
 	   @GetMapping("/{admin_id}")
 	    public ResponseEntity<AdminDTO> getUser(@PathVariable("admin_id") Long adminId){
 	        Admin admin = adminRepository.findById(adminId)
@@ -160,6 +163,10 @@ public class AdminController {
     public List<ProductConfirmDTO> findProductsStatusFalse(){
     	return adminService.findProductInActive();
     }
+    @GetMapping("/products/active")
+    public List<ProductConfirmDTO> findProductsStatusTrue(){
+    	return adminService.findProductActive();
+    }
     @PostMapping("/products/{product_id}/confirm")
     public ResponseEntity<ProductConfirmRequest> confirmProductRequest(@RequestBody ProductConfirmRequest request, @PathVariable("product_id") Long productId) {
         try {
@@ -169,7 +176,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    
+
     @GetMapping("/variants/{variant_id}/images")
     public List<ImageConfirmDTO> listImagesOfVariant(@PathVariable("variant_id") Long variantId){
         return adminService.listImagesOfVariant(variantId);
@@ -238,5 +245,45 @@ public class AdminController {
     @GetMapping("/stores/editing-name-active")
     public List<StoreActiveDTO> getListEditingNameActiveStore() {
         return adminService.getListEditingNameActiveStore();
+    }
+    @GetMapping("/stores/{storeId}/editing-name")
+    public ResponseEntity<StoreActiveDTO> getActiveStoreById(@PathVariable Long storeId) {
+        StoreActiveDTO storeDTO = adminService.findEditingNameActiveStoreById(storeId);
+        if (storeDTO != null) {
+            return new ResponseEntity<>(storeDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @GetMapping("/products/{productId}/attributes")
+    public ResponseEntity<List<Attribute>> getAttributesByProductId(@PathVariable Long productId) {
+        List<Attribute> attributes = adminService.getAttributesByProductId(productId);
+        if (attributes != null && !attributes.isEmpty()) {
+            return new ResponseEntity<>(attributes, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @GetMapping("/products/need-edit")
+    public ResponseEntity<List<ProductDTO>> getProductsNeedEdit() {
+        List<ProductDTO> productDTOs = adminService.getListProducNeedEdit();
+        
+        if (!productDTOs.isEmpty()) {
+            return new ResponseEntity<>(productDTOs, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+    @GetMapping("/products/{product_id}/need-edit/")
+    public ResponseEntity<ProductDTO> getProductDetails(@PathVariable Long product_id) {
+        ProductDTO productDTO = adminService.findDescActiveByProductId(product_id);
+        
+        if (productDTO != null) {
+            return new ResponseEntity<>(productDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

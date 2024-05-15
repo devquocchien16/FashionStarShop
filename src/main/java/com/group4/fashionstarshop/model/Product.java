@@ -22,10 +22,12 @@ public class Product {
 
     private String title;
     private String description;
+    private String editDesc;
     private String mainPicture;
     @OneToMany(mappedBy = "product")
     private List<Image> imageList;
     private boolean status;
+    
     private Date createAt;
     private Date updatedAt;   
     private String adminReply;

@@ -41,6 +41,7 @@ import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.dto.VariantImageDTO;
 import com.group4.fashionstarshop.enums.Role;
 import com.group4.fashionstarshop.model.Admin;
+import com.group4.fashionstarshop.model.Attribute;
 import com.group4.fashionstarshop.model.Category;
 import com.group4.fashionstarshop.model.Image;
 import com.group4.fashionstarshop.model.Order;
@@ -58,6 +59,7 @@ import com.group4.fashionstarshop.repository.VariantRepository;
 import com.group4.fashionstarshop.model.Store;
 import com.group4.fashionstarshop.payload.StoreResponse;
 import com.group4.fashionstarshop.repository.AdminRepository;
+import com.group4.fashionstarshop.repository.AttributeRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
 import com.group4.fashionstarshop.request.CategoryRequest;
 import com.group4.fashionstarshop.request.ProductConfirmRequest;
@@ -68,6 +70,7 @@ import com.group4.fashionstarshop.request.UserRequest;
 import com.group4.fashionstarshop.service.AdminService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -98,6 +101,8 @@ public class AdminServiceImpl implements AdminService {
 	private VariantRepository variantRepository;
 	@Autowired
 	private OrderRepository orderRepository;
+	@Autowired
+	private AttributeRepository attributeRepository;
 	@Override
 	public String login(AdminDTO adminDto) {
 		Admin admin = adminRepository.findByEmail(adminDto.getEmail());
@@ -176,6 +181,7 @@ public class AdminServiceImpl implements AdminService {
 		if ("OK".equals(request.getStatus())) {
 			store.setName(store.getEditingName());
 			store.setEditingName(null);
+			store.setLogo(store.getEditingLogo());
 		} else {
 			store.setAdminReply(request.getReason());
 		}
@@ -187,7 +193,6 @@ public class AdminServiceImpl implements AdminService {
 		response.setStoreDTO(storeConverter.entityToDTO(store));
 		return response;
 	}
-
 	@Override
 	public List<SellerEnabledDTO> listSellers() {
 		List<Seller> userList = sellerRepository.findAll();
@@ -324,27 +329,25 @@ public class AdminServiceImpl implements AdminService {
 
 	    for (Store store : inactiveStores) {
 	        StoreRegisterDTO storeDTO = new StoreRegisterDTO();
-	        // Gán các thuộc tính từ store vào storeDTO
 	        storeDTO.setId(store.getId());
 	        storeDTO.setName(store.getName());
 	        storeDTO.setLogo(store.getLogo());
-	        storeDTO.setEvidence(store.getEvidence());
-	        storeDTO.setEdittingName(store.getEditingName());
 	        storeDTO.setStatus(store.isStatus());
-	        storeDTO.setAdminReply(store.getAdminReply());
+	        storeDTO.setCertificate_image(store.getCertificate_image());
 	        storeDTO.setDescription(store.getDescription());
+	        storeDTO.setIdentity_image_1(store.getIdentity_image_1());
+	        storeDTO.setIdentity_image_2(store.getIdentity_image_2());
+	        storeDTO.setIdentity_type(store.getIdentity_type());
+	        storeDTO.setTax_num(store.getTax_num());
+	        storeDTO.setIdentity_num(store.getIdentity_num());
 	        storeDTO.setType(store.isType());
 	        storeDTO.setRejectedReason(store.getRejectedReason());
-	        // Khởi tạo và gán SellerDTO nếu có
 	        if (store.getSeller() != null) {
 	            SellerDTO sellerDTO = new SellerDTO();
-	            // Gán các thuộc tính từ Seller vào sellerDTO
 	            sellerDTO.setId(store.getSeller().getId());
 	            sellerDTO.setSellerName(store.getSeller().getSellerName());
-	            // Gán sellerDTO cho storeDTO
 	            storeDTO.setSellerDTO(sellerDTO);
 	        }
-	        // Thêm storeDTO vào danh sách kết quả
 	        inactiveStoreDTOs.add(storeDTO);
 	    }
 
@@ -358,21 +361,21 @@ public class AdminServiceImpl implements AdminService {
 
 	    for (Store store : inactiveStores) {
 	        StoreRegisterDTO storeDTO = new StoreRegisterDTO();
-	        // Gán các thuộc tính từ store vào storeDTO
 	        storeDTO.setId(store.getId());
 	        storeDTO.setName(store.getName());
 	        storeDTO.setLogo(store.getLogo());
-	        storeDTO.setEvidence(store.getEvidence());
-	        storeDTO.setEdittingName(store.getEditingName());
 	        storeDTO.setStatus(store.isStatus());
-	        storeDTO.setAdminReply(store.getAdminReply());
+	        storeDTO.setCertificate_image(store.getCertificate_image());
 	        storeDTO.setDescription(store.getDescription());
+	        storeDTO.setIdentity_image_1(store.getIdentity_image_1());
+	        storeDTO.setIdentity_image_2(store.getIdentity_image_2());
+	        storeDTO.setIdentity_type(store.getIdentity_type());
+	        storeDTO.setTax_num(store.getTax_num());
+	        storeDTO.setIdentity_num(store.getIdentity_num());
 	        storeDTO.setType(store.isType());
 	        storeDTO.setRejectedReason(store.getRejectedReason());
-	        // Khởi tạo và gán SellerDTO nếu có
 	        if (store.getSeller() != null) {
 	            SellerDTO sellerDTO = new SellerDTO();
-	            // Gán các thuộc tính từ Seller vào sellerDTO
 	            sellerDTO.setId(store.getSeller().getId());
 	            sellerDTO.setSellerName(store.getSeller().getSellerName());
 	            // Gán sellerDTO cho storeDTO
@@ -392,16 +395,19 @@ public class AdminServiceImpl implements AdminService {
 	        StoreRegisterDTO storeRegisterDTO = new StoreRegisterDTO();
 	        storeRegisterDTO.setId(store.getId());
 	        storeRegisterDTO.setName(store.getName());
-	        storeRegisterDTO.setDescription(store.getDescription());
 	        storeRegisterDTO.setLogo(store.getLogo());
-	        storeRegisterDTO.setEvidence(store.getEvidence());
+	        storeRegisterDTO.setDescription(store.getDescription());
+	        storeRegisterDTO.setCertificate_image(store.getCertificate_image());
+	        storeRegisterDTO.setIdentity_image_1(store.getIdentity_image_1());
+	        storeRegisterDTO.setIdentity_image_2(store.getIdentity_image_2());
+	        storeRegisterDTO.setIdentity_type(store.getIdentity_type());
+	        storeRegisterDTO.setTax_num(store.getTax_num());
+	        storeRegisterDTO.setIdentity_num(store.getIdentity_num());
 	        storeRegisterDTO.setType(storeRegisterDTO.isType());
 	        if (store.getSeller() != null) {
 	            SellerDTO sellerDTO = new SellerDTO();
-	            // Gán các thuộc tính từ Seller vào sellerDTO
 	            sellerDTO.setId(store.getSeller().getId());
 	            sellerDTO.setSellerName(store.getSeller().getSellerName());
-	            // Gán sellerDTO cho storeDTO
 	            storeRegisterDTO.setSellerDTO(sellerDTO);
 	        }
 	        
@@ -442,7 +448,6 @@ public class AdminServiceImpl implements AdminService {
 
 	        StoreDTO storeDTO = new StoreDTO();
 	        storeDTO.setName(product.getStore().getName());
-
 	        productConfirmDTO.setStoreDTO(storeDTO);
 
 	        productConfirmDTOs.add(productConfirmDTO);
@@ -452,6 +457,10 @@ public class AdminServiceImpl implements AdminService {
 		
 	}
 	
+	public List<Attribute> getAttributesByProductId(Long product_id){
+		return attributeRepository.findByProductId(product_id);
+		
+	}
 	public ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id) {
 		Product product = productRepository.findById(product_id).orElse(null);
 		product.setStatus(true);
@@ -468,6 +477,7 @@ public class AdminServiceImpl implements AdminService {
 		request.setAdminReply(product.getAdminReply());
 		return request;
 	}
+	
 	public List<VariantImageDTO> getAllVarriantsConfirm(){
 	    // Lấy tất cả các biến thể từ cơ sở dữ liệu
         List<Variant> variants = variantRepository.findAll();
@@ -504,16 +514,14 @@ public class AdminServiceImpl implements AdminService {
 	}
 	public List<ImageConfirmDTO> listImagesOfVariant(Long variant_id){
 		List<Image> inActiveImages = imageRepository.findImagesByVariant_Id(variant_id);
-	    List<ImageConfirmDTO> imageConfirmDTOs = new ArrayList<>();
-	    
+	    List<ImageConfirmDTO> imageConfirmDTOs = new ArrayList<>();    
 	    for (Image image : inActiveImages) {
 	        ImageConfirmDTO imageConfirmDTO = new ImageConfirmDTO();
 	        imageConfirmDTO.setId(image.getId());
 	        imageConfirmDTO.setImgPath(image.getImgPath());
 	        imageConfirmDTO.setStatus(image.isStatus());        
 	        imageConfirmDTOs.add(imageConfirmDTO);
-	    }
-	    
+	    }    
 	    return imageConfirmDTOs;
 		
 	}
@@ -558,7 +566,6 @@ public class AdminServiceImpl implements AdminService {
         variantImageDTO.setSalePrice(variant.getSalePrice());
         variantImageDTO.setImg(variant.getImg());
 
-        // Mapping ProductDTO
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(variant.getProduct().getId());
         productDTO.setTitle(variant.getProduct().getTitle());
@@ -627,6 +634,7 @@ public class AdminServiceImpl implements AdminService {
                 storeDto.setId(store.getId());
                 storeDto.setName(store.getName());
                 storeDto.setEditingName(store.getEditingName());
+                storeDto.setEditingLogo(store.getEditingLogo());
                 storeDto.setStatus(store.isStatus());
 
                 SellerDTO sellerDTO = new SellerDTO();
@@ -640,5 +648,94 @@ public class AdminServiceImpl implements AdminService {
         
         return storeDtos;
     }
-  
+    public List<ProductDTO> getListProducNeedEdit(){
+    	List<Product> products = productRepository.findByStatus(true);
+    	List<ProductDTO> productDTOs = new ArrayList<>();
+    	
+    	for(Product product: products) {
+    		if(product.getEditDesc() != null && !product.getEditDesc().isEmpty()) {
+    			
+    			ProductDTO productDTO = new ProductDTO();
+    			productDTO.setId(product.getId());
+    			productDTO.setTitle(product.getTitle());
+    			productDTO.setMainPicture(product.getMainPicture());
+    			productDTO.setEditDesc(productDTO.getEditDesc());
+    			StoreDTO storeDTO = new StoreDTO();
+    			storeDTO.setName(product.getStore().getName());
+    			
+    			productDTOs.add(productDTO);
+    		}
+    		
+    	}
+    	return productDTOs;
+    }
+    public StoreActiveDTO findEditingNameActiveStoreById(Long storeId) {
+        Store store = storeRepository.findEditingNameEditingLogoActiveStoreById(storeId);
+        if (store != null) {
+            StoreActiveDTO storeDTO = new StoreActiveDTO();
+            storeDTO.setId(store.getId());
+            storeDTO.setEditingName(store.getEditingName());
+            storeDTO.setEditingLogo(store.getEditingLogo());
+            Seller seller = store.getSeller(); // Giả sử mối quan hệ giữa Store và Seller là một-đến-một
+            
+            if (seller != null) {
+                SellerDTO sellerDTO = new SellerDTO();
+                sellerDTO.setId(seller.getId());
+                sellerDTO.setSellerName(seller.getSellerName());           
+                storeDTO.setSellerDTO(sellerDTO);
+            }
+            
+            return storeDTO;
+        }
+        return null;
+    }
+
+	@Override
+	public ProductDTO findDescActiveByProductId(Long product_id) {
+		Product product = productRepository.findDescEditingProductAndStatus(product_id);
+		if (product != null) {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setId(product.getId());
+            productDTO.setTitle(product.getTitle());
+            productDTO.setMainPicture(product.getMainPicture());
+            productDTO.setDescription(product.getDescription());
+            productDTO.setEditDesc(productDTO.getEditDesc());
+            Store store = product.getStore(); // Giả sử mối quan hệ giữa Store và Seller là một-đến-một
+            
+            if (store != null) {
+                StoreDTO sellerDTO = new StoreDTO();
+                sellerDTO.setId(store.getId());
+                sellerDTO.setName(store.getName());           
+                productDTO.setStore(sellerDTO);
+            }
+            
+            return productDTO;
+        }
+		return null;
+	}
+
+	@Override
+	public List<ProductConfirmDTO> findProductActive() {
+		 List<Product> products = productRepository.findByStatus(true);
+		    List<ProductConfirmDTO> productConfirmDTOs = new ArrayList<>();
+
+		    for (Product product : products) {
+		        ProductConfirmDTO productConfirmDTO = new ProductConfirmDTO();
+		        productConfirmDTO.setId(product.getId());
+		        productConfirmDTO.setTitle(product.getTitle());
+		        productConfirmDTO.setDescription(product.getDescription());
+		        productConfirmDTO.setMainPicture(product.getMainPicture());
+		        productConfirmDTO.setCreateAt(product.getCreateAt());
+		        productConfirmDTO.setStatus(product.isStatus());
+
+		        StoreDTO storeDTO = new StoreDTO();
+		        storeDTO.setName(product.getStore().getName());
+		        productConfirmDTO.setStoreDTO(storeDTO);
+
+		        productConfirmDTOs.add(productConfirmDTO);
+		    }
+
+		    return productConfirmDTOs;
+	}
+
 }

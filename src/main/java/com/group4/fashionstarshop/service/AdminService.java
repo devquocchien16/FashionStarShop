@@ -10,6 +10,7 @@ import com.group4.fashionstarshop.dto.CategoryDTO;
 import com.group4.fashionstarshop.dto.ImageConfirmDTO;
 import com.group4.fashionstarshop.dto.OrderDTO;
 import com.group4.fashionstarshop.dto.ProductConfirmDTO;
+import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.SellerEnabledDTO;
 import com.group4.fashionstarshop.dto.StoreActiveDTO;
 import com.group4.fashionstarshop.dto.UserDTO;
@@ -17,6 +18,7 @@ import com.group4.fashionstarshop.dto.UserEnabledDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.dto.VariantImageDTO;
 import com.group4.fashionstarshop.model.Admin;
+import com.group4.fashionstarshop.model.Attribute;
 import com.group4.fashionstarshop.model.Category;
 import com.group4.fashionstarshop.model.Store;
 import com.group4.fashionstarshop.model.User;
@@ -61,7 +63,10 @@ public interface AdminService {
 	StoreEnabledDTO confirmStoreRequest(StoreEnabledDTO storeRequest, Long store_id);
 	//confirm and rejected product creation
 	List<ProductConfirmDTO> findProductInActive();
+	List<ProductConfirmDTO> findProductActive();
 	ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id);
+	
+	//Image confirm DTO
 	List<ImageConfirmDTO> listImagesOfVariant(Long variant_id);
 	void confirmImages(List<ImageConfirmDTO> imageConfirmDTOs);
 	void confirmAllImagesOfVariant(Long variantId);
@@ -70,4 +75,11 @@ public interface AdminService {
 	//order service
 	List<OrderDTO> getOrdersByStoreId(Long store_id);
 	List<StoreActiveDTO> getListEditingNameActiveStore();
+	StoreActiveDTO findEditingNameActiveStoreById(Long storeId);
+	
+	List<Attribute> getAttributesByProductId(Long product_id);
+//	StoreActiveDTO confirmEditingNameAndLogo(StoreActiveDTO request, Long storeId);
+	
+	List<ProductDTO> getListProducNeedEdit();
+	ProductDTO findDescActiveByProductId(Long product_id);
 }

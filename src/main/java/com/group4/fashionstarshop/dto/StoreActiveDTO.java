@@ -10,8 +10,8 @@ public class StoreActiveDTO {
     private Long id;
     private String name;
     private String logo;
-    private String evidence;
     private String editingName;
+    private String editingLogo;
     private boolean status;
     private String adminReply;
     private boolean type;

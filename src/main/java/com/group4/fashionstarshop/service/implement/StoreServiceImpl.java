@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.group4.fashionstarshop.converter.StoreCategoryConverter;
 import com.group4.fashionstarshop.converter.StoreConverter;
+import com.group4.fashionstarshop.dto.StoreActiveDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.model.Seller;
 import com.group4.fashionstarshop.model.Store;
@@ -104,6 +105,54 @@ public class StoreServiceImpl implements StoreService {
 		return null;
 	}
 
-	
+    public StoreActiveDTO confirmEditingNameAndLogo(StoreActiveDTO request, Long storeId) {
+    	Store store = storeRepository.findEditingNameEditingLogoActiveStoreById(storeId);
+        if (store != null) {
+            store.setName(store.getEditingName());
+            store.setLogo(store.getEditingLogo());
+            store.setAdminReply(request.getAdminReply());
+            store.setEditingName(null);
+            store.setEditingLogo(null);
+            storeRepository.save(store);
+            System.out.println("Updated Store Logo: " + store.getLogo());
 
+            // Create a response object and populate it with the store's data
+            StoreActiveDTO response = new StoreActiveDTO();
+            response.setId(store.getId());
+            response.setName(store.getName());
+            response.setLogo(store.getLogo());
+            response.setEditingName(store.getEditingName()); // This will be null
+            response.setEditingLogo(store.getEditingLogo()); // This will be null
+            response.setStatus(store.isStatus());
+            response.setAdminReply(store.getAdminReply());
+            return response;
+        } else {
+            // Throw an exception if the store was not found
+            throw new RuntimeException("Active store with editing name and logo not found with id " + storeId);
+        }
+    }
+    
+    public StoreActiveDTO declineEditingNameAndLogo(StoreActiveDTO request, Long storeId) {
+    	Store store = storeRepository.findEditingNameEditingLogoActiveStoreById(storeId);
+        if (store != null) {
+            store.setName(store.getName());
+            store.setLogo(store.getLogo());
+            store.setAdminReply(request.getAdminReply());
+            store.setEditingName(store.getEditingName());
+            store.setEditingLogo(store.getEditingName());
+            storeRepository.save(store);
+            StoreActiveDTO response = new StoreActiveDTO();
+            response.setId(store.getId());
+            response.setName(store.getName());
+            response.setLogo(store.getLogo());
+            response.setEditingName(store.getEditingName()); // This will be null
+            response.setEditingLogo(store.getEditingLogo()); // This will be null
+            response.setStatus(store.isStatus());
+            response.setAdminReply(store.getAdminReply());
+            return response;
+        } else {
+            // Throw an exception if the store was not found
+            throw new RuntimeException("Active store with editing name and logo not found with id " + storeId);
+        }
+    }
 }

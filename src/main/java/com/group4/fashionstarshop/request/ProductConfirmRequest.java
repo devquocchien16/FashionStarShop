@@ -12,11 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class ProductConfirmRequest {
     private String title;
     private String description;

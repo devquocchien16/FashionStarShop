@@ -9,4 +9,5 @@ import java.util.List;
 public interface StoreCategoryRepository extends JpaRepository<StoreCategory, Long> {   	
 	List<StoreCategory> findAllByStore(Store store);
     StoreCategory findByName(String name);
+    
 }

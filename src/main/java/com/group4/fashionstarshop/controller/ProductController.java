@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,11 +18,14 @@ import com.group4.fashionstarshop.dto.OptionTableDTO;
 import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.model.Attribute;
+import com.group4.fashionstarshop.request.ProductConfirmRequest;
 import com.group4.fashionstarshop.service.AttributeService;
 import com.group4.fashionstarshop.service.OptionService;
 import com.group4.fashionstarshop.service.OptionValueService;
 import com.group4.fashionstarshop.service.ProductService;
 import com.group4.fashionstarshop.service.VariantService;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -77,6 +81,15 @@ public class ProductController {
 			return new ResponseEntity<>(attributeDTOs, HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	//admin only
+    @PostMapping("/{productId}/decline")
+    public ResponseEntity<ProductConfirmRequest> declineProductRequest(@RequestBody ProductConfirmRequest productRequest, @PathVariable Long productId) {
+        ProductConfirmRequest request = productService.declineProductRequest(productRequest, productId);
+        if (request != null) {
+            return new ResponseEntity<>(request, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }

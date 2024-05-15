@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.group4.fashionstarshop.model.Seller;
 import com.group4.fashionstarshop.model.Store;
@@ -26,4 +27,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 	
 	@Query("SELECT s FROM Store s WHERE s.status = true")
 	List<Store> findByStatusTrue();
+	@Query("SELECT s FROM Store s WHERE s.id = :storeId AND s.editingName IS NOT NULL AND s.status = true")
+    Store findEditingNameEditingLogoActiveStoreById(@Param("storeId") Long storeId);
+    
  }

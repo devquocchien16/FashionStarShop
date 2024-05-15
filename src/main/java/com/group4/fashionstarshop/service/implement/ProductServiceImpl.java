@@ -10,6 +10,7 @@ import com.group4.fashionstarshop.repository.ImageRepository;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreCategoryRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
+import com.group4.fashionstarshop.request.ProductConfirmRequest;
 import com.group4.fashionstarshop.request.ProductRequest;
 import com.group4.fashionstarshop.service.ProductService;
 import com.nimbusds.oauth2.sdk.Request;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -281,6 +283,31 @@ private StoreCategoryConverter storeCategoryConverter;
 		public List<ProductDTO> findProductRequest() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+		public ProductConfirmRequest declineProductRequest(ProductConfirmRequest productRequest, Long productId) {
+		    // Tìm sản phẩm trong cơ sở dữ liệu
+		    Optional<Product> optionalProduct = productRepository.findById(productId);
+		    
+		    // Kiểm tra xem sản phẩm có tồn tại không
+		    if (optionalProduct.isPresent()) {
+		        Product product = optionalProduct.get();
+		        
+		        // Cập nhật trạng thái sản phẩm và adminReply
+		        product.setStatus(false);
+		        product.setAdminReply(productRequest.getAdminReply());
+		        System.out.println(product.getAdminReply());
+		        productRepository.save(product);
+		        
+		        // Tạo đối tượng ProductConfirmRequest và thiết lập các thuộc tính
+		        ProductConfirmRequest request = new ProductConfirmRequest();
+		        request.setStatus(product.isStatus());
+		        request.setAdminReply(product.getAdminReply());
+		        
+		        return request;
+		    } else {
+		        // Trả về null nếu không tìm thấy sản phẩm
+		        return null;
+		    }
 		}
 
 

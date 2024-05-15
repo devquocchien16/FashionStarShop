@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group4.fashionstarshop.dto.ProductDTO;
+import com.group4.fashionstarshop.dto.StoreActiveDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
@@ -100,5 +102,19 @@ public class StoreController {
     public ResponseEntity<Void> declinedStoreRequest(@RequestBody StoreDeclinedRequest storeRequest, @PathVariable("store_id") Long storeId) {
         storeService.declinedStoreRequest(storeRequest, storeId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/admin/{storeId}/edit/confirm")
+    public StoreActiveDTO confirmEditingNameAndLogo(@RequestBody StoreActiveDTO request, @PathVariable Long storeId) {
+        return storeService.confirmEditingNameAndLogo(request, storeId);
+    }
+    @PostMapping("/admin/{storeId}/edit/decline")
+    public ResponseEntity<StoreActiveDTO> declineEditingNameAndLogo(@RequestBody StoreActiveDTO request,
+    		@PathVariable Long storeId) {
+        try {
+            StoreActiveDTO response = storeService.declineEditingNameAndLogo(request, storeId);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return 404 if store not found
+        }
     }
 }

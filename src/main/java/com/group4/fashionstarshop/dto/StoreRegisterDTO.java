@@ -19,10 +19,14 @@ public class StoreRegisterDTO {
 	 private Long id;
 	 private String name;
 	 private String logo;
-	 private String evidence;
 	 private String edittingName;
+	 private String tax_num;
+	 private String certificate_image; 
+	 private String identity_type;
+	 private String identity_num;
+	 private String identity_image_1;
+	 private String identity_image_2;
 	 private boolean status;
-	 private String adminReply;
 	 private String description;
 	 private boolean type;
 	 private String rejectedReason;

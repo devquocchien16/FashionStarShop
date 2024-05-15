@@ -51,11 +51,15 @@ public class StoreConverterImpl implements StoreConverter {
         storeRegisterDTO.setId(store.getId());
         storeRegisterDTO.setName(store.getName());
         storeRegisterDTO.setLogo(store.getLogo());
-        storeRegisterDTO.setEvidence(store.getEvidence());
         storeRegisterDTO.setEdittingName(store.getEditingName());
         storeRegisterDTO.setStatus(store.isStatus());
-        storeRegisterDTO.setAdminReply(store.getAdminReply());
         storeRegisterDTO.setType(store.isType());
+        storeRegisterDTO.setCertificate_image(store.getCertificate_image());
+        storeRegisterDTO.setIdentity_image_1(store.getIdentity_image_1());
+        storeRegisterDTO.setIdentity_image_2(store.getIdentity_image_2());
+        storeRegisterDTO.setIdentity_type(store.getIdentity_type());
+        storeRegisterDTO.setTax_num(store.getTax_num());
+        storeRegisterDTO.setIdentity_num(store.getIdentity_num());
         storeRegisterDTO.setRejectedReason(store.getRejectedReason());
         // Các bước khác cần thiết để chuyển đổi đối tượng Seller thành SellerDTO nếu cần
 

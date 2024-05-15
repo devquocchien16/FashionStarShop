@@ -20,6 +20,7 @@ public class VariantImageDTO {
     private double price;
     private double salePrice;
     private String img;
-    private ProductDTO productDTO;   
+    private ProductDTO productDTO;
+    private List<OptionValueDTO> optionValueDTOList;
     private List<ImageConfirmDTO> imageDTOList;
 }

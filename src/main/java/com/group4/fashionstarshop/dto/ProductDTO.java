@@ -18,6 +18,7 @@ public class ProductDTO {
     private Long id;
     private String title;
     private String description;
+    private String editDesc;
     private String mainPicture;
     private List<ImageDTO> imageList;
     private String status;

@@ -5,6 +5,7 @@ import com.group4.fashionstarshop.dto.ProductDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.model.Product;
+import com.group4.fashionstarshop.request.ProductConfirmRequest;
 import com.group4.fashionstarshop.request.ProductRequest;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public interface ProductService {
 		Product updateProduct(ProductRequest productDto);
 		//for admin
 		public List<ProductDTO> findProductRequest();
-
+		ProductConfirmRequest declineProductRequest(ProductConfirmRequest productRequest, Long productId);
 
 //     Page<ProductDTO> getAllProduct(String category, String store, Integer minPrice, Integer maxPrice, Integer pageNumber, Integer pageSize);
 }
