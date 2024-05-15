@@ -39,7 +39,9 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable("user_id") Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        System.out.println(user.getPhone());
         UserDTO userDTO = userConverter.convertEntityToDTO(user);
+       
         return ResponseEntity.ok(userDTO);
     }
     @GetMapping("/getUserByEmailCatLam")

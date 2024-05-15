@@ -18,8 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	public List<Order> getUserOder(@Param("userId") Long userId);
     
     @Query("SELECT SUM(o.orderTotal) FROM Order o " +
-            "WHERE o.createdAt >= :startDate " +
-            "AND o.createdAt <= :endDate " +
+            "WHERE o.orderDate >= :startDate " +
+            "AND o.orderDate <= :endDate " +
             "AND o.store.id = :storeId")
      Double calculateStoreRevenue(@Param("startDate") Date startDate,
                                   @Param("endDate") Date endDate,
@@ -32,13 +32,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "FROM " +
             "  Order o " +
             "WHERE " +
-            "  o.createdAt >= :startDate " +
-            "  AND o.createdAt <= :endDate " +
+            "  o.orderDate >= :startDate " +
+            "  AND o.orderDate <= :endDate " +
             "  AND o.store.id= :storeId")
      Double calculateCommission(@Param("startDate") Date startDate, 
                                 @Param("endDate") Date endDate, 
                                 @Param("storeId") Long storeId);
-    @Query("SELECT o FROM Order o WHERE o.createdAt >= :startDate AND o.createdAt <= :endDate")
+    @Query("SELECT o FROM Order o WHERE o.orderDate >= :startDate AND o.orderDate <= :endDate")
     List<Order> findOrdersByCreatedAtBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 	List<Order> findOrdersByCreatedAtBetweenAndStoreId(Date startDate, Date endDate, Long storeId);
 }
