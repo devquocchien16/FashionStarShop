@@ -6,6 +6,7 @@ import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.dto.VariantDTO;
 import com.group4.fashionstarshop.model.Product;
 import com.group4.fashionstarshop.request.ProductConfirmRequest;
+import com.group4.fashionstarshop.request.AddProductRequest;
 import com.group4.fashionstarshop.request.ProductRequest;
 
 import java.util.List;
@@ -21,8 +22,7 @@ public interface ProductService {
 	    ProductDTO getProductById(Long id);
 	    List<ProductDTO> getAllProductDtos();
 	    List<VariantDTO> getVariantsByProductId(Long productId);
-	    List<ProductDTO> getProductsByContaining(String text);
-	    Product createProduct(Long storeId, Long categoryId, Long storeCategoryId, ProductDTO productDto);
+	    List<ProductDTO> getProductsByContaining(String text);	    
 
 	    List<ProductDTO> getProductsOfStoreByContaining(Long id, String text);
 	    Product updateProduct(ProductDTO productDto);
@@ -38,6 +38,11 @@ public interface ProductService {
 		//for admin
 		public List<ProductDTO> findProductRequest();
 		ProductConfirmRequest declineProductRequest(ProductConfirmRequest productRequest, Long productId);
+		Product createProduct(Long storeId, Long categoryId, ProductDTO productDto);
+		//seller send request for admin after create product
+		ProductDTO sendRequestNeedCheck(Long productId);
+		
+
 
 //     Page<ProductDTO> getAllProduct(String category, String store, Integer minPrice, Integer maxPrice, Integer pageNumber, Integer pageSize);
 }

@@ -47,10 +47,12 @@ public class AttributeServiceImpl implements AttributeService {
     public AttributeDTO updateAttribute(AttributeRequest attributeRequest, Long attributeId) {
         Attribute attribute = attributeRepository.findById(attributeId)
                 .orElseThrow(() -> new EntityNotFoundException("Attribute not found"));
-
+        Product product = attribute.getProduct();
+        product.setNeedcheck(true);
+        productRepository.save(product);
         attribute.setName(attributeRequest.getName());
         attribute.setValue(attributeRequest.getValue());
-
+        attribute.setStatus(false);
         Attribute updatedAttribute = attributeRepository.save(attribute);
         return attributeConverter.entityToDTO(updatedAttribute);
     }

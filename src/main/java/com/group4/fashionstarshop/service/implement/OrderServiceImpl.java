@@ -186,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
 	public Order completedOrder(Long orderId) throws OrderException {
 		OrderDTO orderDTO = findOrderByOrderId(orderId);
 		orderDTO.setOrder_status("COMPLETED");
-		Order order = orderConverter.dtoToEntity(orderDTO);
+		Order order = orderConverter.dtoToEntity(orderDTO);		
 		return orderRepository.save(order);
 	}
 
@@ -194,29 +194,29 @@ public class OrderServiceImpl implements OrderService {
 	public Order canceledOrder(Long orderId) throws OrderException {
 		OrderDTO orderDTO = findOrderByOrderId(orderId);
 		orderDTO.setOrder_status("CANCEL");
-		Order order = orderConverter.dtoToEntity(orderDTO);
+		Order order = orderConverter.dtoToEntity(orderDTO);		
 		return orderRepository.save(order);
 	}
 
 	@Override
 	public OrderDTO processAcceptOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));
-		orderByOrderId.setStatus("ACCEPTED");
-		List<OrderItem> orderItemList = orderByOrderId.getOrderItemList();
-		for (OrderItem orderItem : orderItemList) {
-			int orderQuantity = orderItem.getQuantity();
-			int quantityInStock = orderItem.getVariant().getStockQuantity();
-			// Assuming itemId và quantityToDecrease đã được định nghĩa trước đó
-			if (orderQuantity <= quantityInStock) {
-				quantityInStock = quantityInStock - orderQuantity;
-				Variant variant = variantRepository.findById(orderItem.getVariant().getId())
-						.orElseThrow(() -> new RuntimeException("Variant not found"));
-				variant.setStockQuantity(quantityInStock);
-			} else {
-				throw new RuntimeException("Not enough quantity to decrease for item: " + orderItem.getId());
-			}
-		}
+				.orElseThrow(() -> new RuntimeException("Order not found"));		
+		orderByOrderId.setStatus("ACCEPTED");		
+			List<OrderItem> orderItemList = orderByOrderId.getOrderItemList();
+			for (OrderItem orderItem : orderItemList) {
+				int orderQuantity = orderItem.getQuantity();
+				int quantityInStock = orderItem.getVariant().getStockQuantity();
+				// Assuming itemId và quantityToDecrease đã được định nghĩa trước đó
+				if (orderQuantity <= quantityInStock) {
+					quantityInStock = quantityInStock - orderQuantity;
+					Variant variant = variantRepository.findById(orderItem.getVariant().getId())
+							.orElseThrow(() -> new RuntimeException("Variant not found"));
+					variant.setStockQuantity(quantityInStock);
+				} else {
+					throw new RuntimeException("Not enough quantity to decrease for item: " + orderItem.getId());
+				}
+			}	
 
 		orderByOrderId.setAcceptedAt(new Date());
 		orderRepository.save(orderByOrderId);
@@ -226,8 +226,8 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderDTO processDeliverOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));
-		orderByOrderId.setStatus("DELIVERING");
+				.orElseThrow(() -> new RuntimeException("Order not found"));		
+		orderByOrderId.setStatus("DELIVERING");	
 		orderByOrderId.setDeliveringAt(new Date());
 		orderRepository.save(orderByOrderId);
 		return orderConverter.entityToDTO(orderByOrderId);
@@ -236,18 +236,18 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderDTO processCancelOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));
-		orderByOrderId.setStatus("CANCEL");
+				.orElseThrow(() -> new RuntimeException("Order not found"));		
+		orderByOrderId.setStatus("CANCEL");	
 		orderByOrderId.setCanceledAt(new Date());
 		orderRepository.save(orderByOrderId);
 		return orderConverter.entityToDTO(orderByOrderId);
 	}
-
+	
 	@Override
 	public OrderDTO processCompleteOrder(Long order_id) {
 		Order orderByOrderId = orderRepository.findById(order_id)
-				.orElseThrow(() -> new RuntimeException("Order not found"));
-		orderByOrderId.setStatus("COMPLETED");
+				.orElseThrow(() -> new RuntimeException("Order not found"));		
+		orderByOrderId.setStatus("COMPLETED");	
 		orderByOrderId.setCompletedAt(new Date());
 		orderRepository.save(orderByOrderId);
 		return orderConverter.entityToDTO(orderByOrderId);
@@ -267,8 +267,6 @@ public class OrderServiceImpl implements OrderService {
         	        OrderDTO orderDTO = new OrderDTO();
         	        orderDTO.setId(order.getId());
         	        orderDTO.setStoreDTO(new StoreDTO(order.getStore().getId(), order.getStore().getName(), null, null, null));
-        	        
-        	        // Chuyển đổi danh sách các đơn hàng sang danh sách OrderItemDTO
         	        List<OrderItemDTO> orderItemDTOs = order.getOrderItemList().stream()
         	                .map(orderItem -> {
         	                    OrderItemDTO orderItemDTO = new OrderItemDTO();

@@ -17,7 +17,6 @@ import com.group4.fashionstarshop.request.AttributeRequest;
 import com.group4.fashionstarshop.service.AttributeService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/seller/attribute")
 public class AttributeManageController {
 	@Autowired

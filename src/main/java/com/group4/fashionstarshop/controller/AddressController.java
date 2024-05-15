@@ -30,16 +30,16 @@ public class AddressController {
     	AddressDTO addressDTO = addressService.createUserAddress(user_id, request);
         return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }  
-    @PostMapping("/seller/{seller_id}/add")
-    public ResponseEntity<AddressDTO> createSellerAddress(@PathVariable("seller_id") Long seller_id, @RequestBody AddressRequest request) {
-    	AddressDTO addressDTO = addressService.createSellerAddress(seller_id, request);
-        return new ResponseEntity<>(addressDTO, HttpStatus.OK);
-    }  
-    @GetMapping("/seller/{seller_id}")
-    public ResponseEntity<List<AddressDTO>> getSellerAddress(@PathVariable("seller_id") Long seller_id) {
-    	List<AddressDTO> addressDTOs = addressService.getSellerAddress(seller_id);
-        return new ResponseEntity<>(addressDTOs, HttpStatus.OK);
-    }  
+//    @PostMapping("/seller/{seller_id}/add")
+//    public ResponseEntity<AddressDTO> createSellerAddress(@PathVariable("seller_id") Long seller_id, @RequestBody AddressRequest request) {
+//    	AddressDTO addressDTO = addressService.createSellerAddress(seller_id, request);
+//        return new ResponseEntity<>(addressDTO, HttpStatus.OK);
+//    }  
+//    @GetMapping("/seller/{seller_id}")
+//    public ResponseEntity<List<AddressDTO>> getSellerAddress(@PathVariable("seller_id") Long seller_id) {
+//    	List<AddressDTO> addressDTOs = addressService.getSellerAddress(seller_id);
+//        return new ResponseEntity<>(addressDTOs, HttpStatus.OK);
+//    }  
     
     @PutMapping("/{address_id}/update")
     public ResponseEntity<AddressDTO> updateAddress(@PathVariable("address_id") Long address_id,@RequestBody AddressRequest request) {

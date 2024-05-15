@@ -30,6 +30,5 @@ public class OptionTable {
     @JoinColumn(name="product_id")
     @JsonBackReference(value = "product_optionTable")
     private Product product;
-    
-    private Boolean isDeleted;
+    private boolean status;
 }

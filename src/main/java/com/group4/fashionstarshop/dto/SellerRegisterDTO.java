@@ -13,11 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SellerRegisterDTO {
     private String sellerName;
-    private String email;
-    private String storeName;
+    private String email; 
     private String password;
-    private String phone;
-    private String birthDay;
+    private String phone;    
     private String confirmPassword;
     
 }

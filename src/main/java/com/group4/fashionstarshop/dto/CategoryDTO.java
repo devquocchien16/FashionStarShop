@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class CategoryDTO {
     private Long id;
+    private ParentCategoryDTO parentCategory;
     private String name;
 }

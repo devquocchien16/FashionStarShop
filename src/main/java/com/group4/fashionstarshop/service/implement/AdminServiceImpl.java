@@ -249,7 +249,9 @@ public class AdminServiceImpl implements AdminService {
 			StoreEnableDTO storeDTO = new StoreEnableDTO();
 			storeDTO.setId(store.getId());
 			storeDTO.setName(store.getName());
-			storeDTO.setStatus(store.isStatus());
+			storeDTO.setStatus(store.getStatus());
+
+			// Tạo một đối tượng SellerDTO từ thông tin của Seller
 			Seller seller = store.getSeller();
 			SellerDTO sellerDTO = new SellerDTO();
 			sellerDTO.setSellerName(seller.getSellerName());

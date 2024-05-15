@@ -55,6 +55,13 @@ public class OptionServiceImpl implements OptionService {
 	    // Find the option by its ID
 	    OptionTable optionTable = optionTableRepository.findById(option_id)
 	            .orElseThrow(() -> new EntityNotFoundException("Option not found"));
+	    
+	   //for admin confirm
+	   Product product = optionTable.getProduct();
+	   product.setNeedcheck(true);
+	   productRepository.save(product);
+	   optionTable.setStatus(false);
+	   
 	    // Update the option name
 	    optionTable.setName(optionRequest.getOptionName());
 	    // Save the updated option

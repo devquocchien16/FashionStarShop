@@ -33,9 +33,6 @@ public class Category {
     @ManyToOne
     @JoinColumn(name="parent_category_id")
     private ParentCategory parentCategory;
-    
-    @OneToMany(mappedBy = "category")
-    private List<StoreCategory> storeCategories;
 
     @JsonManagedReference(value = "product_category")
     @OneToMany( mappedBy = "category")

@@ -21,9 +21,8 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String logo;
-    private String evidence;
-
+    private String logo;   
+    private String editingName;       
     private String tax_num;
     private String certificate_image; 
     private String identity_type;
@@ -40,11 +39,7 @@ public class Store {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
     @JsonBackReference(value = "store_seller")
-    private Seller seller;
-
-    @OneToMany(mappedBy = "store")
-    @JsonManagedReference(value = "store_category")
-    private List<StoreCategory> storeCategoryList;
+    private Seller seller;  
 
     @OneToMany(mappedBy = "store")
     @JsonManagedReference(value = "store_product")

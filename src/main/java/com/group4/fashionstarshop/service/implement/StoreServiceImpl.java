@@ -7,15 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.group4.fashionstarshop.converter.StoreCategoryConverter;
 import com.group4.fashionstarshop.converter.StoreConverter;
 import com.group4.fashionstarshop.dto.StoreActiveDTO;
 import com.group4.fashionstarshop.dto.StoreDTO;
+import com.group4.fashionstarshop.model.Address;
 import com.group4.fashionstarshop.model.Seller;
 import com.group4.fashionstarshop.model.Store;
+import com.group4.fashionstarshop.repository.AddressRepository;
 import com.group4.fashionstarshop.repository.SellerRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
 import com.group4.fashionstarshop.request.StoreDeclinedRequest;
+import com.group4.fashionstarshop.request.AddStoreRequest;
 import com.group4.fashionstarshop.request.StoreRequest;
 import com.group4.fashionstarshop.service.StoreService;
 
@@ -28,7 +30,8 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     private StoreRepository storeRepository;
     @Autowired
-    private StoreCategoryConverter storeCategoryConverter;
+    private AddressRepository addressRepository;
+  
     @Override
     public StoreDTO findStore(Long id) {
         Store store = storeRepository.findById(id).orElseThrow(() -> new RuntimeException("Store not found"));       
@@ -37,19 +40,43 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public StoreDTO createStore(Long sellerId, StoreRequest request) {
+    public StoreDTO createStore(Long sellerId, AddStoreRequest request) {
         Seller seller = sellerRepository.findById(sellerId).orElseThrow(
                 () -> new UsernameNotFoundException("seller not found"));
         Store store = new Store();
         store.setName(request.getName());
-        store.setEvidence(request.getEvidence());
-      //  store.setDealsImage("https://m.media-amazon.com/images/S/al-na-9d5791cf-3faf/1f6cbd86-1e6a-42d5-bd7c-e137bfef3fc6._CR0%2C0%2C3000%2C600_SX1920_.jpg");
-       // store.setHomeImage("https://congluan-cdn.congluan.vn/files/dieulinh/2020/07/16/st2-0904.jpg");
-       // store.setDealsSquareImage("https://i.ytimg.com/vi/YczCAwQ3wgs/maxresdefault.jpg");
-      //  store.setInteractiveImage("https://png.pngtree.com/background/20210715/original/pngtree-black-friday-neon-lights-pink-background-banner-picture-image_1266832.jpg");
-        store.setLogo("https://img.pikbest.com/origin/06/53/62/292pIkbEsTqDa.jpg!w700wp");
+        store.setLogo(request.getLogo());
+        store.setDescription(request.getDescription());
+        
+        store.setType(request.isType());
+        store.setTax_num(request.getTax_num());
+        store.setCertificate_image(request.getCertificate_image());
+        
+        store.setIdentity_type(request.getIdentity_type());
+        store.setIdentity_num(request.getIdentity_num());
+        store.setIdentity_image_1(request.getIdentity_image_1());
+        store.setIdentity_image_2(request.getIdentity_image_2());       
+        store.setStatus(false);
         store.setSeller(seller);
         storeRepository.save(store);
+        
+        Address tax_address = new Address();
+        tax_address.setCity(request.getTax_city());
+        tax_address.setDistrict(request.getTax_district());
+        tax_address.setWard(request.getTax_ward());
+        tax_address.setStreet(request.getTax_street());
+        tax_address.setSeller(seller);
+        addressRepository.save(tax_address);
+        
+        
+        Address pickup_address = new Address();
+        pickup_address.setCity(request.getPickup_city());
+        pickup_address.setDistrict(request.getPickup_district());
+        pickup_address.setWard(request.getPickup_ward());
+        pickup_address.setStreet(request.getPickup_street());
+        pickup_address.setSeller(seller);
+        addressRepository.save(pickup_address);
+        
         StoreDTO newStoreDTO = storeConverter.entityToDTO(store);
         return newStoreDTO;
     }
@@ -91,6 +118,20 @@ public class StoreServiceImpl implements StoreService {
 	            return store;
  }
 
+	@Override
+	public List<StoreDTO> findInactiveStores() {
+	    List<Store> inactiveStores = storeRepository.findByStatus(false);
+	    return storeConverter.entitiesToDTOs(inactiveStores);
+	}
+
+
+	@Override
+	public List<StoreDTO> findStoreRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 
 	@Override
 	public List<StoreDTO> findInactiveStores() {

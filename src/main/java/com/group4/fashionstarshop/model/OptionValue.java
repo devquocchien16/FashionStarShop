@@ -31,5 +31,5 @@ public class OptionValue {
     @OneToMany(mappedBy = "option_value")
     private List<VariantOptionValue> variantOptionValues;
     
-    private Boolean isDeleted;    
+    private boolean status;   
 }

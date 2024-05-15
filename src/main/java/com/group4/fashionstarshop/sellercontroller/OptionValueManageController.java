@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/seller/option-value")
 public class OptionValueManageController {
 	 @Autowired
