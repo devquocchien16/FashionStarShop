@@ -18,6 +18,8 @@ import com.group4.fashionstarshop.repository.VerificationTokenRepository;
 import com.group4.fashionstarshop.configuration.security.JwtUserDetailsService;
 import com.group4.fashionstarshop.service.TokenService;
 import com.group4.fashionstarshop.service.UserService;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -55,6 +57,8 @@ public class UserServiceImpl implements UserService {
     private JavaMailSender mailSender;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private ModelMapper mapper;
     
     @Override
     public String login(UserLoginDTO userLoginDto) {
@@ -266,5 +270,19 @@ public class UserServiceImpl implements UserService {
 	    updatedUserDTO.setBirthday(updatedUser.getBirthday()); // Sử dụng trực tiếp ngày sinh từ user
 
 	    return updatedUserDTO;
+	}
+
+	@Override
+	public UserDTO findUserByEmail(String email) {
+		var user  = userRepository.findByEmail(email);
+		if(user!=null) {
+			var result = mapper.map(user, UserDTO.class);
+			return result;
+		}else {
+			return null;
+		}
+		
+		
+		
 	}
 }

@@ -74,7 +74,7 @@ public class AuthController {
 		String token = userService.login(userLoginDto);
 		return ResponseEntity.ok(token);
 	}
-
+	
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserRegisterDTO userRegisterDto) throws MessagingException {
 		User user = userService.register(userRegisterDto);

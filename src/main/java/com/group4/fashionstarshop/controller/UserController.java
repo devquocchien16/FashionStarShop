@@ -42,6 +42,11 @@ public class UserController {
         UserDTO userDTO = userConverter.convertEntityToDTO(user);
         return ResponseEntity.ok(userDTO);
     }
+    @GetMapping("/getUserByEmailCatLam")
+	public UserDTO getUserByEmailCatLam(@RequestParam String email) {
+		var result = userService.findUserByEmail(email);
+		return result;
+	}
     @GetMapping("/info")
     public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String jwt) {
 //        // Lấy thông tin người dùng từ token

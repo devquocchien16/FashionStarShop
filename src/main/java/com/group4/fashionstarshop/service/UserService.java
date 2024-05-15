@@ -39,4 +39,5 @@ public interface UserService {
 	void updatePasswordResetToken(PasswordResetToken token);
 	Optional<User> findByEmail(String email);
 	UserDTO editUserProfile(Long id, UserEditDTO userEditDTO);
+	UserDTO findUserByEmail(String email);
 }

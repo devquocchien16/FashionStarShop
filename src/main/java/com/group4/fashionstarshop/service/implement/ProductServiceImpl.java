@@ -198,6 +198,7 @@ public class ProductServiceImpl implements ProductService {
 	    @Override
 	    public List<ProductDTO> getAllProductDtos() {
 	        List<Product> products = productRepository.findAll();
+	       products.removeIf( e-> !e.getStatus());
 	        List<ProductDTO> productDTOS = productConverterImpl.entitiesToDTOs(products);
 	        List<StoreDTO> storeDTOS = new ArrayList<>();
 	        for(Product product: products){
@@ -208,6 +209,7 @@ public class ProductServiceImpl implements ProductService {
 	        for(int i = 0; i < products.toArray().length; i++){
 	            productDTOS.get(i).setStore(storeDTOS.get(i));
 	        }
+	        
 	        return productDTOS;
 	    }
 
