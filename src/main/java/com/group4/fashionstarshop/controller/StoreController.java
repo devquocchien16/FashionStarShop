@@ -18,7 +18,6 @@ import com.group4.fashionstarshop.dto.StoreDTO;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
 import com.group4.fashionstarshop.service.ProductService;
-import com.group4.fashionstarshop.service.StoreCategoryService;
 import com.group4.fashionstarshop.service.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,8 +40,8 @@ import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
 import com.group4.fashionstarshop.request.AddStoreRequest;
 import com.group4.fashionstarshop.request.StoreDeclinedRequest;
+import com.group4.fashionstarshop.request.StoreRequest;
 import com.group4.fashionstarshop.service.ProductService;
-import com.group4.fashionstarshop.service.StoreCategoryService;
 import com.group4.fashionstarshop.service.StoreService;
 
 @RestController
@@ -74,7 +74,7 @@ public class StoreController {
 
     @PostMapping("/create/{sellerId}")
     @Transactional
-    public ResponseEntity<StoreDTO> createStore(@PathVariable("sellerId") Long sellerId, @RequestBody StoreRequest request){
+    public ResponseEntity<StoreDTO> createStore(@PathVariable("sellerId") Long sellerId, @RequestBody AddStoreRequest request){
         StoreDTO storeDto1 = storeService.createStore(sellerId,request);
         return new ResponseEntity<>(storeDto1,HttpStatus.OK);
     }

@@ -97,7 +97,7 @@ public class OrderServiceImpl implements OrderService {
 				.orElseThrow(() -> new RuntimeException("Payment Method not found")));
 		order.setShippingMethod(shippingMethodRepository.findById(orderRequest.getShippingMethodId())
 				.orElseThrow(() -> new RuntimeException("Shipping Method not found")));
-		order.setOrderDate(orderRequest.getOrderDate());
+		order.setCreatedAt(new Date());
 
 		// Calculate order total based on order items
 		double orderTotal = orderRequest.getOrderItemRequestList().stream()
@@ -266,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
         	    .map(order -> {
         	        OrderDTO orderDTO = new OrderDTO();
         	        orderDTO.setId(order.getId());
-        	        orderDTO.setStoreDTO(new StoreDTO(order.getStore().getId(), order.getStore().getName(), null, null, null));
+        	        orderDTO.setStoreDTO(new StoreDTO(order.getStore().getId(), order.getStore().getName(), null, null, null, null, false, null, null, null, null, null, null, null, null));
         	        List<OrderItemDTO> orderItemDTOs = order.getOrderItemList().stream()
         	                .map(orderItem -> {
         	                    OrderItemDTO orderItemDTO = new OrderItemDTO();

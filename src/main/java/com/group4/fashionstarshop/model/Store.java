@@ -30,7 +30,6 @@ public class Store {
     private String identity_image_1;
     private String identity_image_2;
     private String editingLogo;
-    private String editingName;
     private boolean status;
     private String adminReply;
     private boolean type;

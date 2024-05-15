@@ -26,10 +26,9 @@ public interface VariantRepository extends JpaRepository<Variant,Long > {
     @Query("SELECT v.product.createAt FROM Variant v WHERE v.id = :variantId")
     Date findCreatedAtByVariantId(@Param("variantId") Long variantId);
 	List<Variant> findByProduct(Product product);
-	List<Variant> findByProductAndIsDeletedFalse(Product product);
     Variant findVariantById(Long id);
 
-	List<Variant> findByProductAndIsDeletedNullOrIsDeletedFalse(Product product);
+
 
 	
 	

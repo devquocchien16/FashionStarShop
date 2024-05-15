@@ -24,13 +24,13 @@ public class Product {
     private String description;
     private String editDesc;
     private String mainPicture;
-    @OneToMany(mappedBy = "product")
-    private List<Image> imageList;
+  
     
     private Date createAt;
     private Date updatedAt;   
     private String adminReply; 
     private boolean status;
+    private boolean needcheck;
     
     @ManyToOne
     @JoinColumn (name = "category_id")

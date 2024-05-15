@@ -100,6 +100,7 @@ public class StoreServiceImpl implements StoreService {
 	            .orElseThrow();
 	    // Thực hiện cập nhật thông tin từ request
 	    store.setEditingName(request.getName());
+	    store.setEditingLogo(request.getLogo());
 	    store.setDescription(request.getDescription());
 	    store = storeRepository.save(store);
 
@@ -131,20 +132,6 @@ public class StoreServiceImpl implements StoreService {
 		return null;
 	}
 
-	
-
-	@Override
-	public List<StoreDTO> findInactiveStores() {
-	    List<Store> inactiveStores = storeRepository.findByStatus(false);
-	    return storeConverter.entitiesToDTOs(inactiveStores);
-	}
-
-
-	@Override
-	public List<StoreDTO> findStoreRequest() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
     public StoreActiveDTO confirmEditingNameAndLogo(StoreActiveDTO request, Long storeId) {
     	Store store = storeRepository.findEditingNameEditingLogoActiveStoreById(storeId);

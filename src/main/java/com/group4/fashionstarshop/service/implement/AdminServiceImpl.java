@@ -249,7 +249,7 @@ public class AdminServiceImpl implements AdminService {
 			StoreEnableDTO storeDTO = new StoreEnableDTO();
 			storeDTO.setId(store.getId());
 			storeDTO.setName(store.getName());
-			storeDTO.setStatus(store.getStatus());
+			storeDTO.setStatus(store.isStatus());
 
 			// Tạo một đối tượng SellerDTO từ thông tin của Seller
 			Seller seller = store.getSeller();
@@ -594,7 +594,7 @@ public class AdminServiceImpl implements AdminService {
     	    .map(order -> {
     	        OrderDTO orderDTO = new OrderDTO();
     	        orderDTO.setId(order.getId());
-    	        orderDTO.setStoreDTO(new StoreDTO(order.getStore().getId(), order.getStore().getName(), null, null, null));
+    	        orderDTO.setStoreDTO(new StoreDTO(order.getStore().getId(), order.getStore().getName(), null, null, null, null, false, null, null, null, null, null, null, null, null));
     	        
     	        // Chuyển đổi danh sách các đơn hàng sang danh sách OrderItemDTO
     	        List<OrderItemDTO> orderItemDTOs = order.getOrderItemList().stream()

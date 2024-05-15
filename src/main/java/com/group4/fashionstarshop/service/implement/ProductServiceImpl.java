@@ -3,6 +3,7 @@ package com.group4.fashionstarshop.service.implement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,9 @@ import com.group4.fashionstarshop.repository.CategoryRepository;
 import com.group4.fashionstarshop.repository.ImageRepository;
 import com.group4.fashionstarshop.repository.ProductRepository;
 import com.group4.fashionstarshop.repository.StoreRepository;
+import com.group4.fashionstarshop.repository.VariantRepository;
 import com.group4.fashionstarshop.request.AttributeRequest;
+import com.group4.fashionstarshop.request.ProductConfirmRequest;
 import com.group4.fashionstarshop.request.ProductRequest;
 import com.group4.fashionstarshop.service.ProductService;
 
@@ -68,6 +71,9 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
 	private ImageRepository imageRepository;
+	
+	@Autowired
+	private VariantRepository variantRepository;
 	@Autowired
 	private ImageConverter imageConverter;
 
@@ -148,6 +154,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public ProductDTO sendRequestNeedCheck(Long productId) {
 		Product product = productRepository.findById(productId).orElse(new Product());
+		List<Variant> variantList = product.getVariants();
+		for (Variant variant : variantList) {
+			variant.setImg(product.getMainPicture());
+			variantRepository.save(variant);
+		}
 		product.setNeedcheck(true);
 		 productRepository.save(product);	  
 		 return productConverter.entityToDTO(product);
@@ -179,13 +190,8 @@ public class ProductServiceImpl implements ProductService {
 
 	 @Override
 	    public ProductDTO getProductById(Long id) {
-	        Product product = productRepository.findById(id).orElse(new Product()) ;
-	        List<Image> images = product.getImageList();
-	        List<ImageDTO> imageDTOList = imageConverter.entitiesToDTOs(images);
-	       	        
-	        ProductDTO productDTO = productConverterImpl.entityToDTO(product);	    
-	        productDTO.setStoreCategoryId(product.getStoreCategory().getId());
-	        productDTO.setImageList(imageDTOList);	        
+	        Product product = productRepository.findById(id).orElse(new Product()) ;	       	        
+	        ProductDTO productDTO = productConverterImpl.entityToDTO(product);	            
 	        return productDTO;
 	    }
 
@@ -315,6 +321,30 @@ public class ProductServiceImpl implements ProductService {
 		        // Trả về null nếu không tìm thấy sản phẩm
 		        return null;
 		    }
+		}
+
+
+
+		@Override
+		public List<ProductDTO> getAllProductDtosByStoreCategory(String categoryName) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+
+		@Override
+		public List<ProductDTO> getAllProductDtosByStoreSubCategory(String categoryName) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+
+		@Override
+		public List<ProductDTO> getAllProductDtosByStoreCategory(Long storeCategory_id) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 

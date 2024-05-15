@@ -21,7 +21,7 @@ public class VariantDTO {
     private double price;
     private double salePrice;
     private String img;
-    private Boolean isDeleted;
+  
     private ProductDTO productDTO;   
     
     private List<OptionValueDTO> optionValueDTOList;

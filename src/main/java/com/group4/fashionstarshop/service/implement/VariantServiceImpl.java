@@ -74,7 +74,6 @@ public class VariantServiceImpl implements VariantService {
 		variant.setStockQuantity(variantRequest.getStockQuantity());
 		variant.setPrice(variantRequest.getPrice());
 		variant.setSalePrice(variantRequest.getSalePrice());
-		variant.setIsDeleted(variantRequest.getIsDeleted());
 
 		  // Create Image entities for each image URL and associate them with the product
 	    List<Image> imageList = new ArrayList<>();
@@ -153,7 +152,6 @@ public class VariantServiceImpl implements VariantService {
 	private String generateRandomSkuCode() {
 	    // Define characters for random digits
 	    String digits = "0123456789";
-	    // Define length of random digits
 	    int digitsLength = 6;
 
 	    // Create an instance of Random class
@@ -179,7 +177,7 @@ public class VariantServiceImpl implements VariantService {
 		Product product = productRepository.findById(product_id)
 				.orElseThrow(() -> new EntityNotFoundException("Product not found"));
 		// Lấy danh sách các biến thể với trạng thái isDeleted khác false
-		List<Variant> variants = variantRepository.findByProductAndIsDeletedNullOrIsDeletedFalse(product);
+		List<Variant> variants = variantRepository.findByProduct(product);
 
 		List<VariantDTO> variantDTOs = variantConverter.entitiesToDTOs(variants);
 
@@ -255,7 +253,6 @@ public class VariantServiceImpl implements VariantService {
 	public VariantDTO deleteVariant(Long variant_id) {
 		Variant variant = variantRepository.findById(variant_id)
 				.orElseThrow(() -> new EntityNotFoundException("Variant not found with id: " + variant_id));
-		variant.setIsDeleted(true);
 		variantRepository.save(variant);
 
 		return variantConverter.entityToDTO(variant);
@@ -292,9 +289,7 @@ public class VariantServiceImpl implements VariantService {
 	}
 
 	private boolean containsAllOptionValues(Variant variant, List<Long> optionValueIds) {
-		// Lấy danh sách các variantOptionValues của biến thể
 		List<VariantOptionValue> variantOptionValues = variant.getVariantOptionValues();
-		// Tạo danh sách để lưu trữ các optionValueIds của biến thể
 		List<Long> variantOptionValueIds = new ArrayList<>();
 		for (VariantOptionValue variantOptionValue : variantOptionValues) {
 			variantOptionValueIds.add(variantOptionValue.getOption_value().getId());
@@ -319,7 +314,6 @@ public class VariantServiceImpl implements VariantService {
 		variant.setSalePrice(variantRequest.getSalePrice());
 		variant.setImg(variantRequest.getImg());
 		variant.setName(variantRequest.getName());
-		variant.setIsDeleted(variantRequest.getIsDeleted());
 		variant.setProduct(product);
 
 		Variant savedVariant = variantRepository.save(variant);
@@ -363,7 +357,7 @@ public class VariantServiceImpl implements VariantService {
 		Product product = productRepository.findById(product_id)
 				.orElseThrow(() -> new EntityNotFoundException("Product not found"));
 		// Lấy danh sách các biến thể với trạng thái isDeleted khác false
-		List<Variant> variants = variantRepository.findByProductAndIsDeletedNullOrIsDeletedFalse(product);		
+		List<Variant> variants = variantRepository.findByProduct(product);		
 		List<VariantDTO> variantDTOs = variantConverter.entitiesToDTOs(variants);
 
 		for (VariantDTO variantDTO : variantDTOs) {
