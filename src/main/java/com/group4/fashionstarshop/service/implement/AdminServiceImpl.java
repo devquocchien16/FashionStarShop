@@ -446,7 +446,7 @@ public class AdminServiceImpl implements AdminService {
 	        productConfirmDTO.setDescription(product.getDescription());
 	        productConfirmDTO.setMainPicture(product.getMainPicture());
 	        productConfirmDTO.setCreateAt(product.getCreateAt());
-	        productConfirmDTO.setStatus(product.isStatus());
+	        productConfirmDTO.setStatus(product.getStatus());
 
 	        StoreDTO storeDTO = new StoreDTO();
 	        storeDTO.setName(product.getStore().getName());
@@ -475,7 +475,7 @@ public class AdminServiceImpl implements AdminService {
 		request.setMainPicture(product.getMainPicture());
 		request.setDescription(product.getDescription());
 		request.setCreateAt(product.getCreateAt());
-		request.setStatus(product.isStatus());
+		request.setStatus(product.getStatus());
 		request.setAdminReply(product.getAdminReply());
 		return request;
 	}
@@ -728,7 +728,7 @@ public class AdminServiceImpl implements AdminService {
 		        productConfirmDTO.setDescription(product.getDescription());
 		        productConfirmDTO.setMainPicture(product.getMainPicture());
 		        productConfirmDTO.setCreateAt(product.getCreateAt());
-		        productConfirmDTO.setStatus(product.isStatus());
+		        productConfirmDTO.setStatus(product.getStatus());
 
 		        StoreDTO storeDTO = new StoreDTO();
 		        storeDTO.setName(product.getStore().getName());

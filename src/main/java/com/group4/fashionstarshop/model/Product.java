@@ -29,7 +29,7 @@ public class Product {
     private Date createAt;
     private Date updatedAt;   
     private String adminReply; 
-    private boolean status;
+    private Boolean status;
     private boolean needcheck;
     
     @ManyToOne

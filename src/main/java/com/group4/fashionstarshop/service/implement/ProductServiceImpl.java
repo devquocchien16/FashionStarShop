@@ -315,7 +315,7 @@ public class ProductServiceImpl implements ProductService {
 		        
 		        // Tạo đối tượng ProductConfirmRequest và thiết lập các thuộc tính
 		        ProductConfirmRequest request = new ProductConfirmRequest();
-		        request.setStatus(product.isStatus());
+		        request.setStatus(product.getStatus());
 		        request.setAdminReply(product.getAdminReply());
 		        
 		        return request;
