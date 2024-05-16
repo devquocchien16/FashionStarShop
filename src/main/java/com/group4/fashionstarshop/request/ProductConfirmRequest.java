@@ -23,4 +23,5 @@ public class ProductConfirmRequest {
     private Date updatedAt;   
     private String adminReply;
     private StoreDTO storeDTO;
+    
 }

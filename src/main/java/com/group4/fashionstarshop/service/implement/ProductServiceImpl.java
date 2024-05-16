@@ -326,7 +326,22 @@ public class ProductServiceImpl implements ProductService {
 		    }
 		}
 
-
+		public ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id) {
+			Product product = productRepository.findByProductId(product_id).orElse(null);
+			product.setStatus(true);
+			product.setAdminReply(productRequest.getAdminReply());
+			
+			productRepository.save(product);
+			System.out.println("admin reply: " + product.getAdminReply());
+			ProductConfirmRequest request = new ProductConfirmRequest();
+			request.setTitle(product.getTitle());
+			request.setMainPicture(product.getMainPicture());
+			request.setDescription(product.getDescription());
+			request.setCreateAt(product.getCreateAt());
+			request.setStatus(product.getStatus());
+			request.setAdminReply(product.getAdminReply());
+			return request;
+		}
 
 		@Override
 		public List<ProductDTO> getAllProductDtosByStoreCategory(String categoryName) {

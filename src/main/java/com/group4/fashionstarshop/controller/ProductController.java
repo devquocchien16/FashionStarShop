@@ -26,6 +26,7 @@ import com.group4.fashionstarshop.service.ProductService;
 import com.group4.fashionstarshop.service.VariantService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -91,5 +92,13 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
+    @PostMapping("/admins/{product_id}/confirm")
+    public ResponseEntity<ProductConfirmRequest> confirmProductRequest(@RequestBody ProductConfirmRequest request, @PathVariable("product_id") Long productId) {
+        try {
+            ProductConfirmRequest confirmedProduct = productService.confirmProductRequest(request, productId);
+            return ResponseEntity.ok(confirmedProduct);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 }

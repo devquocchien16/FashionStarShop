@@ -39,7 +39,9 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable("user_id") Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        System.out.println(user.getPhone());
         UserDTO userDTO = userConverter.convertEntityToDTO(user);
+       
         return ResponseEntity.ok(userDTO);
     }
     @GetMapping("/getUserByEmailCatLam")
@@ -60,7 +62,7 @@ public class UserController {
 //            return ResponseEntity.badRequest().body("Không thể lấy thông tin người dùng.");
 //        }
     }
-    @PostMapping("/{user_id}/edit")
+    @PostMapping("/edit/{user_id}")
     public ResponseEntity<?> editUserProfile(@PathVariable("user_id") Long userId, @RequestBody UserEditDTO userEditDTO) {
         // Lấy username từ token
   

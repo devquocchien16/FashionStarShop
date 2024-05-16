@@ -24,6 +24,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 	
 	 @Query("SELECT p FROM Product p WHERE p.id = :product_id AND p.status = true AND p.editDesc IS NOT NULL")
 	  Product findDescEditingProductAndStatus(@Param("product_id") Long product_id);
+	 @Query("SELECT p FROM Product p WHERE p.id = :product_id")
+	Optional<Product> findByProductId(Long product_id);
 
 }
 

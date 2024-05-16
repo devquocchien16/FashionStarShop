@@ -167,15 +167,7 @@ public class AdminController {
     public List<ProductConfirmDTO> findProductsStatusTrue(){
     	return adminService.findProductActive();
     }
-    @PostMapping("/products/{product_id}/confirm")
-    public ResponseEntity<ProductConfirmRequest> confirmProductRequest(@RequestBody ProductConfirmRequest request, @PathVariable("product_id") Long productId) {
-        try {
-            ProductConfirmRequest confirmedProduct = adminService.confirmProductRequest(request, productId);
-            return ResponseEntity.ok(confirmedProduct);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
+
 
     @GetMapping("/variants/{variant_id}/images")
     public List<ImageConfirmDTO> listImagesOfVariant(@PathVariable("variant_id") Long variantId){

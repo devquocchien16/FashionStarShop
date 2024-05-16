@@ -463,22 +463,7 @@ public class AdminServiceImpl implements AdminService {
 		return attributeRepository.findByProductId(product_id);
 		
 	}
-	public ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id) {
-		Product product = productRepository.findById(product_id).orElse(null);
-		product.setStatus(true);
-		product.setAdminReply(productRequest.getAdminReply());
-		
-		productRepository.save(product);
-		
-		ProductConfirmRequest request = new ProductConfirmRequest();
-		request.setTitle(product.getTitle());
-		request.setMainPicture(product.getMainPicture());
-		request.setDescription(product.getDescription());
-		request.setCreateAt(product.getCreateAt());
-		request.setStatus(product.getStatus());
-		request.setAdminReply(product.getAdminReply());
-		return request;
-	}
+
 	
 	public List<VariantImageDTO> getAllVarriantsConfirm(){
 	    // Lấy tất cả các biến thể từ cơ sở dữ liệu
