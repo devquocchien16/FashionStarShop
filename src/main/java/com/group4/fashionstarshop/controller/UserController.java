@@ -62,7 +62,7 @@ public class UserController {
 //            return ResponseEntity.badRequest().body("Không thể lấy thông tin người dùng.");
 //        }
     }
-    @PostMapping("/{user_id}/edit")
+    @PostMapping("/edit/{user_id}")
     public ResponseEntity<?> editUserProfile(@PathVariable("user_id") Long userId, @RequestBody UserEditDTO userEditDTO) {
         // Lấy username từ token
   

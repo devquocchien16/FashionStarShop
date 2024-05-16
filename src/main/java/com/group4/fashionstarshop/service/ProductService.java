@@ -41,7 +41,7 @@ public interface ProductService {
 		Product createProduct(Long storeId, Long categoryId, ProductDTO productDto);
 		//seller send request for admin after create product
 		ProductDTO sendRequestNeedCheck(Long productId);
-		
+		ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id);
 
 
 //     Page<ProductDTO> getAllProduct(String category, String store, Integer minPrice, Integer maxPrice, Integer pageNumber, Integer pageSize);

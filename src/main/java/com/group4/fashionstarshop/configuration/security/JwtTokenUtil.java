@@ -134,7 +134,7 @@ public class JwtTokenUtil {
     public String getUserIdByToken(HttpHeaders headers, String secret) {
     	log.debug("Token util start!");
     	String token = headers.get("Authorization").get(0);
-    	String jwt = token.replace("Bearer", "");
+    	String jwt = token.replace("Bearer ", "");
     	
     	log.info("Jwt:"+jwt);
     	String userId = Jwts.parser().setSigningKey(secret).build().parseClaimsJws(jwt)

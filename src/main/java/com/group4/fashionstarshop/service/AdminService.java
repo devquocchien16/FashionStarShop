@@ -64,7 +64,6 @@ public interface AdminService {
 	//confirm and rejected product creation
 	List<ProductConfirmDTO> findProductInActive();
 	List<ProductConfirmDTO> findProductActive();
-	ProductConfirmRequest confirmProductRequest(ProductConfirmRequest productRequest, Long product_id);
 	
 	//Image confirm DTO
 	List<ImageConfirmDTO> listImagesOfVariant(Long variant_id);
