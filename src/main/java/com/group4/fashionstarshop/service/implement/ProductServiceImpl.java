@@ -157,6 +157,7 @@ public class ProductServiceImpl implements ProductService {
 		List<Variant> variantList = product.getVariants();
 		for (Variant variant : variantList) {
 			variant.setImg(product.getMainPicture());
+			variant.setName(product.getTitle());
 			variantRepository.save(variant);
 		}
 		product.setNeedcheck(true);
