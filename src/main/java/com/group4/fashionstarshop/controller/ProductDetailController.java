@@ -100,13 +100,6 @@ public class ProductDetailController {
 		return ResponseEntity.ok(variantDTO);
 	}
 
-//	@PostMapping("/{productId}/{variantId}")
-//	public ResponseEntity<VariantDTO> getVariantByProductIdAndOptionValueIds(
-//		@PathVariable("productId") Long productId,
-//	    @RequestBody FindVariantRequest request) {
-//	      VariantDTO variantDTO = variantService.getVariantIdByProductIdAndOptionValueIds(productId, request);
-//	        return ResponseEntity.ok(variantDTO);
-//	    }
 
 	@GetMapping("/{productId}/details/options")
 	public List<OptionTableDTO> getProductOptions(@PathVariable(name = "productId") Long productId) {

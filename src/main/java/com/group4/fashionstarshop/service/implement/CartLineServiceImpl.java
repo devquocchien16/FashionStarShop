@@ -54,6 +54,9 @@ public class CartLineServiceImpl implements CartLineService {
         List<CartLineDTO> cartLineDTOS = new ArrayList<>();
         for (CartLine cartLine : cartLines) {
 			CartLineDTO cartLineDTO =  cartLineConverter.convertEntityToDto(cartLine);
+			
+			Long store_id = cartLine.getVariant().getProduct().getStore().getId();
+			cartLineDTO.setStore_id(store_id);
 			cartLineDTOS.add(cartLineDTO);
 		}
         return cartLineDTOS;

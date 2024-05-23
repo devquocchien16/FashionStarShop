@@ -1,6 +1,9 @@
 package com.group4.fashionstarshop.service.implement;
 
 import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.print.attribute.standard.DateTimeAtCompleted;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -123,7 +126,7 @@ public class PaymentServiceImpl implements PaymentService {
 				.orElseThrow(() -> new RuntimeException("User not found"));
 		// Set user, store, order date, address, payment method, shipping method, etc.
 		order.setUser(user);
-		order.setStore(storeRepository.findById(orderRequest.getUserId())
+		order.setStore(storeRepository.findById(orderRequest.getStoreId())
 				.orElseThrow(() -> new RuntimeException("Store not found")));
 		order.setAddress(addressRepository.findById(orderRequest.getAddressId())
 				.orElseThrow(() -> new RuntimeException("Address not found")));
@@ -131,8 +134,9 @@ public class PaymentServiceImpl implements PaymentService {
 				.orElseThrow(() -> new RuntimeException("Payment Method not found")));
 		order.setShippingMethod(shippingMethodRepository.findById(orderRequest.getShippingMethodId())
 				.orElseThrow(() -> new RuntimeException("Shipping Method not found")));
-		order.setOrderDate(orderRequest.getOrderDate());
-	
+		order.setOrderDate(order.getOrderDate());
+		Date now = new Date();
+		order.setCreatedAt(now);
 		
 		// Calculate order total based on order items
 		double orderTotal = orderRequest.getOrderItemRequestList().stream()

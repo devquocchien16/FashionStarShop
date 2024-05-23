@@ -1,5 +1,6 @@
 package com.group4.fashionstarshop.request;
 
+import java.sql.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class OrderRequestPayment {
-	   private Long userId;  
+	   private Long userId; 
+	   private Long storeId;
 	    private String orderDate;
 	    private Long addressId;
 	    private Long shippingMethodId;   

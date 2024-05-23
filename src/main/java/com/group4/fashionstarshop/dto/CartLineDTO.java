@@ -16,6 +16,7 @@ public class CartLineDTO {
     @Null
     private Long id;
     private int quantity;
+    private Long store_id;
     private CartDTO cartDto;
     private VariantDTO variantDto;
 }
